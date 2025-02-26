@@ -13,10 +13,19 @@ class AppColors {
 
 class AppFonts {
   static TextStyle default_font = GoogleFonts.sora();
-
   static TextStyle title_screen = GoogleFonts.sora(
     fontSize: 36,
     fontWeight: FontWeight.bold,
     color: AppColors.color5,
+  );
+  static TextStyle qoute = GoogleFonts.sora(
+    fontSize: 32,
+    fontWeight: FontWeight.w600,
+    color: AppColors.color4,
+  );
+
+  static TextStyle sub_qoute = GoogleFonts.sora(
+    fontSize: 16,
+    color: AppColors.color4,
   );
 }
