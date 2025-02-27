@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "635270097970",
+    "project_id": "pos-coffee-shop-ab302",
+    "storage_bucket": "pos-coffee-shop-ab302.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635270097970:android:0f9df5dc0139d2a97f602b",
+        "android_client_info": {
+          "package_name": "com.example.pos_coffee_shop"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635270097970-jgf1qeok6rk6vvv086jn9manq73j5l4t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC9gCjVCRSJ9xBNToYrEU4T50jwjf4Lx38"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635270097970-jgf1qeok6rk6vvv086jn9manq73j5l4t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "635270097970-pleperjq51go1q5rme9kvthgm2mt2a5c.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.posCoffeeShop"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

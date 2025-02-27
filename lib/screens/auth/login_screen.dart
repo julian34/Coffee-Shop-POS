@@ -64,13 +64,9 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  buildTextField(Icons.person_rounded, "Username"),
+                  buildTextField('user.svg', "Email"),
                   const SizedBox(height: 20),
-                  buildTextField(
-                    Icons.lock_rounded,
-                    "Password",
-                    isPassword: true,
-                  ),
+                  buildTextField('lock.svg', "Password", isPassword: true),
                   const SizedBox(height: 30),
                   SizedBox(
                     width: double.infinity,
@@ -85,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                       ),
                       child: Text(
                         "Sign In",
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        style: TextStyle(fontSize: 16, color: AppColors.color4),
                       ),
                     ),
                   ),
@@ -93,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Divider(color: Colors.white54, thickness: 1),
+                        child: Divider(color: AppColors.color4, thickness: 4),
                       ),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -103,7 +99,7 @@ class LoginScreen extends StatelessWidget {
                         ),
                       ),
                       Expanded(
-                        child: Divider(color: Colors.white54, thickness: 1),
+                        child: Divider(color: AppColors.color4, thickness: 4),
                       ),
                     ],
                   ),
@@ -118,18 +114,6 @@ class LoginScreen extends StatelessWidget {
                       color: AppColors.primary,
                     ),
                   ),
-                  // SvgPicture.asset(
-                  //   'assets/icons/icons8-google.svg',
-                  //   color: AppColors.primary,
-                  // ),
-                  // IconButton(
-                  //   onPressed: () {},
-                  //   icon: Icon(
-                  //     Icons.g_mobiledata_rounded,
-                  //     size: 40,
-                  //     color: Colors.white,
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -140,7 +124,7 @@ class LoginScreen extends StatelessWidget {
   }
 
   Widget buildTextField(
-    IconData icon,
+    String icon,
     String hintText, {
     bool isPassword = false,
   }) {
@@ -148,7 +132,15 @@ class LoginScreen extends StatelessWidget {
       obscureText: isPassword,
       style: const TextStyle(color: Colors.black), // Fixed text visibility
       decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Color(0xFFD18356)),
+        prefixIcon: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: SvgPicture.asset(
+            "assets/icons/" + icon,
+            color: AppColors.primary,
+            height: 20,
+            width: 20,
+          ),
+        ),
         hintText: hintText,
         hintStyle: const TextStyle(
           color: Colors.black54,
