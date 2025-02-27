@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -19,7 +21,7 @@ class AppFonts {
     color: AppColors.color5,
   );
   static TextStyle qoute = GoogleFonts.sora(
-    fontSize: 32,
+    fontSize: 24,
     fontWeight: FontWeight.w600,
     color: AppColors.color4,
   );
@@ -29,3 +31,5 @@ class AppFonts {
     color: AppColors.color4,
   );
 }
+
+class AppIcons {}
