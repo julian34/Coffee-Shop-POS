@@ -79,7 +79,6 @@ class LoginScreen extends StatelessWidget {
                           icon: "user.svg",
                           controller: emailController,
                         ),
-                        // buildTextField('user.svg', "Email"),
                         const SizedBox(height: 20),
                         CustomTextField(
                           hintText: 'Password',
@@ -87,16 +86,11 @@ class LoginScreen extends StatelessWidget {
                           isPassword: true,
                           controller: passwordContoller,
                         ),
-                        // buildTextField('lock.svg', "Password", isPassword: true),
                         const SizedBox(height: 30),
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () async {
-                              // await authProvider.signInWithEmail(
-                              //   emailController.text,
-                              //   passwordContoller.text,
-                              // );
                               String? error = await authProvider
                                   .signInWithEmail(
                                     emailController.text,

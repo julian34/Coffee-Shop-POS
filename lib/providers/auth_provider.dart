@@ -1,57 +1,65 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../services/auth_service.dart'; // Import the AuthService
 
 class AuthProvider extends ChangeNotifier {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
+  final AuthService _authService = AuthService(); // Use AuthService
   User? _user;
+  String? _errorMessage;
 
   User? get user => _user;
   bool get isAuthenticated => _user != null;
+  String? get errorMessage => _errorMessage;
 
   AuthProvider() {
-    _auth.authStateChanges().listen((User? user) {
-      _user = user;
-      notifyListeners();
-    });
+    _authService.authInstance.authStateChanges().listen(
+      (User? user) {
+        _user = user;
+        notifyListeners();
+      },
+      onError: (error) {
+        _errorMessage = "Auth state error: ${error.toString()}";
+        notifyListeners();
+      },
+    );
   }
 
   Future<String?> signInWithEmail(String email, String password) async {
     try {
-      await _auth.signInWithEmailAndPassword(email: email, password: password);
-      return null;
+      _user = await _authService.signInWithEmail(email, password);
+      notifyListeners();
+      return null; // Success, no error
     } on FirebaseAuthException catch (e) {
-      // throw Exception("Failed to sign in: ${e.toString()}");
-      return _getAuthErrorMessage(e.code);
+      _errorMessage = e.message ?? "An unknown error occurred.";
+      notifyListeners();
+      return _errorMessage;
+    } catch (e) {
+      _errorMessage = "Unexpected error: ${e.toString()}";
+      notifyListeners();
+      return _errorMessage;
     }
   }
 
-  Future<void> signInWithGoogle() async {
+  Future<String?> signInWithGoogle() async {
     try {
-      GoogleAuthProvider googleProvider = GoogleAuthProvider();
-      await _auth.signInWithProvider(googleProvider);
+      _user = await _authService.signInWithGoogle();
+      notifyListeners();
+      return null; // Success, no error
+    } on FirebaseAuthException catch (e) {
+      _errorMessage = e.message ?? "An unknown error occurred.";
+      notifyListeners();
+      return _errorMessage;
     } catch (e) {
-      throw Exception("Failed to sign in with Google: ${e.toString()}");
+      _errorMessage = "Unexpected error: ${e.toString()}";
+      notifyListeners();
+      return _errorMessage;
     }
   }
 
   Future<void> signOut() async {
-    await _auth.signOut();
+    await _authService.signOut();
     _user = null;
+    _errorMessage = null;
     notifyListeners();
-  }
-
-  String _getAuthErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'invalid-email':
-        return 'Invalid email format.';
-      case 'user-disabled':
-        return 'This account has been disabled.';
-      case 'user-not-found':
-        return 'No account found with this email.';
-      case 'wrong-password':
-        return 'Incorrect password. Try again.';
-      default:
-        return 'An unexpected error occurred. Please try again.';
-    }
   }
 }
