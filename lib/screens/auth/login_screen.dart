@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
+import '../../providers/auth_provider.dart';
+import '../../widgets/build_textfield.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordContoller = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,73 +54,117 @@ class LoginScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(30, 10, 30, 30),
-              child: Column(
-                children: <Widget>[
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      "Sign In",
-                      style: GoogleFonts.sora(
-                        fontSize: 24,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.color4,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 30),
-                  buildTextField('user.svg', "Email"),
-                  const SizedBox(height: 20),
-                  buildTextField('lock.svg', "Password", isPassword: true),
-                  const SizedBox(height: 30),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {},
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Color(0xFFD18356),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+            ChangeNotifierProvider(
+              create: (context) => AuthProvider(),
+              child: Consumer<AuthProvider>(
+                builder: (context, authProvider, child) {
+                  return Padding(
+                    padding: const EdgeInsets.fromLTRB(30, 10, 30, 30),
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            "Sign In",
+                            style: GoogleFonts.sora(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.color4,
+                            ),
+                          ),
                         ),
-                        padding: EdgeInsets.symmetric(vertical: 15),
-                      ),
-                      child: Text(
-                        "Sign In",
-                        style: TextStyle(fontSize: 16, color: AppColors.color4),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Divider(color: AppColors.color4, thickness: 4),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text(
-                          "or",
-                          style: TextStyle(color: Colors.white70),
+                        const SizedBox(height: 30),
+                        CustomTextField(
+                          hintText: "E-mail",
+                          icon: "user.svg",
+                          controller: emailController,
                         ),
-                      ),
-                      Expanded(
-                        child: Divider(color: AppColors.color4, thickness: 4),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  IconButton(
-                    onPressed: () {},
-                    icon: SvgPicture.asset(
-                      'assets/icons/icons8-google.svg',
-                      semanticsLabel: 'Google Logo Sign In',
-                      height: 30,
-                      width: 30,
-                      color: AppColors.primary,
+                        // buildTextField('user.svg', "Email"),
+                        const SizedBox(height: 20),
+                        CustomTextField(
+                          hintText: 'Password',
+                          icon: "lock.svg",
+                          isPassword: true,
+                          controller: passwordContoller,
+                        ),
+                        // buildTextField('lock.svg', "Password", isPassword: true),
+                        const SizedBox(height: 30),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              // await authProvider.signInWithEmail(
+                              //   emailController.text,
+                              //   passwordContoller.text,
+                              // );
+                              String? error = await authProvider
+                                  .signInWithEmail(
+                                    emailController.text,
+                                    passwordContoller.text,
+                                  );
+                              if (error != null) {
+                                ScaffoldMessenger.of(
+                                  context,
+                                ).showSnackBar(SnackBar(content: Text(error)));
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFFD18356),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 15),
+                            ),
+                            child: Text(
+                              "Sign In",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: AppColors.color4,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Divider(
+                                color: AppColors.color4,
+                                thickness: 4,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                              ),
+                              child: Text(
+                                "or",
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                            ),
+                            Expanded(
+                              child: Divider(
+                                color: AppColors.color4,
+                                thickness: 4,
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 20),
+                        IconButton(
+                          onPressed: () {},
+                          icon: SvgPicture.asset(
+                            'assets/icons/icons8-google.svg',
+                            semanticsLabel: 'Google Logo Sign In',
+                            height: 30,
+                            width: 30,
+                            color: AppColors.primary,
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                  );
+                },
               ),
             ),
           ],
@@ -158,23 +208,4 @@ class LoginScreen extends StatelessWidget {
       ),
     );
   }
-}
-
-// Fixed Custom Clipper for Better Rendering
-class CustomClipPath extends CustomClipper<Path> {
-  @override
-  Path getClip(Size size) {
-    double w = size.width;
-    double h = size.height;
-    final path = Path();
-    path.lineTo(0, h - 100);
-    path.quadraticBezierTo(w * 0.25, h, w * 0.5, h - 50);
-    path.quadraticBezierTo(w * 0.75, h - 100, w, h - 50);
-    path.lineTo(w, 0);
-    path.close();
-    return path;
-  }
-
-  @override
-  bool shouldReclip(CustomClipper<Path> oldClipper) => false;
 }

@@ -15,11 +15,13 @@ class AuthProvider extends ChangeNotifier {
     });
   }
 
-  Future<void> signInWithEmail(String email, String password) async {
+  Future<String?> signInWithEmail(String email, String password) async {
     try {
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-    } catch (e) {
-      throw Exception("Failed to sign in: ${e.toString()}");
+      return null;
+    } on FirebaseAuthException catch (e) {
+      // throw Exception("Failed to sign in: ${e.toString()}");
+      return _getAuthErrorMessage(e.code);
     }
   }
 
@@ -36,5 +38,20 @@ class AuthProvider extends ChangeNotifier {
     await _auth.signOut();
     _user = null;
     notifyListeners();
+  }
+
+  String _getAuthErrorMessage(String errorCode) {
+    switch (errorCode) {
+      case 'invalid-email':
+        return 'Invalid email format.';
+      case 'user-disabled':
+        return 'This account has been disabled.';
+      case 'user-not-found':
+        return 'No account found with this email.';
+      case 'wrong-password':
+        return 'Incorrect password. Try again.';
+      default:
+        return 'An unexpected error occurred. Please try again.';
+    }
   }
 }
