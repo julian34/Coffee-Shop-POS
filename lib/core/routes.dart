@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/auth/login_screen.dart';
 // import '../screens/auth/register_screen.dart';
 import '../screens/home/cashier_screen.dart';
@@ -15,6 +16,17 @@ class AppRoutes {
   static const String managerHome = '/manager-home';
   static const String cashierHome = '/cashier-home';
   static const String error = '/error';
+
+  // Determine the initial route based on saved role
+  static Future<String> getInitialRoute() async {
+    final prefs = await SharedPreferences.getInstance();
+    String? savedRole = prefs.getString('role');
+
+    if (savedRole == "Owner") return ownerHome;
+    if (savedRole == "Manager") return managerHome;
+    if (savedRole == "Cashier") return cashierHome;
+    return login;
+  }
 
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {

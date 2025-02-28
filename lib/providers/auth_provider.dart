@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
 import '../core/routes.dart';
@@ -14,6 +15,7 @@ class AuthProvider extends ChangeNotifier {
   String? get errorMessage => _errorMessage;
 
   AuthProvider() {
+    _loadUserFromPrefs();
     _authService.authInstance.authStateChanges().listen(
       (User? firebaseUser) async {
         if (firebaseUser != null) {
@@ -22,9 +24,12 @@ class AuthProvider extends ChangeNotifier {
             await _authService.signOut();
             _user = null;
             _errorMessage = "Your account is disabled.";
+          } else {
+            _saveUserToPrefs(_user!);
           }
         } else {
           _user = null;
+          _clearPrefs();
         }
         notifyListeners();
       },
@@ -42,10 +47,14 @@ class AuthProvider extends ChangeNotifier {
       if (_user == null || !_user!.active) {
         return "Your account is disabled.";
       }
+      if (_user != null) {
+        await saveUserRole(_user!.role); // Save role for session persistence
+      }
+      _saveUserToPrefs(_user!);
       notifyListeners();
-      print(
-        "1. User signed in: ${_user?.name}, Role: ${_user?.role}",
-      ); // Debugging
+      // print(
+      //   "1. User signed in: ${_user?.name}, Role: ${_user?.role}",
+      // ); // Debugging
       return null; // Success
     } on Exception catch (e) {
       _errorMessage = e.toString();
@@ -58,7 +67,46 @@ class AuthProvider extends ChangeNotifier {
     await _authService.signOut();
     _user = null;
     _errorMessage = null;
+    await _clearPrefs();
     notifyListeners();
+  }
+
+  Future<void> saveUserRole(String role) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('role', role);
+  }
+
+  // ✅ Save user session
+  Future<void> _saveUserToPrefs(UserModel user) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('uid', user.uid);
+    await prefs.setString('name', user.name);
+    await prefs.setString('email', user.email);
+    await prefs.setString('role', user.role);
+    await prefs.setBool('approved', user.approved);
+    await prefs.setBool('active', user.active);
+  }
+
+  // ✅ Load user session
+  Future<void> _loadUserFromPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    if (prefs.containsKey('uid')) {
+      _user = UserModel(
+        uid: prefs.getString('uid')!,
+        name: prefs.getString('name')!,
+        email: prefs.getString('email')!,
+        role: prefs.getString('role')!,
+        approved: prefs.getBool('approved')!,
+        active: prefs.getBool('active')!,
+      );
+      notifyListeners();
+    }
+  }
+
+  // ✅ Clear session on logout
+  Future<void> _clearPrefs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
   }
 
   // Enable/Disable User
@@ -79,7 +127,8 @@ class AuthProvider extends ChangeNotifier {
 
   void navigateBasedOnRole(BuildContext context, String role) {
     print("navbaseonrole: ${_user?.name}, Role: ${_user?.role}"); // Debugging
-    if (role == "Owner") {
+    if (_user == null) return;
+    if (_user!.role == "Owner") {
       Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
     } else if (role == "Manager") {
       Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
