@@ -102,10 +102,21 @@ class LoginScreen extends StatelessWidget {
                                   );
                               if (error != null) {
                                 ScaffoldMessenger.of(
-                                  // ignore: use_build_context_synchronously
                                   context,
                                 ).showSnackBar(SnackBar(content: Text(error)));
+                              } else {
+                                if (authProvider.user != null) {
+                                  authProvider.navigateBasedOnRole(
+                                    context,
+                                    authProvider.user!.role,
+                                  );
+                                }
                               }
+
+                              // ScaffoldMessenger.of(
+                              //   // ignore: use_build_context_synchronously
+                              //   context,
+                              // ).showSnackBar(SnackBar(content: Text(error)));
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Color(0xFFD18356),
@@ -157,7 +168,6 @@ class LoginScreen extends StatelessWidget {
                             semanticsLabel: 'Google Logo Sign In',
                             height: 30,
                             width: 30,
-                            // ignore: deprecated_member_use
                             color: AppColors.primary,
                           ),
                         ),
@@ -168,43 +178,6 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget buildTextField(
-    String icon,
-    String hintText, {
-    bool isPassword = false,
-  }) {
-    return TextField(
-      obscureText: isPassword,
-      style: const TextStyle(color: Colors.black), // Fixed text visibility
-      decoration: InputDecoration(
-        prefixIcon: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: SvgPicture.asset(
-            // ignore: prefer_interpolation_to_compose_strings
-            "assets/icons/" + icon,
-            color: AppColors.primary,
-            height: 20,
-            width: 20,
-          ),
-        ),
-        hintText: hintText,
-        hintStyle: const TextStyle(
-          color: Colors.black54,
-        ), // Adjusted hint color
-        filled: true, // Ensures background color is applied
-        fillColor: Colors.white, // Matches form background
-        enabledBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey),
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
-        ),
-        focusedBorder: const OutlineInputBorder(
-          borderSide: BorderSide(color: Color(0xFFD18356)),
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
         ),
       ),
     );

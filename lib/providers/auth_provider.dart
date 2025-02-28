@@ -43,6 +43,9 @@ class AuthProvider extends ChangeNotifier {
         return "Your account is disabled.";
       }
       notifyListeners();
+      print(
+        "1. User signed in: ${_user?.name}, Role: ${_user?.role}",
+      ); // Debugging
       return null; // Success
     } on Exception catch (e) {
       _errorMessage = e.toString();
@@ -75,6 +78,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   void navigateBasedOnRole(BuildContext context, String role) {
+    print("navbaseonrole: ${_user?.name}, Role: ${_user?.role}"); // Debugging
     if (role == "Owner") {
       Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
     } else if (role == "Manager") {
