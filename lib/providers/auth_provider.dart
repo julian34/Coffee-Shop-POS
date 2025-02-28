@@ -1,20 +1,31 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import '../services/auth_service.dart'; // Import the AuthService
+import '../models/user_model.dart';
+import '../services/auth_service.dart';
+import '../core/routes.dart';
 
 class AuthProvider extends ChangeNotifier {
-  final AuthService _authService = AuthService(); // Use AuthService
-  User? _user;
+  final AuthService _authService = AuthService();
+  UserModel? _user;
   String? _errorMessage;
 
-  User? get user => _user;
-  bool get isAuthenticated => _user != null;
+  UserModel? get user => _user;
+  bool get isAuthenticated => _user != null && _user!.active;
   String? get errorMessage => _errorMessage;
 
   AuthProvider() {
     _authService.authInstance.authStateChanges().listen(
-      (User? user) {
-        _user = user;
+      (User? firebaseUser) async {
+        if (firebaseUser != null) {
+          _user = await _authService.getUserData(firebaseUser.uid);
+          if (_user != null && !_user!.active) {
+            await _authService.signOut();
+            _user = null;
+            _errorMessage = "Your account is disabled.";
+          }
+        } else {
+          _user = null;
+        }
         notifyListeners();
       },
       onError: (error) {
@@ -26,31 +37,15 @@ class AuthProvider extends ChangeNotifier {
 
   Future<String?> signInWithEmail(String email, String password) async {
     try {
+      _errorMessage = null;
       _user = await _authService.signInWithEmail(email, password);
+      if (_user == null || !_user!.active) {
+        return "Your account is disabled.";
+      }
       notifyListeners();
-      return null; // Success, no error
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message ?? "An unknown error occurred.";
-      notifyListeners();
-      return _errorMessage;
-    } catch (e) {
-      _errorMessage = "Unexpected error: ${e.toString()}";
-      notifyListeners();
-      return _errorMessage;
-    }
-  }
-
-  Future<String?> signInWithGoogle() async {
-    try {
-      _user = await _authService.signInWithGoogle();
-      notifyListeners();
-      return null; // Success, no error
-    } on FirebaseAuthException catch (e) {
-      _errorMessage = e.message ?? "An unknown error occurred.";
-      notifyListeners();
-      return _errorMessage;
-    } catch (e) {
-      _errorMessage = "Unexpected error: ${e.toString()}";
+      return null; // Success
+    } on Exception catch (e) {
+      _errorMessage = e.toString();
       notifyListeners();
       return _errorMessage;
     }
@@ -61,5 +56,31 @@ class AuthProvider extends ChangeNotifier {
     _user = null;
     _errorMessage = null;
     notifyListeners();
+  }
+
+  // Enable/Disable User
+  Future<void> updateUserStatus(String uid, bool activeStatus) async {
+    await _authService.updateUserStatus(uid, activeStatus);
+    if (_user != null && _user!.uid == uid) {
+      _user = UserModel(
+        uid: _user!.uid,
+        name: _user!.name,
+        email: _user!.email,
+        role: _user!.role,
+        approved: _user!.approved,
+        active: activeStatus,
+      );
+      notifyListeners();
+    }
+  }
+
+  void navigateBasedOnRole(BuildContext context, String role) {
+    if (role == "Owner") {
+      Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
+    } else if (role == "Manager") {
+      Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.cashierHome);
+    }
   }
 }

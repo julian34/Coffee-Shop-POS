@@ -1,101 +1,102 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/user_model.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _db = FirebaseFirestore.instance;
 
-  // Getter to access Firebase Auth instance
   FirebaseAuth get authInstance => _auth;
 
-  // Sign in with Email & Password
-  Future<User?> signInWithEmail(String email, String password) async {
+  // Fetch user data from Firestore
+  Future<UserModel?> getUserData(String uid) async {
+    DocumentSnapshot doc = await _db.collection("users").doc(uid).get();
+    if (doc.exists) {
+      return UserModel.fromFirestore(doc);
+    }
+    return null;
+  }
+
+  // Sign in with Email & Password (Check Approval & Active Status)
+  Future<UserModel?> signInWithEmail(String email, String password) async {
     try {
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
-      User? user = result.user;
+      User? firebaseUser = result.user;
 
-      if (user != null) {
-        bool isApproved = await _isUserApproved(user.uid);
-        if (isApproved) {
+      if (firebaseUser != null) {
+        UserModel? user = await getUserData(firebaseUser.uid);
+
+        if (user != null) {
+          if (!user.approved) {
+            await _auth.signOut();
+            throw Exception("Access denied. Awaiting Manager/Owner approval.");
+          } else if (!user.active) {
+            await _auth.signOut();
+            throw Exception("Your account has been disabled. Contact support.");
+          }
           return user;
-        } else {
-          await _auth.signOut();
-          throw FirebaseAuthException(
-            code: "not-approved",
-            message: "Access denied. Awaiting Manager/Owner approval.",
-          );
         }
       }
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: _getAuthErrorMessage(e.code),
-      );
+      throw Exception(e.message ?? "Authentication failed");
     }
     return null;
   }
 
   // Sign in with Google
-  Future<User?> signInWithGoogle() async {
+  Future<UserModel?> signInWithGoogle() async {
     try {
       GoogleAuthProvider googleProvider = GoogleAuthProvider();
-      UserCredential result = await _auth.signInWithProvider(googleProvider);
-      User? user = result.user;
+      UserCredential result = await _auth.signInWithPopup(googleProvider);
+      User? firebaseUser = result.user;
 
-      if (user != null) {
-        bool isApproved = await _isUserApproved(user.uid);
-        if (isApproved) {
+      if (firebaseUser != null) {
+        UserModel? user = await getUserData(firebaseUser.uid);
+
+        if (user != null) {
+          if (!user.approved) {
+            await _auth.signOut();
+            throw Exception("Access denied. Awaiting Manager/Owner approval.");
+          } else if (!user.active) {
+            await _auth.signOut();
+            throw Exception("Your account has been disabled. Contact support.");
+          }
           return user;
-        } else {
-          await _auth.signOut();
-          throw FirebaseAuthException(
-            code: "not-approved",
-            message: "Access denied. Awaiting Manager/Owner approval.",
-          );
         }
       }
     } on FirebaseAuthException catch (e) {
-      throw FirebaseAuthException(
-        code: e.code,
-        message: _getAuthErrorMessage(e.code),
-      );
+      throw Exception(e.message ?? "Google sign-in failed");
     }
     return null;
+  }
+
+  // Register User with Default "Disabled" Status
+  Future<void> registerUser(UserModel user, String password) async {
+    try {
+      UserCredential result = await _auth.createUserWithEmailAndPassword(
+        email: user.email,
+        password: password,
+      );
+      User? firebaseUser = result.user;
+
+      if (firebaseUser != null) {
+        await _db.collection("users").doc(firebaseUser.uid).set(user.toMap());
+      }
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? "Registration failed");
+    }
+  }
+
+  // Disable/Enable User
+  Future<void> updateUserStatus(String uid, bool activeStatus) async {
+    await _db.collection("users").doc(uid).update({'active': activeStatus});
   }
 
   // Sign Out
   Future<void> signOut() async {
     await _auth.signOut();
-  }
-
-  // Check if user is approved in Firestore
-  Future<bool> _isUserApproved(String uid) async {
-    DocumentSnapshot userDoc = await _db.collection("users").doc(uid).get();
-    return userDoc.exists && (userDoc["approved"] == true);
-  }
-
-  // Map Firebase errors to user-friendly messages
-  String _getAuthErrorMessage(String errorCode) {
-    switch (errorCode) {
-      case 'invalid-email':
-        return 'Invalid email format.';
-      case 'user-disabled':
-        return 'This account has been disabled.';
-      case 'user-not-found':
-        return 'No account found with this email.';
-      case 'wrong-password':
-        return 'Incorrect password. Try again.';
-      case 'email-already-in-use':
-        return 'This email is already registered.';
-      case 'weak-password':
-        return 'Password is too weak. Choose a stronger one.';
-      case 'not-approved':
-        return 'Access denied. Awaiting Manager/Owner approval.';
-      default:
-        return 'An unexpected error occurred. Please try again.';
-    }
   }
 }

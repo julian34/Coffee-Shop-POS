@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../core/theme.dart';
@@ -8,7 +10,9 @@ import 'package:provider/provider.dart';
 
 class LoginScreen extends StatelessWidget {
   final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordContoller = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
+  LoginScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -84,7 +88,7 @@ class LoginScreen extends StatelessWidget {
                           hintText: 'Password',
                           icon: "lock.svg",
                           isPassword: true,
-                          controller: passwordContoller,
+                          controller: passwordController,
                         ),
                         const SizedBox(height: 30),
                         SizedBox(
@@ -94,10 +98,11 @@ class LoginScreen extends StatelessWidget {
                               String? error = await authProvider
                                   .signInWithEmail(
                                     emailController.text,
-                                    passwordContoller.text,
+                                    passwordController.text,
                                   );
                               if (error != null) {
                                 ScaffoldMessenger.of(
+                                  // ignore: use_build_context_synchronously
                                   context,
                                 ).showSnackBar(SnackBar(content: Text(error)));
                               }
@@ -152,6 +157,7 @@ class LoginScreen extends StatelessWidget {
                             semanticsLabel: 'Google Logo Sign In',
                             height: 30,
                             width: 30,
+                            // ignore: deprecated_member_use
                             color: AppColors.primary,
                           ),
                         ),
@@ -179,6 +185,7 @@ class LoginScreen extends StatelessWidget {
         prefixIcon: Padding(
           padding: const EdgeInsets.all(10.0),
           child: SvgPicture.asset(
+            // ignore: prefer_interpolation_to_compose_strings
             "assets/icons/" + icon,
             color: AppColors.primary,
             height: 20,

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'screens/auth/login_screen.dart';
-
+import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'core/routes.dart';
+import 'providers/auth_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,11 +15,29 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Coffee POS',
-      theme: ThemeData(textTheme: GoogleFonts.latoTextTheme()),
-      home: LoginScreen(),
+    return ChangeNotifierProvider(
+      create: (context) => AuthProvider(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'Coffee POS',
+        theme: ThemeData(
+          textTheme: GoogleFonts.latoTextTheme(),
+          primarySwatch: Colors.brown,
+        ),
+        initialRoute: AppRoutes.splash,
+        onGenerateRoute: AppRoutes.generateRoute,
+      ),
     );
   }
 }
+// class MyApp extends StatelessWidget {
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       debugShowCheckedModeBanner: false,
+//       title: 'Coffee POS',
+//       theme: ThemeData(textTheme: GoogleFonts.soraTextTheme()),
+//       home: LoginScreen(),
+//     );
+//   }
+// }
