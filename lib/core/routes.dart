@@ -7,6 +7,7 @@ import '../screens/home/manager_screen.dart';
 import '../screens/home/owner_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/error_screen.dart';
+import '../screens/setting/profile_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -16,6 +17,8 @@ class AppRoutes {
   static const String managerHome = '/manager-home';
   static const String cashierHome = '/cashier-home';
   static const String error = '/error';
+
+  static const String profile = '/profile';
 
   // Determine the initial route based on saved role
   static Future<String> getInitialRoute() async {
@@ -42,6 +45,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ManagerHomeScreen());
       case cashierHome:
         return MaterialPageRoute(builder: (_) => CashierHomeScreen());
+      case profile:
+        return MaterialPageRoute(builder: (_) => ProfileScreen());
       default:
         return MaterialPageRoute(
           builder:
