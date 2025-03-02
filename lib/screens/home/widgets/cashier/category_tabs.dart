@@ -6,7 +6,8 @@ class CategoryTabsWidget extends StatefulWidget {
   final String selectedCategory;
   final Function(String) onCategorySelected;
 
-  CategoryTabsWidget({
+  const CategoryTabsWidget({
+    super.key,
     required this.categories,
     required this.selectedCategory,
     required this.onCategorySelected,

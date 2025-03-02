@@ -5,6 +5,8 @@ import '../../../../core/theme.dart';
 import '../../models/cashier/appbarselected.dart';
 
 class CashierAppBar extends StatelessWidget {
+  const CashierAppBar({super.key});
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -37,7 +39,7 @@ class CashierAppBar extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "$username",
+                            username,
                             style: TextStyle(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
@@ -45,7 +47,7 @@ class CashierAppBar extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            "$role",
+                            role,
                             style: TextStyle(
                               fontSize: 10,
                               fontWeight: FontWeight.bold,

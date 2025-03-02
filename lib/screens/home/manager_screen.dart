@@ -4,6 +4,8 @@ import '../../core/theme.dart';
 import 'models/cashier/appbarselected.dart';
 
 class ManagerHomeScreen extends StatelessWidget {
+  const ManagerHomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,15 +142,15 @@ class ManagerHomeScreen extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
         onPressed: () {},
         shape: const CircleBorder(),
+        backgroundColor: AppColors.color3,
+        foregroundColor: AppColors.color4,
+        elevation: 0,
         child: SvgCustomApp.getIcon(
           'money-bill-wave',
           c: AppColors.color2,
           h: 30,
           w: 30,
         ),
-        backgroundColor: AppColors.color3,
-        foregroundColor: AppColors.color4,
-        elevation: 0,
       ),
       bottomNavigationBar: BottomAppBar(
         notchMargin: 5.0,

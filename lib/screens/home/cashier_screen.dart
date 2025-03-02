@@ -5,8 +5,11 @@ import 'widgets/cashier/search_bar.dart';
 import 'widgets/cashier/category_tabs.dart';
 import 'widgets/cashier/product_grid.dart';
 import 'widgets/cashier/bottom_nav_bar.dart';
+import '../../core/routes.dart';
 
 class CashierHomeScreen extends StatefulWidget {
+  const CashierHomeScreen({super.key});
+
   @override
   _CashierHomeWidgetState createState() => _CashierHomeWidgetState();
 }
@@ -44,9 +47,6 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
           ),
           Flexible(
             child: ProductGridWidget(
-              onAddToCart: (product) {
-                print("Added to cart: ${product.name}");
-              },
               selectedCategory: selectedCategory,
               searchQuery: searchQuery,
             ),
@@ -55,11 +55,13 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.cart);
+        },
         shape: const CircleBorder(),
-        child: SvgCustomApp.getIcon('money-bill-wave', c: AppColors.color5),
         backgroundColor: AppColors.color3,
         foregroundColor: AppColors.color4,
+        child: SvgCustomApp.getIcon('money-bill-wave', c: AppColors.color5),
         // elevation: 0,
       ),
       bottomNavigationBar: BottomNavBar(),

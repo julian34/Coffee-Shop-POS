@@ -4,7 +4,10 @@ import 'package:pos_coffee_shop/core/theme.dart';
 class SearchBarWidget extends StatefulWidget {
   final Function(String) onSearch; // Declare onSearch as a required parameter
 
-  SearchBarWidget({required this.onSearch}); // Accept it in the constructor
+  const SearchBarWidget({
+    super.key,
+    required this.onSearch,
+  }); // Accept it in the constructor
 
   @override
   _SearchBarWidgetState createState() => _SearchBarWidgetState();

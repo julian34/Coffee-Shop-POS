@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 
 class OwnerHomeScreen extends StatelessWidget {
+  const OwnerHomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
