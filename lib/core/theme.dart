@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AppColors {
   static const Color primary = Color(0xFFC67C4E);
@@ -30,6 +31,22 @@ class AppFonts {
     fontSize: 16,
     color: AppColors.color4,
   );
+
+  static TextStyle navBarText = GoogleFonts.sora(color: AppColors.color4);
 }
 
-class AppIcons {}
+class SvgCustomApp {
+  static SvgPicture getIcon(
+    String name, {
+    double h = 24,
+    double w = 24,
+    c = AppColors.primary,
+  }) {
+    return SvgPicture.asset(
+      'assets/icons/' + name + ".svg",
+      width: w,
+      height: h,
+      color: c,
+    );
+  }
+}
