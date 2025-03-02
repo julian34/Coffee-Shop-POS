@@ -12,7 +12,9 @@ class CashierHomeScreen extends StatefulWidget {
 }
 
 class _CashierHomeWidgetState extends State<CashierHomeScreen> {
-  final List<String> categories = ["all", "Non Coffee", "Coffee", "Snacks"];
+  String searchQuery = "";
+  String selectedCategory = "All";
+  List<String> categories = ["All", "Coffee", "Non Coffee", "Snacks"];
 
   @override
   Widget build(BuildContext context) {
@@ -24,11 +26,20 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
       ),
       body: Column(
         children: [
-          SearchBarWidget(),
+          SearchBarWidget(
+            onSearch: (query) {
+              setState(() {
+                searchQuery = query;
+              });
+            },
+          ),
           CategoryTabsWidget(
             categories: categories,
+            selectedCategory: selectedCategory,
             onCategorySelected: (category) {
-              print("Selected Category: $category");
+              setState(() {
+                selectedCategory = category;
+              });
             },
           ),
           Expanded(
@@ -36,6 +47,8 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
               onAddToCart: (product) {
                 print("Added to cart: ${product.name}");
               },
+              selectedCategory: selectedCategory,
+              searchQuery: searchQuery,
             ),
           ),
         ],

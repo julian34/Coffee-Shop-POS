@@ -2,18 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class SearchBarWidget extends StatefulWidget {
+  final Function(String) onSearch; // Declare onSearch as a required parameter
+
+  SearchBarWidget({required this.onSearch}); // Accept it in the constructor
+
   @override
-  _SearchBarWidgetState createState() => _SearchBarWidgetState(
-    onSearch: (query) {
-      print("search $query");
-    },
-  );
+  _SearchBarWidgetState createState() => _SearchBarWidgetState();
 }
 
 class _SearchBarWidgetState extends State<SearchBarWidget> {
-  final Function(String) onSearch;
-  _SearchBarWidgetState({required this.onSearch});
-
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -22,7 +19,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
         children: [
           Expanded(
             child: TextField(
-              onChanged: onSearch,
+              onChanged:
+                  widget.onSearch, // Call onSearch from the parent widget
               decoration: InputDecoration(
                 filled: true,
                 fillColor: AppColors.color5,
@@ -34,7 +32,6 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
                   maxWidth: 50,
                   maxHeight: 50,
                 ),
-                // prefixIcon: Icon(Icons.search, color: AppColors.color2),
                 hintText: "Search",
                 hintStyle: TextStyle(color: AppColors.primary),
                 border: OutlineInputBorder(

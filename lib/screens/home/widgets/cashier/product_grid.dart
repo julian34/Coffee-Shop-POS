@@ -4,13 +4,24 @@ import '../../../../services/product_service.dart';
 import '../../../../core/theme.dart';
 
 class ProductGridWidget extends StatelessWidget {
+  final String selectedCategory;
+  final String searchQuery;
+
   final Function(Product) onAddToCart;
   final ProductService productService = ProductService();
-  ProductGridWidget({required this.onAddToCart});
+
+  ProductGridWidget({
+    required this.onAddToCart,
+    required this.selectedCategory,
+    required this.searchQuery,
+  });
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Product>>(
-      stream: productService.getProducts(),
+      stream: productService.getProducts(
+        searchQuery: searchQuery,
+        category: selectedCategory,
+      ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
           print("Firestore Error: ${snapshot.error}");
