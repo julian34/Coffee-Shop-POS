@@ -42,7 +42,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
               });
             },
           ),
-          Expanded(
+          Flexible(
             child: ProductGridWidget(
               onAddToCart: (product) {
                 print("Added to cart: ${product.name}");

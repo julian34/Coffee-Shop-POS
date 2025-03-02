@@ -6,7 +6,6 @@ import '../../../../core/theme.dart';
 class ProductGridWidget extends StatelessWidget {
   final String selectedCategory;
   final String searchQuery;
-
   final Function(Product) onAddToCart;
   final ProductService productService = ProductService();
 
@@ -15,6 +14,7 @@ class ProductGridWidget extends StatelessWidget {
     required this.selectedCategory,
     required this.searchQuery,
   });
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Product>>(
@@ -24,7 +24,7 @@ class ProductGridWidget extends StatelessWidget {
       ),
       builder: (context, snapshot) {
         if (snapshot.hasError) {
-          print("Firestore Error: ${snapshot.error}");
+          debugPrint("Firestore Error: ${snapshot.error}");
           return Center(child: Text("Error loading products!"));
         }
 
@@ -33,7 +33,7 @@ class ProductGridWidget extends StatelessWidget {
         }
 
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          print("Firestore Debug: No products available.");
+          debugPrint("Firestore Debug: No products available.");
           return Center(child: Text("No products available."));
         }
 
@@ -42,8 +42,7 @@ class ProductGridWidget extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(16.0),
           child: GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
+            physics: BouncingScrollPhysics(), // Allows proper scrolling
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.75,
