@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../models/products_model.dart';
+import '../../../../models/cart_model.dart';
 import '../../../../services/product_service.dart';
+import '../../../../providers/cart_provider.dart';
 import '../../../../core/theme.dart';
 
 class ProductGridWidget extends StatelessWidget {
   final String selectedCategory;
   final String searchQuery;
-  final Function(Product) onAddToCart;
   final ProductService productService = ProductService();
 
   ProductGridWidget({
-    required this.onAddToCart,
     required this.selectedCategory,
     required this.searchQuery,
   });
@@ -42,7 +43,7 @@ class ProductGridWidget extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.all(16.0),
           child: GridView.builder(
-            physics: BouncingScrollPhysics(), // Allows proper scrolling
+            physics: BouncingScrollPhysics(),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: 2,
               childAspectRatio: 0.75,
@@ -52,7 +53,7 @@ class ProductGridWidget extends StatelessWidget {
             itemCount: products.length,
             itemBuilder: (context, index) {
               final product = products[index];
-              return _buildProductCard(product);
+              return _buildProductCard(context, product);
             },
           ),
         );
@@ -60,7 +61,9 @@ class ProductGridWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildProductCard(Product product) {
+  Widget _buildProductCard(BuildContext context, Product product) {
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -79,13 +82,6 @@ class ProductGridWidget extends StatelessWidget {
               height: 100,
               width: double.infinity,
               fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 100,
-                  color: Colors.grey[300],
-                  child: Icon(Icons.image, size: 50, color: Colors.grey[600]),
-                );
-              },
             ),
           ),
           Padding(
@@ -110,22 +106,31 @@ class ProductGridWidget extends StatelessWidget {
             ),
           ),
           Spacer(),
-          Padding(
-            padding: EdgeInsets.all(8.0),
-            child: Align(
-              alignment: Alignment.bottomRight,
-              child: GestureDetector(
-                onTap: () => onAddToCart(product),
-                child: Container(
-                  padding: EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    color: AppColors.color3,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(Icons.add, color: Colors.white),
+          IconButton(
+            icon: SvgCustomApp.getIcon("add"),
+            onPressed: () {
+              cartProvider.addToCart(
+                CartItem(
+                  id: product.id,
+                  name: product.name,
+                  price: product.price,
+                  quantity: 1,
+                  image: product.image,
                 ),
-              ),
-            ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("${product.name} added to cart!"),
+                  duration: Duration(seconds: 2),
+                  action: SnackBarAction(
+                    label: "Undo",
+                    onPressed: () {
+                      cartProvider.updateQuantity(product.id, 0);
+                    },
+                  ),
+                ),
+              );
+            },
           ),
         ],
       ),

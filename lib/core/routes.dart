@@ -9,6 +9,8 @@ import '../screens/splash_screen.dart';
 import '../screens/error_screen.dart';
 import '../screens/setting/profile_screen.dart';
 
+import '../screens/cart/cart_screen.dart';
+
 class AppRoutes {
   static const String splash = '/';
   static const String login = '/login';
@@ -16,6 +18,9 @@ class AppRoutes {
   static const String ownerHome = '/owner-home';
   static const String managerHome = '/manager-home';
   static const String cashierHome = '/cashier-home';
+
+  static const String cart = '/cart';
+
   static const String error = '/error';
 
   static const String profile = '/profile';
@@ -47,6 +52,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => CashierHomeScreen());
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+      case cart:
+        return MaterialPageRoute(builder: (_) => CartScreen());
       default:
         return MaterialPageRoute(
           builder:

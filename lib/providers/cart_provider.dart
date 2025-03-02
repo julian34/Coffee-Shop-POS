@@ -1,19 +1,40 @@
 import 'package:flutter/material.dart';
+import '../models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
-  List<Map<String, dynamic>> _cart = [];
+  final List<CartItem> _items = [];
 
-  List<Map<String, dynamic>> get cart => _cart;
+  List<CartItem> get items => _items;
 
-  void addToCart(Map<String, dynamic> product) {
-    _cart.add(product);
+  void addToCart(CartItem item) {
+    int index = _items.indexWhere((cartItem) => cartItem.id == item.id);
+    if (index != -1) {
+      _items[index].quantity += 1;
+    } else {
+      _items.add(item);
+    }
     notifyListeners();
   }
 
-  void removeFromCart(int index) {
-    _cart.removeAt(index);
+  void updateQuantity(String itemId, int quantity) {
+    int index = _items.indexWhere((item) => item.id == itemId);
+    if (index != -1) {
+      if (quantity > 0) {
+        _items[index].quantity = quantity;
+      } else {
+        _items.removeAt(index);
+      }
+      notifyListeners();
+    }
+  }
+
+  void removeFromCart(String itemId) {
+    _items.removeWhere((item) => item.id == itemId);
     notifyListeners();
   }
 
-  double get total => _cart.fold(0, (sum, item) => sum + item['price']);
+  void clearCart() {
+    _items.clear();
+    notifyListeners();
+  }
 }
