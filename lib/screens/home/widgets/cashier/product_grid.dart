@@ -12,6 +12,7 @@ class ProductGridWidget extends StatelessWidget {
   final ProductService productService = ProductService();
 
   ProductGridWidget({
+    super.key,
     required this.selectedCategory,
     required this.searchQuery,
   });
