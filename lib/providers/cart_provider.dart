@@ -2,54 +2,72 @@ import 'package:flutter/material.dart';
 import '../models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
-  final List<CartItem> _items = [];
-  bool _isEditingCN = false;
+  final Map<String, List<CartItem>> _carts = {};
+  final Map<String, String> _consumerNames = {};
 
-  List<CartItem> get items => _items;
+  String? _currentCartId;
+  bool isEditingCN = false;
 
-  bool get isCartEmpty => _items.isEmpty;
-  bool get isEditingCN => _isEditingCN;
+  String? get currentCartId => _currentCartId;
 
-  void showtEditingCN() {
-    print("Show Editing CN");
-    _isEditingCN = true;
-    notifyListeners();
-  }
+  List<CartItem> getItems(String cartId) => _carts[cartId] ?? [];
+  double getTotalPrice(String cartId) =>
+      _carts[cartId]?.fold(0, (total, item) => total! + item.total) ?? 0.0;
+  int getItemCount(String cartId) =>
+      _carts[cartId]?.fold(0, (count, item) => count! + item.quantity) ?? 0;
+  String getConsumerName(String cartId) => _consumerNames[cartId] ?? "Guest";
 
-  void submitEditingCN() {
-    _isEditingCN = false;
-    notifyListeners();
-  }
-
-  void addToCart(CartItem item) {
-    int index = _items.indexWhere((cartItem) => cartItem.id == item.id);
+  void addToCart(String cartId, CartItem item) {
+    _carts.putIfAbsent(cartId, () => []);
+    int index = _carts[cartId]!.indexWhere((i) => i.id == item.id);
     if (index != -1) {
-      _items[index].quantity += 1;
+      _carts[cartId]![index] = _carts[cartId]![index].copyWith(
+        quantity: _carts[cartId]![index].quantity + item.quantity,
+      );
     } else {
-      _items.add(item);
+      _carts[cartId]!.add(item);
     }
     notifyListeners();
   }
 
-  void updateQuantity(String itemId, int quantity) {
-    int index = _items.indexWhere((item) => item.id == itemId);
+  void updateQuantity(String cartId, String itemId, int newQuantity) {
+    if (!_carts.containsKey(cartId)) return;
+    int index = _carts[cartId]!.indexWhere((item) => item.id == itemId);
     if (index != -1) {
-      if (quantity > 0) {
-        _items[index].quantity = quantity;
+      if (newQuantity > 0) {
+        _carts[cartId]![index] = _carts[cartId]![index].copyWith(
+          quantity: newQuantity,
+        );
       } else {
-        _items.removeAt(index);
+        _carts[cartId]!.removeAt(index);
       }
       notifyListeners();
     }
   }
 
-  void removeFromCart(String itemId) {
-    _items.removeWhere((item) => item.id == itemId);
+  void removeFromCart(String cartId, String itemId) {
+    _carts[cartId]?.removeWhere((item) => item.id == itemId);
     notifyListeners();
   }
 
-  void clearCart() {
-    _items.clear();
+  void clearCart(String cartId) {
+    _carts.remove(cartId);
+    notifyListeners();
+  }
+
+  void submitConsumerName(String cartId, String name) {
+    setConsumerName(cartId, name);
+    notifyListeners();
+  }
+
+  void setConsumerName(String cartId, String name) {
+    _consumerNames[cartId] = name;
+    isEditingCN = false;
+    notifyListeners();
+  }
+
+  void toggleEditingCN() {
+    isEditingCN = !isEditingCN;
     notifyListeners();
   }
 }
