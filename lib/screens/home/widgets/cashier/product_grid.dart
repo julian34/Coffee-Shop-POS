@@ -121,6 +121,13 @@ class ProductGridWidget extends StatelessWidget {
           IconButton(
             icon: SvgCustomApp.getIcon("add"),
             onPressed: () {
+              final cartProvider = Provider.of<CartProvider>(
+                context,
+                listen: false,
+              );
+              final String cartId =
+                  cartProvider.currentCartId ?? "default_cart_id";
+
               cartProvider.addToCart(
                 cartId,
                 CartItem(
@@ -131,6 +138,7 @@ class ProductGridWidget extends StatelessWidget {
                   image: product.image,
                 ),
               );
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text("${product.name} added to cart!"),

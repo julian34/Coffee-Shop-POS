@@ -5,6 +5,7 @@ import 'package:pos_coffee_shop/models/cart_model.dart';
 
 class CartService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
+
   final Uuid _uuid = Uuid();
 
   // Generate or Get Existing Cart ID
@@ -54,19 +55,17 @@ class CartService {
   }
 
   // Add item to cart
-  Future<void> addToCart(CartItem item) async {
-    CollectionReference cartCollection = await _getCartCollection();
-    DocumentReference docRef = cartCollection.doc(item.id);
-
-    return _db.runTransaction((transaction) async {
-      DocumentSnapshot snapshot = await transaction.get(docRef);
-      if (snapshot.exists) {
-        int newQuantity = (snapshot['quantity'] as int) + 1;
-        transaction.update(docRef, {'quantity': newQuantity});
-      } else {
-        transaction.set(docRef, item.toMap());
-      }
-    });
+  Future<void> addToCart(String cartId, CartItem item) async {
+    // try {
+    //   DocumentReference cartRef = _db.collection('carts').doc(cartId);
+    //   await cartRef.set({
+    //     'items': FieldValue.arrayUnion([item.toMap()]),
+    //   }, SetOptions(merge: true));
+    //   print("Debug: Added to Firestore - Cart: $cartId, Item: ${item.toMap()}");
+    // } catch (e) {
+    //   print("Error adding to Firestore: $e");
+    // }
+    print("service");
   }
 
   // Update item quantity in cart

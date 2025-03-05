@@ -45,4 +45,8 @@ class CartItem {
       quantity: map['quantity'],
     );
   }
+  @override
+  String toString() {
+    return 'CartItem(name: $name, quantity: $quantity, price: $price)';
+  }
 }
