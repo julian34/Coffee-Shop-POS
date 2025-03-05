@@ -3,8 +3,23 @@ import '../models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
   final List<CartItem> _items = [];
+  bool _isEditingCN = false;
 
   List<CartItem> get items => _items;
+
+  bool get isCartEmpty => _items.isEmpty;
+  bool get isEditingCN => _isEditingCN;
+
+  void showtEditingCN() {
+    print("Show Editing CN");
+    _isEditingCN = true;
+    notifyListeners();
+  }
+
+  void submitEditingCN() {
+    _isEditingCN = false;
+    notifyListeners();
+  }
 
   void addToCart(CartItem item) {
     int index = _items.indexWhere((cartItem) => cartItem.id == item.id);

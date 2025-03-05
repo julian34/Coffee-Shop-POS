@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme.dart';
 
 class BottomNavBar extends StatelessWidget {
-  const BottomNavBar({super.key});
+  final bool isCartEmpty;
+  const BottomNavBar({super.key, required this.isCartEmpty});
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -11,10 +12,10 @@ class BottomNavBar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40),
         child: ElevatedButton(
-          onPressed: () {},
+          onPressed: isCartEmpty ? null : () {},
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
           child: Text(
-            'Prosess Order',
+            isCartEmpty ? 'Please select some item' : "Prosess Order",
             style: TextStyle(
               fontSize: 20,
               color: AppColors.color4,
