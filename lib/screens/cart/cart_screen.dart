@@ -24,11 +24,10 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     final args = ModalRoute.of(context)!.settings.arguments as Map?;
     final String cartId = args?['cartId'] ?? "default_cart_id";
+
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
-        final cartItems = cartProvider.getItems(
-          widget.cartId,
-        ); // ✅ Fetch items for this cart
+        final cartItems = cartProvider.getItems(widget.cartId);
         final bool isCartEmpty = cartItems.isEmpty;
 
         return Scaffold(
@@ -37,13 +36,14 @@ class _CartScreenState extends State<CartScreen> {
             child: CartAppbar(),
           ),
           body: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               if (!isCartEmpty) ConsumerDetailsTab(cartId: widget.cartId),
               if (!isCartEmpty) NoteTab(),
               Container(
-                height: 320,
+                height: isCartEmpty ? 320 : 100,
+                // padding: EdgeInsets.all(80),
                 margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
                 child:
                     isCartEmpty
@@ -131,7 +131,8 @@ class _CartScreenState extends State<CartScreen> {
                           },
                         ),
               ),
-              if (!isCartEmpty) OrderSummaryTab(),
+
+              if (!isCartEmpty) OrderSummaryTab(cartId: cartId),
             ],
           ),
           bottomNavigationBar: BottomNavBar(isCartEmpty: isCartEmpty),

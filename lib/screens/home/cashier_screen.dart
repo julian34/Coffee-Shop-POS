@@ -25,6 +25,8 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
     final String cartId = cartProvider.currentCartId ?? "default_cart";
 
+    print("🛠️ Debug: CashierHomeScreen - cartId: $cartId");
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(

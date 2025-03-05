@@ -1,14 +1,28 @@
 import 'package:flutter/material.dart';
-import '../models/cart_model.dart';
+import 'package:pos_coffee_shop/services/cart_service.dart';
+import 'package:pos_coffee_shop/models/cart_model.dart';
 
 class CartProvider extends ChangeNotifier {
+  final CartService _cartService = CartService();
   final Map<String, List<CartItem>> _carts = {};
   final Map<String, String> _consumerNames = {};
 
-  String? _currentCartId;
+  String? currentCartId;
   bool isEditingCN = false;
 
-  String? get currentCartId => _currentCartId;
+  Future<void> addToCart(String cartId, CartItem item) async {
+    if (cartId == "default_cart_id" || cartId.isEmpty) {
+      createNewCart();
+      cartId = currentCartId!;
+    }
+    await _cartService.addToCart(cartId, item);
+    if (!_carts.containsKey(cartId)) {
+      _carts[cartId] = [];
+    }
+    _carts[cartId]!.add(item);
+    print("🛠️ Debug: Adding to Cart - cartId: $cartId, Item: ${item.name}");
+    notifyListeners();
+  }
 
   List<CartItem> getItems(String cartId) => _carts[cartId] ?? [];
   double getTotalPrice(String cartId) =>
@@ -16,19 +30,6 @@ class CartProvider extends ChangeNotifier {
   int getItemCount(String cartId) =>
       _carts[cartId]?.fold(0, (count, item) => count! + item.quantity) ?? 0;
   String getConsumerName(String cartId) => _consumerNames[cartId] ?? "Guest";
-
-  void addToCart(String cartId, CartItem item) {
-    _carts.putIfAbsent(cartId, () => []);
-    int index = _carts[cartId]!.indexWhere((i) => i.id == item.id);
-    if (index != -1) {
-      _carts[cartId]![index] = _carts[cartId]![index].copyWith(
-        quantity: _carts[cartId]![index].quantity + item.quantity,
-      );
-    } else {
-      _carts[cartId]!.add(item);
-    }
-    notifyListeners();
-  }
 
   void updateQuantity(String cartId, String itemId, int newQuantity) {
     if (!_carts.containsKey(cartId)) return;
@@ -69,5 +70,19 @@ class CartProvider extends ChangeNotifier {
   void toggleEditingCN() {
     isEditingCN = !isEditingCN;
     notifyListeners();
+  }
+
+  void setCurrentCartId(String cartId) {
+    currentCartId = cartId;
+    notifyListeners();
+    print("🛠️ Debug: Cart ID Set - $currentCartId");
+  }
+
+  void createNewCart() {
+    String newCartId = "cart_${DateTime.now().millisecondsSinceEpoch}";
+    _carts[newCartId] = [];
+    currentCartId = newCartId; // ✅ Set the new cart ID
+    notifyListeners();
+    print("🛠️ Debug: New Cart Created - cartId: $currentCartId");
   }
 }
