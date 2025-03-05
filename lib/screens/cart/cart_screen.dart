@@ -11,18 +11,26 @@ import 'widgets/notetab.dart';
 import 'widgets/order_summary.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final String cartId; // ✅ Accept cartId
+
+  const CartScreen({super.key, required this.cartId});
+
   @override
-  _CartWidgetState createState() => _CartWidgetState();
+  _CartScreenState createState() => _CartScreenState();
 }
 
-class _CartWidgetState extends State<CartScreen> {
+class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
+    final args = ModalRoute.of(context)!.settings.arguments as Map?;
+    final String cartId = args?['cartId'] ?? "default_cart_id";
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
-        final cartItems = cartProvider.items;
+        final cartItems = cartProvider.getItems(
+          widget.cartId,
+        ); // ✅ Fetch items for this cart
         final bool isCartEmpty = cartItems.isEmpty;
+
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120),
@@ -32,22 +40,20 @@ class _CartWidgetState extends State<CartScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              if (!cartItems.isEmpty) ConsumerDetailsTab(),
-              if (!cartItems.isEmpty) NoteTab(),
+              if (!isCartEmpty) ConsumerDetailsTab(cartId: widget.cartId),
+              if (!isCartEmpty) NoteTab(),
               Container(
                 height: 320,
                 margin: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                // decoration: BoxDecoration(color: AppColors.color3),
                 child:
-                    cartItems.isEmpty
+                    isCartEmpty
                         ? Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.max,
                           children: [
                             Image.asset("assets/images/none_items.png"),
                             SizedBox(height: 10),
                             Text(
-                              "Item Empty",
+                              "Cart is empty",
                               style: TextStyle(
                                 fontSize: 20,
                                 color: AppColors.primary,
@@ -62,9 +68,7 @@ class _CartWidgetState extends State<CartScreen> {
                             CartItem item = cartItems[index];
                             return Dismissible(
                               key: Key(item.id),
-                              direction:
-                                  DismissDirection
-                                      .endToStart, // Swipe left to delete
+                              direction: DismissDirection.endToStart,
                               background: Container(
                                 color: Colors.red,
                                 alignment: Alignment.centerRight,
@@ -76,7 +80,10 @@ class _CartWidgetState extends State<CartScreen> {
                                 ),
                               ),
                               onDismissed: (direction) {
-                                cartProvider.removeFromCart(item.id);
+                                cartProvider.removeFromCart(
+                                  widget.cartId,
+                                  item.id,
+                                ); // ✅ Ensure correct cartId
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
@@ -102,6 +109,7 @@ class _CartWidgetState extends State<CartScreen> {
                                       icon: Icon(Icons.remove),
                                       onPressed:
                                           () => cartProvider.updateQuantity(
+                                            widget.cartId,
                                             item.id,
                                             item.quantity - 1,
                                           ),
@@ -111,6 +119,7 @@ class _CartWidgetState extends State<CartScreen> {
                                       icon: Icon(Icons.add),
                                       onPressed:
                                           () => cartProvider.updateQuantity(
+                                            widget.cartId,
                                             item.id,
                                             item.quantity + 1,
                                           ),
@@ -122,7 +131,7 @@ class _CartWidgetState extends State<CartScreen> {
                           },
                         ),
               ),
-              if (!cartItems.isEmpty) OrderSummaryTab(),
+              if (!isCartEmpty) OrderSummaryTab(),
             ],
           ),
           bottomNavigationBar: BottomNavBar(isCartEmpty: isCartEmpty),

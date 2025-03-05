@@ -3,7 +3,7 @@ class CartItem {
   final String name;
   final String image;
   final double price;
-  int quantity;
+  final int quantity;
 
   CartItem({
     required this.id,
@@ -14,6 +14,16 @@ class CartItem {
   });
 
   double get total => price * quantity;
+
+  CartItem copyWith({int? quantity}) {
+    return CartItem(
+      id: id,
+      name: name,
+      image: image,
+      price: price,
+      quantity: quantity ?? this.quantity,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {

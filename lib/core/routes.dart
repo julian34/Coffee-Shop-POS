@@ -53,7 +53,16 @@ class AppRoutes {
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
       case cart:
-        return MaterialPageRoute(builder: (_) => CartScreen());
+        final args =
+            settings.arguments as Map<String, dynamic>?; // Get arguments
+        if (args != null && args.containsKey('cartId')) {
+          return MaterialPageRoute(
+            builder: (_) => CartScreen(cartId: args['cartId']),
+          );
+        }
+        return MaterialPageRoute(
+          builder: (_) => ErrorScreen(message: 'Missing cartId for CartScreen'),
+        );
       default:
         return MaterialPageRoute(
           builder:

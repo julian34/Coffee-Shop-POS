@@ -9,12 +9,14 @@ import '../../../../core/theme.dart';
 class ProductGridWidget extends StatelessWidget {
   final String selectedCategory;
   final String searchQuery;
+  final String cartId; // ✅ Pass cartId for adding products to specific cart
   final ProductService productService = ProductService();
 
   ProductGridWidget({
     super.key,
     required this.selectedCategory,
     required this.searchQuery,
+    required this.cartId, // ✅ Required cartId
   });
 
   @override
@@ -42,20 +44,24 @@ class ProductGridWidget extends StatelessWidget {
         List<Product> products = snapshot.data!;
 
         return Padding(
-          padding: EdgeInsets.all(16.0),
-          child: GridView.builder(
-            physics: BouncingScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 0.75,
-              crossAxisSpacing: 10,
-              mainAxisSpacing: 10,
+          padding: const EdgeInsets.all(16.0),
+          child: SizedBox(
+            height:
+                MediaQuery.of(context).size.height * 0.7, // Set a fixed height
+            child: GridView.builder(
+              physics: BouncingScrollPhysics(),
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 0.75,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: products.length,
+              itemBuilder: (context, index) {
+                final product = products[index];
+                return _buildProductCard(context, product);
+              },
             ),
-            itemCount: products.length,
-            itemBuilder: (context, index) {
-              final product = products[index];
-              return _buildProductCard(context, product);
-            },
           ),
         );
       },
@@ -83,16 +89,21 @@ class ProductGridWidget extends StatelessWidget {
               height: 100,
               width: double.infinity,
               fit: BoxFit.cover,
+              errorBuilder:
+                  (context, error, stackTrace) =>
+                      Icon(Icons.broken_image, size: 100, color: Colors.grey),
             ),
           ),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   product.name,
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
                 Text(
                   product.category,
@@ -111,6 +122,7 @@ class ProductGridWidget extends StatelessWidget {
             icon: SvgCustomApp.getIcon("add"),
             onPressed: () {
               cartProvider.addToCart(
+                cartId,
                 CartItem(
                   id: product.id,
                   name: product.name,
@@ -126,7 +138,7 @@ class ProductGridWidget extends StatelessWidget {
                   action: SnackBarAction(
                     label: "Undo",
                     onPressed: () {
-                      cartProvider.updateQuantity(product.id, 0);
+                      cartProvider.updateQuantity(cartId, product.id, 0);
                     },
                   ),
                 ),
