@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
+import 'package:pos_coffee_shop/untils/format_utils.dart';
 import 'package:provider/provider.dart';
 import '../../../../models/products_model.dart';
 import '../../../../services/product_service.dart';
@@ -107,7 +108,7 @@ class ProductGridWidget extends StatelessWidget {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  "Rp. ${product.price.toStringAsFixed(2)}",
+                  formatCurrency(product.price),
                   style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
                 ),
               ],
