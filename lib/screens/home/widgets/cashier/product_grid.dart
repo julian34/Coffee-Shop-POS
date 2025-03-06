@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
 import 'package:provider/provider.dart';
 import '../../../../models/products_model.dart';
-// import '../../../../models/cart_model.dart';
 import '../../../../services/product_service.dart';
 import '../../../../providers/cart_provider.dart';
 import '../../../../core/theme.dart';

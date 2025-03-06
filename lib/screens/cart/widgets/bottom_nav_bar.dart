@@ -20,17 +20,21 @@ class BottomNavBar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40),
         child: ElevatedButton(
-          onPressed: () async {
-            String cartId = DateTime.now().millisecondsSinceEpoch.toString();
-            await cart.saveCart(cartId, consumerNameController.text);
-            Navigator.pop(context);
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text('Cart seved!')));
-          },
+          onPressed:
+              cart.items.isEmpty
+                  ? null
+                  : () async {
+                    String cartId =
+                        DateTime.now().millisecondsSinceEpoch.toString();
+                    await cart.saveCart(cartId, consumerNameController.text);
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text('Cart seved!')));
+                  },
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
           child: Text(
-            "Prosess Order",
+            cart.items.isEmpty ? "Please add items" : "Prosess Order",
             style: TextStyle(
               fontSize: 20,
               color: AppColors.color4,
