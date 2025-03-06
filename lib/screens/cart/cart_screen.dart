@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
+import 'package:pos_coffee_shop/screens/cart/widgets/body_cart_empty.dart';
 
 import 'widgets/custom_appbar.dart';
 import 'widgets/bottom_nav_bar.dart';
@@ -29,21 +30,24 @@ class _CartScreenState extends State<CartScreen> {
             preferredSize: Size.fromHeight(120),
             child: CartAppbar(),
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              ConsumerDetailsTab(),
-              NoteTab(),
-              Container(
-                height: 345,
-                // padding: EdgeInsets.all(80),
-                margin: EdgeInsets.symmetric(horizontal: 20),
-                child: Flexible(child: ItemCartWidget()),
-              ),
-              OrderSummaryTab(totalAmount: cartProvider.totalAmount),
-            ],
-          ),
+          body:
+              cartProvider.items.isEmpty
+                  ? BodyCartEmpty()
+                  : Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      ConsumerDetailsTab(),
+                      NoteTab(),
+                      Container(
+                        height: 345,
+                        // padding: EdgeInsets.all(80),
+                        margin: EdgeInsets.symmetric(horizontal: 20),
+                        child: Flexible(child: ItemCartWidget()),
+                      ),
+                      OrderSummaryTab(totalAmount: cartProvider.totalAmount),
+                    ],
+                  ),
           bottomNavigationBar: BottomNavBar(
             cart: cartProvider,
             consumerNameController: _consumerNameController,

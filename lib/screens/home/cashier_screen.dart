@@ -47,8 +47,8 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
               },
             ),
             ProductGridWidget(
-              selectedCategory: selectedCategory ?? "All",
-              searchQuery: searchQuery ?? "",
+              selectedCategory: selectedCategory,
+              searchQuery: searchQuery,
             ),
           ],
         ),

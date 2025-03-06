@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
-import 'package:pos_coffee_shop/screens/home/cashier_screen.dart';
 import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
