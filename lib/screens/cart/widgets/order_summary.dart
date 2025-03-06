@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class OrderSummaryTab extends StatelessWidget {
+  const OrderSummaryTab({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Container(

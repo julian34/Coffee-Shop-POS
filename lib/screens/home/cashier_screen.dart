@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../../core/theme.dart';
 import 'widgets/cashier/cashier_app_bar.dart';
 import 'widgets/cashier/search_bar.dart';
@@ -7,7 +6,6 @@ import 'widgets/cashier/category_tabs.dart';
 import 'widgets/cashier/product_grid.dart';
 import 'widgets/cashier/bottom_nav_bar.dart';
 import '../../core/routes.dart';
-import '../../providers/cart_provider.dart';
 
 class CashierHomeScreen extends StatefulWidget {
   const CashierHomeScreen({super.key});

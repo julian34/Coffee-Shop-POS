@@ -12,6 +12,8 @@ import 'widgets/order_summary.dart';
 import 'widgets/item_cart.dart';
 
 class CartScreen extends StatefulWidget {
+  const CartScreen({super.key});
+
   @override
   _CartScreenState createState() => _CartScreenState();
 }
