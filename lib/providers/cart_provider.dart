@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-
 import 'package:pos_coffee_shop/models/cart_model.dart';
-import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
-  final CartService _cartService = CartService();
-
   final Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items => _items;
+
+  double get totalAmount {
+    return _items.values.fold(
+      0,
+      (sum, item) => sum + (item.price * item.quantity),
+    );
+  }
 
   void addToCart(CartItem item) {
     if (_items.containsKey(item.productId)) {

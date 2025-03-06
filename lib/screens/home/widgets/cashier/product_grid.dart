@@ -68,7 +68,6 @@ class ProductGridWidget extends StatelessWidget {
   }
 
   Widget _buildProductCard(BuildContext context, Product product) {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,

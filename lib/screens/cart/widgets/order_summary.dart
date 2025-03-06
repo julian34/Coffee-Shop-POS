@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class OrderSummaryTab extends StatelessWidget {
-  const OrderSummaryTab({super.key});
+  final double totalAmount;
+  OrderSummaryTab({required this.totalAmount});
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +32,47 @@ class OrderSummaryTab extends StatelessWidget {
             ),
           ),
           Divider(color: AppColors.primary),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('Item Total'), Text('Rp. $totalAmount')],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('Diskon'), Text('-')],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [Text('Tax'), Text('-')],
+                ),
+                Divider(color: AppColors.primary),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Total',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      'Rp. $totalAmount',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

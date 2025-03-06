@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pos_coffee_shop/core/theme.dart';
-import 'package:pos_coffee_shop/models/cart_model.dart';
 import 'package:provider/provider.dart';
 import '../../providers/cart_provider.dart';
 
@@ -29,18 +27,18 @@ class _CartScreenState extends State<CartScreen> {
             child: CartAppbar(),
           ),
           body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               ConsumerDetailsTab(),
               NoteTab(),
               Container(
-                height: 320,
+                height: 345,
                 // padding: EdgeInsets.all(80),
-                margin: EdgeInsets.symmetric(horizontal: 30),
-                child: Expanded(child: ItemCartWidget()),
+                margin: EdgeInsets.symmetric(horizontal: 20),
+                child: Flexible(child: ItemCartWidget()),
               ),
-              OrderSummaryTab(),
+              OrderSummaryTab(totalAmount: cartProvider.totalAmount),
             ],
           ),
           bottomNavigationBar: BottomNavBar(),
