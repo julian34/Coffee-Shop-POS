@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/untils/format_utils.dart';
 
 class OrderSummaryTab extends StatelessWidget {
   final double totalAmount;
@@ -38,15 +39,18 @@ class OrderSummaryTab extends StatelessWidget {
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('Item Total'), Text('Rp. $totalAmount')],
+                  children: [
+                    Text('Item Total'),
+                    Text(formatCurrency(totalAmount)),
+                  ],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('Diskon'), Text('-')],
+                  children: [Text('Diskon'), Text(formatCurrency(0))],
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [Text('Tax'), Text('-')],
+                  children: [Text('Tax'), Text(formatCurrency(0))],
                 ),
                 Divider(color: AppColors.primary),
                 Row(
@@ -61,7 +65,7 @@ class OrderSummaryTab extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Rp. $totalAmount',
+                      formatCurrency(totalAmount),
                       style: TextStyle(
                         color: AppColors.primary,
                         fontSize: 18,
@@ -77,31 +81,4 @@ class OrderSummaryTab extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildSummaryRow(String title, double value, {bool isBold = false}) {
-  //   return Padding(
-  //     padding: EdgeInsets.symmetric(horizontal: 30, vertical: 4),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Text(
-  //           title,
-  //           style: TextStyle(
-  //             color: AppColors.primary,
-  //             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-  //             fontSize: isBold ? 12 : 12,
-  //           ),
-  //         ),
-  //         Text(
-  //           "Rp. ${value.toStringAsFixed(2)}",
-  //           style: TextStyle(
-  //             color: AppColors.primary,
-  //             fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-  //             fontSize: isBold ? 12 : 12,
-  //           ),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:pos_coffee_shop/untils/format_utils.dart';
 import 'package:provider/provider.dart';
 
 class Itemcard extends StatelessWidget {
@@ -36,7 +37,7 @@ class Itemcard extends StatelessWidget {
                         style: TextStyle(color: AppColors.primary),
                       ),
                       Text(
-                        "Rp. ${item.price * item.quantity}",
+                        formatCurrency(item.price * item.quantity),
                         style: TextStyle(color: AppColors.color5),
                       ),
                     ],
