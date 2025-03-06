@@ -39,11 +39,13 @@ class _CartScreenState extends State<CartScreen> {
                     children: [
                       ConsumerDetailsTab(),
                       NoteTab(),
-                      Container(
-                        height: 345,
-                        // padding: EdgeInsets.all(80),
-                        margin: EdgeInsets.symmetric(horizontal: 20),
-                        child: Flexible(child: ItemCartWidget()),
+                      Flexible(
+                        child: Container(
+                          height: 345,
+                          // padding: EdgeInsets.all(80),
+                          margin: EdgeInsets.symmetric(horizontal: 20),
+                          child: ItemCartWidget(),
+                        ),
                       ),
                       OrderSummaryTab(totalAmount: cartProvider.totalAmount),
                     ],
