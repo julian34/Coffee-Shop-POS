@@ -4,6 +4,8 @@ import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class BoxConsumer extends StatelessWidget {
+  const BoxConsumer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(

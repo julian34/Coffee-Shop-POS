@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/screens/cart/widgets/child/itemcart/itemcard.dart';
 
 class ItemCartWidget extends StatelessWidget {
+  const ItemCartWidget({super.key});
+
   @override
   Widget build(BuildContext context) {
     final cart = Provider.of<CartProvider>(context);

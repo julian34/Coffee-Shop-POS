@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 class Itemcard extends StatelessWidget {
   final dynamic item;
@@ -8,20 +10,8 @@ class Itemcard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<DocumentSnapshot>(
-      future:
-          FirebaseFirestore.instance
-              .collection('products')
-              .doc(item.productId)
-              .get(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        }
-        if (!snapshot.hasData || !snapshot.data!.exists) {
-          return SizedBox();
-        }
-        var productData = snapshot.data!.data() as Map<String, dynamic>;
+    return Consumer<CartProvider>(
+      builder: (context, cart, child) {
         return Container(
           margin: EdgeInsets.symmetric(vertical: 8),
           padding: EdgeInsets.all(12),
@@ -35,7 +25,7 @@ class Itemcard extends StatelessWidget {
               Row(
                 children: [
                   CircleAvatar(
-                    backgroundImage: NetworkImage(productData['image']),
+                    backgroundImage: NetworkImage(item.image),
                     radius: 24,
                   ),
                   SizedBox(width: 12),
@@ -57,7 +47,9 @@ class Itemcard extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      cart.updateQuantity(item.productId, item.quantity - 1);
+                    },
                     icon: Icon(Icons.remove, color: AppColors.color5),
                   ),
                   Text(
@@ -65,7 +57,9 @@ class Itemcard extends StatelessWidget {
                     style: TextStyle(color: AppColors.color5),
                   ),
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      cart.updateQuantity(item.productId, item.quantity + 1);
+                    },
                     icon: Icon(Icons.add, color: AppColors.color5),
                   ),
                 ],
