@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:provider/provider.dart';
+
 import '../../core/theme.dart';
 import 'widgets/cashier/cashier_app_bar.dart';
 import 'widgets/cashier/search_bar.dart';
@@ -54,14 +58,52 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
         ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.cart);
-        },
-        shape: const CircleBorder(),
-        backgroundColor: AppColors.color3,
-        foregroundColor: AppColors.color4,
-        child: SvgCustomApp.getIcon('money-bill-wave', c: AppColors.color5),
+      floatingActionButton: SizedBox(
+        height: 70,
+        width: 70,
+        child: FittedBox(
+          child: FloatingActionButton(
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.cart);
+            },
+            shape: const CircleBorder(),
+            backgroundColor: AppColors.color3,
+            foregroundColor: AppColors.color4,
+            // child: SvgCustomApp.getIcon('money-bill-wave', c: AppColors.color5),
+            child: Consumer<CartProvider>(
+              builder: (context, cartProvider, child) {
+                return Stack(
+                  children: [
+                    SvgCustomApp.getIcon(
+                      'money-bill-wave',
+                      c: AppColors.color5,
+                    ),
+                    if (cartProvider.items.isNotEmpty)
+                      Positioned(
+                        width: 15,
+                        right: 2,
+                        // top: 8,
+                        bottom: 0,
+                        // top: -,
+                        child: badges.Badge(
+                          badgeContent: Text(
+                            cartProvider.items.length.toString(),
+                            style: TextStyle(
+                              color: AppColors.color5,
+                              fontSize: 8,
+                            ),
+                          ),
+                          badgeStyle: badges.BadgeStyle(
+                            badgeColor: AppColors.color6,
+                          ),
+                        ),
+                      ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ),
       ),
       bottomNavigationBar: const BottomNavBar(),
     );
