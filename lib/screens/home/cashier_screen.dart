@@ -22,11 +22,6 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
   List<String> categories = ["All", "Coffee", "Non Coffee", "Snacks"];
   @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final String cartId = cartProvider.currentCartId ?? "default_cart";
-
-    print("🛠️ Debug: CashierHomeScreen - cartId: $cartId");
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -56,7 +51,6 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
             ProductGridWidget(
               selectedCategory: selectedCategory ?? "All",
               searchQuery: searchQuery ?? "",
-              cartId: cartId,
             ),
           ],
         ),
@@ -64,11 +58,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.pushNamed(
-            context,
-            AppRoutes.cart,
-            arguments: {'cartId': cartId},
-          );
+          Navigator.pushNamed(context, AppRoutes.cart);
         },
         shape: const CircleBorder(),
         backgroundColor: AppColors.color3,

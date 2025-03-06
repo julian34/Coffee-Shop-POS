@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/models/cart_model.dart';
 import 'package:provider/provider.dart';
 import '../../../../models/products_model.dart';
-import '../../../../models/cart_model.dart';
+// import '../../../../models/cart_model.dart';
 import '../../../../services/product_service.dart';
 import '../../../../providers/cart_provider.dart';
 import '../../../../core/theme.dart';
@@ -9,14 +10,12 @@ import '../../../../core/theme.dart';
 class ProductGridWidget extends StatelessWidget {
   final String selectedCategory;
   final String searchQuery;
-  final String cartId; // ✅ Pass cartId for adding products to specific cart
   final ProductService productService = ProductService();
 
   ProductGridWidget({
     super.key,
     required this.selectedCategory,
     required this.searchQuery,
-    required this.cartId, // ✅ Required cartId
   });
 
   @override
@@ -70,7 +69,6 @@ class ProductGridWidget extends StatelessWidget {
 
   Widget _buildProductCard(BuildContext context, Product product) {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -121,21 +119,11 @@ class ProductGridWidget extends StatelessWidget {
           IconButton(
             icon: SvgCustomApp.getIcon("add"),
             onPressed: () {
-              final cartProvider = Provider.of<CartProvider>(
-                context,
-                listen: false,
-              );
-              final String cartId =
-                  cartProvider.currentCartId ?? "default_cart_id";
-
-              cartProvider.addToCart(
-                cartId,
+              Provider.of<CartProvider>(context, listen: false).addToCart(
                 CartItem(
-                  id: product.id,
+                  productId: product.id,
                   name: product.name,
                   price: product.price,
-                  quantity: 1,
-                  image: product.image,
                 ),
               );
 
@@ -146,7 +134,7 @@ class ProductGridWidget extends StatelessWidget {
                   action: SnackBarAction(
                     label: "Undo",
                     onPressed: () {
-                      cartProvider.updateQuantity(cartId, product.id, 0);
+                      // cartProvider.updateQuantity(cartId, product.id, 0);
                     },
                   ),
                 ),

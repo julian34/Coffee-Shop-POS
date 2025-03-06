@@ -4,10 +4,6 @@ import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class BoxConsumer extends StatelessWidget {
-  final String cartId; // Accept cartId
-
-  const BoxConsumer({super.key, required this.cartId});
-
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
@@ -29,7 +25,7 @@ class BoxConsumer extends StatelessWidget {
                     SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        provider.getConsumerName(cartId),
+                        'Consumer name',
                         style: TextStyle(fontWeight: FontWeight.bold),
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -45,7 +41,7 @@ class BoxConsumer extends StatelessWidget {
                 ),
                 child: IconButton(
                   icon: Icon(Icons.edit, color: AppColors.color5),
-                  onPressed: provider.toggleEditingCN,
+                  onPressed: () {},
                 ),
               ),
             ],

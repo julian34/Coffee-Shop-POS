@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
-import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class BoxEditConsumer extends StatefulWidget {
   final String cartId; // Accept cartId
@@ -16,24 +14,7 @@ class _BoxEditConsumerState extends State<BoxEditConsumer> {
   late TextEditingController _nameController;
 
   @override
-  void initState() {
-    super.initState();
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    _nameController = TextEditingController(
-      text: cartProvider.getConsumerName(widget.cartId),
-    );
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-
     return Center(
       child: Column(
         children: <Widget>[
@@ -56,13 +37,7 @@ class _BoxEditConsumerState extends State<BoxEditConsumer> {
                     size: 30,
                     color: AppColors.primary,
                   ),
-                  onPressed: () {
-                    cartProvider.setConsumerName(
-                      widget.cartId,
-                      _nameController.text,
-                    );
-                    cartProvider.notifyListeners();
-                  },
+                  onPressed: () {},
                 ),
               ),
             ),
