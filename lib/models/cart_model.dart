@@ -1,52 +1,32 @@
 class CartItem {
-  final String id;
+  final String productId;
   final String name;
-  final String image;
   final double price;
-  final int quantity;
+  int quantity;
 
   CartItem({
-    required this.id,
+    required this.productId,
     required this.name,
-    required this.image,
     required this.price,
-    required this.quantity,
+    this.quantity = 1,
   });
-
-  double get total => price * quantity;
-
-  CartItem copyWith({int? quantity}) {
-    return CartItem(
-      id: id,
-      name: name,
-      image: image,
-      price: price,
-      quantity: quantity ?? this.quantity,
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
+      'productId': productId,
       'name': name,
-      'image': image,
       'price': price,
       'quantity': quantity,
-      'total': total,
+      'subtotal': price * quantity,
     };
   }
 
-  factory CartItem.fromMap(Map<String, dynamic> map, String docId) {
+  factory CartItem.fromMap(Map<String, dynamic> map) {
     return CartItem(
-      id: docId,
+      productId: map['productId'],
       name: map['name'],
-      image: map['image'],
-      price: (map['price'] as num).toDouble(),
+      price: map['price'],
       quantity: map['quantity'],
     );
-  }
-  @override
-  String toString() {
-    return 'CartItem(name: $name, quantity: $quantity, price: $price)';
   }
 }
