@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
@@ -37,7 +36,7 @@ class Itemcard extends StatelessWidget {
                         style: TextStyle(color: AppColors.primary),
                       ),
                       Text(
-                        "Rp. ${item.price}",
+                        "Rp. ${item.price * item.quantity}",
                         style: TextStyle(color: AppColors.color5),
                       ),
                     ],
