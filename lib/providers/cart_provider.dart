@@ -18,4 +18,11 @@ class CartProvider extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  void updateQuantity() {}
+
+  void removeItem(String productId) {
+    _items.remove(productId);
+    notifyListeners();
+  }
 }
