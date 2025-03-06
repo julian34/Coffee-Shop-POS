@@ -17,6 +17,9 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  final TextEditingController _consumerNameController = TextEditingController(
+    text: "Albert",
+  );
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
@@ -41,7 +44,10 @@ class _CartScreenState extends State<CartScreen> {
               OrderSummaryTab(totalAmount: cartProvider.totalAmount),
             ],
           ),
-          bottomNavigationBar: BottomNavBar(),
+          bottomNavigationBar: BottomNavBar(
+            cart: cartProvider,
+            consumerNameController: _consumerNameController,
+          ),
         );
       },
     );

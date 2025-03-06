@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
+import 'package:pos_coffee_shop/screens/home/cashier_screen.dart';
+import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
+  final CartService _cartService = CartService();
   final Map<String, CartItem> _items = {};
 
   Map<String, CartItem> get items => _items;
@@ -64,5 +67,22 @@ class CartProvider extends ChangeNotifier {
   void removeItem(String productId) {
     _items.remove(productId);
     notifyListeners();
+  }
+
+  Future<void> saveCart(String cartId, String consumerName) async {
+    try {
+      await _cartService.saveCart(
+        cartId,
+        consumerName,
+        _items.values.toList(),
+        totalAmount,
+      );
+      _items.clear();
+      notifyListeners();
+
+      // Navigator.pop(context);
+    } catch (e) {
+      print("Error saving cart: $e");
+    }
   }
 }

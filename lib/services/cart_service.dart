@@ -2,33 +2,31 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
 
 class CartService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  Future<void> saveCartToFirestore(
+  Future<void> saveCart(
     String cartId,
     String consumerName,
-    Map<String, CartItem> items,
+    List<CartItem> items,
     double totalAmount,
   ) async {
     try {
-      DocumentReference cartRef = _db.collection('carts').doc(cartId);
-
-      //Save Cart Metadata
-      await cartRef.set({
-        'consumerName': consumerName.isNotEmpty ? consumerName : cartId,
-        'totalAmount': totalAmount,
-        'status': 'pending',
-        'createdAt': FieldValue.serverTimestamp(),
-      });
-
-      CollectionReference itemsRef = cartRef.collection('items');
-
-      // Save cart items
-      for (var item in items.values) {
-        await itemsRef.doc(item.productId).set(item.toMap());
+      if (items.isEmpty) {
+        print("Cart is empty, not saving.");
+        return;
       }
+      final cartData = {
+        'cartId': cartId,
+        'consumerName': consumerName.isEmpty ? cartId : consumerName,
+        'items': items.map((item) => item.toMap()).toList(),
+        'diskon': 0,
+        'tax': 0,
+        'totalAmount': totalAmount,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+      await _firestore.collection('orders').doc(cartId).set(cartData);
     } catch (e) {
-      throw Exception("Failed to seve cart");
+      print("Error saving cart to Firebase: $e");
     }
   }
 }
