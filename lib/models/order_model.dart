@@ -1,39 +1,33 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'cart_model.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderList {
-  final String cartId;
-  final String consumerName;
-  final List<CartItem> items;
+  final String idOrder;
+  final String customerName;
   final double totalAmount;
-  final bool paid;
+  final bool isPaid;
   final String paymentMode;
-  final DateTime timestamp;
+  final String status; // "Pending" or "Checkout"
+  final DateTime createdAt;
 
   OrderList({
-    required this.cartId,
-    required this.consumerName,
-    required this.items,
+    required this.idOrder,
+    required this.customerName,
     required this.totalAmount,
-    required this.paid,
+    required this.isPaid,
     required this.paymentMode,
-    required this.timestamp,
+    required this.status,
+    required this.createdAt,
   });
 
-  factory OrderList.fromFirestore(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-
+  factory OrderList.fromMap(Map<String, dynamic> map) {
     return OrderList(
-      cartId: data['cartId'],
-      consumerName: data['consumerName'],
-      items:
-          (data['items'] as List)
-              .map((item) => CartItem.fromMap(item))
-              .toList(),
-      totalAmount: data['totalAmount'].toDouble(),
-      paid: data['paid'] ?? false,
-      paymentMode: data['paymentMode'] ?? "Unknown",
-      timestamp: (data['timestamp'] as Timestamp).toDate(),
+      idOrder: map['id'] ?? '',
+      customerName: map['customerName'] ?? 'Unknown',
+      totalAmount: (map['totalAmount'] ?? 0).toDouble(),
+      isPaid: map['isPaid'] ?? false,
+      paymentMode: map['paymentMode'] ?? 'Unknown',
+      status: map['status'] ?? 'Pending',
+      createdAt: (map['createdAt']).toDate(),
     );
   }
 }

@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class SearchBarWidget extends StatefulWidget {
-  final Function(String) onSearch;
-  const SearchBarWidget({super.key, required this.onSearch});
+  final TextEditingController controller;
+  final Function(String) onChanged;
+  const SearchBarWidget({
+    super.key,
+    required this.controller,
+    required this.onChanged,
+  });
 
   @override
   _SearchBarWidgetState createState() => _SearchBarWidgetState();
@@ -15,7 +20,8 @@ class _SearchBarWidgetState extends State<SearchBarWidget> {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: TextField(
-        onChanged: widget.onSearch,
+        controller: widget.controller,
+        onChanged: widget.onChanged,
         decoration: InputDecoration(
           filled: true,
           fillColor: AppColors.color5,
