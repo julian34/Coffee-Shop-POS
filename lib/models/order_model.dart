@@ -1,4 +1,4 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderList {
   final String idOrder;
@@ -7,7 +7,7 @@ class OrderList {
   final bool isPaid;
   final String paymentMode;
   final String status; // "Pending" or "Checkout"
-  final DateTime createdAt;
+  final DateTime? createdAt;
 
   OrderList({
     required this.idOrder,
@@ -16,7 +16,7 @@ class OrderList {
     required this.isPaid,
     required this.paymentMode,
     required this.status,
-    required this.createdAt,
+    this.createdAt,
   });
 
   factory OrderList.fromMap(Map<String, dynamic> map) {
@@ -27,7 +27,13 @@ class OrderList {
       isPaid: map['isPaid'] ?? false,
       paymentMode: map['paymentMode'] ?? 'Unknown',
       status: map['status'] ?? 'Pending',
-      createdAt: (map['createdAt']).toDate(),
+      createdAt: _parseDate(map['createdAt']),
     );
+  }
+
+  static DateTime? _parseDate(dynamic date) {
+    if (date is Timestamp) {
+      return date.toDate();
+    }
   }
 }

@@ -40,8 +40,6 @@ class _OrdersWidgetState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final orderProvider = Provider.of<OrderProvider>(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -58,7 +56,7 @@ class _OrdersWidgetState extends State<OrdersScreen> {
             onFilterChanged: _onFilterChanged,
             selectedFilter: 'Pending',
           ),
-          // OrdersItemsWidget()
+          OrdersItemsWidget(),
         ],
       ),
       bottomNavigationBar: const BottomNavBar(),
