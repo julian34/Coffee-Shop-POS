@@ -1,7 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/custom_appbar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/bottom_nav_bar.dart';
+import 'package:pos_coffee_shop/screens/transaction/widgets/orders/orders_items.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/search_bar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/category_tab.dart';
 
@@ -14,7 +14,7 @@ class OrdersScreen extends StatefulWidget {
 class _OrdersWidgetState extends State<OrdersScreen> {
   String searchQuery = "";
   String selectedCategory = "Pending";
-  List<String> categories = ["Pending", "Checkout", "All"];
+  List<String> categories = ["Pending", "Paid", "All"];
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -22,7 +22,7 @@ class _OrdersWidgetState extends State<OrdersScreen> {
         preferredSize: Size.fromHeight(120),
         child: const OrderAppbar(),
       ),
-      body: ListView(
+      body: Column(
         children: [
           SearchBarWidget(
             onSearch: (query) {
@@ -41,6 +41,8 @@ class _OrdersWidgetState extends State<OrdersScreen> {
               });
             },
           ),
+
+          OrdersItemsWidget(),
         ],
       ),
       bottomNavigationBar: const BottomNavBar(),

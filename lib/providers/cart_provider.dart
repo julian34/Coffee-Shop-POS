@@ -68,13 +68,24 @@ class CartProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveCart(String cartId, String consumerName) async {
+  Future<void> saveCart(
+    String cartId,
+    String consumerName, {
+    required bool paid,
+    required String paymentMode,
+  }) async {
+    if (_items.isEmpty) {
+      print("Cart is empty, not saving.");
+      return;
+    }
     try {
       await _cartService.saveCart(
         cartId,
         consumerName,
         _items.values.toList(),
         totalAmount,
+        paid,
+        paymentMode,
       );
       _items.clear();
       notifyListeners();

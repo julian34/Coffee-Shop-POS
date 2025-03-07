@@ -26,7 +26,12 @@ class BottomNavBar extends StatelessWidget {
                   : () async {
                     String cartId =
                         DateTime.now().millisecondsSinceEpoch.toString();
-                    await cart.saveCart(cartId, consumerNameController.text);
+                    await cart.saveCart(
+                      cartId,
+                      consumerNameController.text,
+                      paid: false,
+                      paymentMode: '',
+                    );
                     Navigator.pop(context);
                     ScaffoldMessenger.of(
                       context,
