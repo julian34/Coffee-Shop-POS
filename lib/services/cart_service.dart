@@ -9,6 +9,8 @@ class CartService {
     String consumerName,
     List<CartItem> items,
     double totalAmount,
+    bool paid,
+    String paymentMode,
   ) async {
     try {
       if (items.isEmpty) {
@@ -22,6 +24,8 @@ class CartService {
         'diskon': 0,
         'tax': 0,
         'totalAmount': totalAmount,
+        'paid': paid,
+        'paymentMode': paymentMode.isEmpty ? '-' : paymentMode,
         'timestamp': FieldValue.serverTimestamp(),
       };
       await _firestore.collection('orders').doc(cartId).set(cartData);
