@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
-class CartAppbar extends StatelessWidget {
-  const CartAppbar({super.key});
-
-  @override
+class OrderAppbar extends StatelessWidget {
+  const OrderAppbar({super.key});
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.color3,
@@ -12,7 +10,7 @@ class CartAppbar extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(110),
-          bottomRight: Radius.circular(110),
+          bottomRight: Radius.circular(100),
         ),
       ),
       leading: Container(
@@ -25,7 +23,7 @@ class CartAppbar extends StatelessWidget {
       ),
       centerTitle: true,
       title: Text(
-        "Cart",
+        "Order List",
         style: TextStyle(
           fontSize: 30,
           color: AppColors.color5,
