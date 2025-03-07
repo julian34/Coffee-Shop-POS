@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-// import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/custom_appbar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/bottom_nav_bar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/search_bar.dart';
+import 'package:pos_coffee_shop/screens/transaction/widgets/orders/category_tab.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -13,6 +13,8 @@ class OrdersScreen extends StatefulWidget {
 
 class _OrdersWidgetState extends State<OrdersScreen> {
   String searchQuery = "";
+  String selectedCategory = "Pending";
+  List<String> categories = ["Pending", "Checkout", "All"];
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
@@ -26,6 +28,16 @@ class _OrdersWidgetState extends State<OrdersScreen> {
             onSearch: (query) {
               setState(() {
                 searchQuery = query;
+              });
+            },
+          ),
+
+          CategoryTabWidget(
+            categories: categories,
+            selectedCategory: selectedCategory,
+            onCategorySelected: (category) {
+              setState(() {
+                selectedCategory = category;
               });
             },
           ),
