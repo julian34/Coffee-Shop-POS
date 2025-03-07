@@ -8,8 +8,9 @@ import '../screens/home/owner_screen.dart';
 import '../screens/splash_screen.dart';
 import '../screens/error_screen.dart';
 import '../screens/setting/profile_screen.dart';
-
 import '../screens/cart/cart_screen.dart';
+
+import 'package:pos_coffee_shop/screens/transaction/orders_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -20,9 +21,9 @@ class AppRoutes {
   static const String cashierHome = '/cashier-home';
 
   static const String cart = '/cart';
+  static const String order = '/order';
 
   static const String error = '/error';
-
   static const String profile = '/profile';
 
   // Determine the initial route based on saved role
@@ -54,6 +55,8 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => ProfileScreen());
       case cart:
         return MaterialPageRoute(builder: (_) => CartScreen());
+      case order:
+        return MaterialPageRoute(builder: (_) => OrdersScreen());
 
       default:
         return MaterialPageRoute(

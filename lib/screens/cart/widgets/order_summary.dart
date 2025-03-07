@@ -4,7 +4,7 @@ import 'package:pos_coffee_shop/untils/format_utils.dart';
 
 class OrderSummaryTab extends StatelessWidget {
   final double totalAmount;
-  OrderSummaryTab({required this.totalAmount});
+  const OrderSummaryTab({super.key, required this.totalAmount});
 
   @override
   Widget build(BuildContext context) {

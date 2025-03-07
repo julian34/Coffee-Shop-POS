@@ -25,10 +25,11 @@ class BottomNavBar extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     IconButton(
-                      onPressed: () {},
-                      icon: SvgCustomApp.getIcon('home'),
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.cashierHome);
+                      },
+                      icon: SvgCustomApp.getIcon('home', c: AppColors.color5),
                     ),
-                    // Text("Home", style: AppFonts.navBarText),
                   ],
                 ),
               ),
@@ -37,15 +38,7 @@ class BottomNavBar extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    IconButton(
-                      onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.order);
-                      },
-                      icon: SvgCustomApp.getIcon(
-                        'receipt',
-                        c: AppColors.color4,
-                      ),
-                    ),
+                    SvgCustomApp.getIcon('receipt'),
                     // Text("Orders List", style: AppFonts.navBarText),
                   ],
                 ),

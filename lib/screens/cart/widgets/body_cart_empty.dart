@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class BodyCartEmpty extends StatelessWidget {
+  const BodyCartEmpty({super.key});
+
   @override
   Widget build(BuildContext contex) {
     return Column(
