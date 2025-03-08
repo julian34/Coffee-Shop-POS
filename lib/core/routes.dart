@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/auth/login_screen.dart';
 // import '../screens/auth/register_screen.dart';
@@ -11,6 +12,7 @@ import '../screens/setting/profile_screen.dart';
 import '../screens/cart/cart_screen.dart';
 
 import 'package:pos_coffee_shop/screens/transaction/orders_screen.dart';
+import 'package:pos_coffee_shop/screens/transaction/order_detail_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -22,6 +24,7 @@ class AppRoutes {
 
   static const String cart = '/cart';
   static const String order = '/order';
+  static const String orderDetail = '/order-detail';
 
   static const String error = '/error';
   static const String profile = '/profile';
@@ -30,7 +33,6 @@ class AppRoutes {
   static Future<String> getInitialRoute() async {
     final prefs = await SharedPreferences.getInstance();
     String? savedRole = prefs.getString('role');
-
     if (savedRole == "Owner") return ownerHome;
     if (savedRole == "Manager") return managerHome;
     if (savedRole == "Cashier") return cashierHome;
@@ -57,6 +59,11 @@ class AppRoutes {
         return MaterialPageRoute(builder: (_) => CartScreen());
       case order:
         return MaterialPageRoute(builder: (_) => OrdersScreen());
+      case orderDetail:
+        final order = settings.arguments as OrderList; // Extract argument
+        return MaterialPageRoute(
+          builder: (_) => OrderDetailScreen(order: order),
+        );
 
       default:
         return MaterialPageRoute(

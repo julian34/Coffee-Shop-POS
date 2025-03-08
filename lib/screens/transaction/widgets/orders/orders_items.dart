@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/providers/orders_provider.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
@@ -28,44 +29,52 @@ class OrdersItemsWidget extends StatelessWidget {
                 itemCount: orders.length,
                 itemBuilder: (context, index) {
                   final order = orders[index];
-
-                  return Card(
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    margin: const EdgeInsets.only(bottom: 10),
-                    child: ListTile(
-                      contentPadding: const EdgeInsets.all(12),
-                      title: Text(
-                        "Order No: ${order.cartId}",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.orderDetail,
+                        arguments: order,
+                      );
+                    },
+                    child: Card(
+                      elevation: 2,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
                       ),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("Customer: ${order.customerName}"),
-                          Text("Total Amount: Rp. ${order.totalAmount}"),
-                          Text("Payment Mode: ${order.paymentMode ?? '-'}"),
-                        ],
-                      ),
-                      trailing: Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
+                      margin: const EdgeInsets.only(bottom: 10),
+                      child: ListTile(
+                        contentPadding: const EdgeInsets.all(12),
+                        title: Text(
+                          "Order No: ${order.cartId}",
+                          style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        decoration: BoxDecoration(
-                          color:
-                              order.status == "Pending"
-                                  ? Colors.red
-                                  : Colors.green,
-                          borderRadius: BorderRadius.circular(8),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("Customer: ${order.customerName}"),
+                            Text("Total Amount: Rp. ${order.totalAmount}"),
+                            Text("Payment Mode: ${order.paymentMode}"),
+                          ],
                         ),
-                        child: Text(
-                          order.status,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
+                        trailing: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 6,
+                          ),
+                          decoration: BoxDecoration(
+                            color:
+                                order.status == "Pending"
+                                    ? Colors.red
+                                    : Colors.green,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            order.status,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),

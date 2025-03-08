@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:pos_coffee_shop/core/theme.dart';
 
 class CategoryTabWidget extends StatelessWidget {
   final String selectedFilter;
