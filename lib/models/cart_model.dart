@@ -9,7 +9,7 @@ class CartItem {
     required this.productId,
     required this.name,
     required this.price,
-    required this.quantity,
+    this.quantity = 1,
     required this.image,
   });
 
@@ -18,7 +18,7 @@ class CartItem {
       productId: map['productId'] ?? '',
       name: map['name'] ?? '',
       price: (map['price'] ?? 0).toDouble(),
-      quantity: map['quantity'] ?? 0,
+      quantity: map['quantity'],
       image: map['image'] ?? '',
     );
   }
