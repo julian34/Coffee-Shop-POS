@@ -56,7 +56,8 @@ class AppRoutes {
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
       case cart:
-        return MaterialPageRoute(builder: (_) => CartScreen());
+        final order = settings.arguments as OrderList;
+        return MaterialPageRoute(builder: (_) => CartScreen(order: order));
       case order:
         return MaterialPageRoute(builder: (_) => OrdersScreen());
       case orderDetail:

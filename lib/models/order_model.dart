@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'cart_model.dart';
 
 class OrderList {
   final String cartId;
@@ -7,8 +8,8 @@ class OrderList {
   final bool isPaid;
   final String paymentMode;
   final String status; // "Pending" or "Checkout"
-  final DateTime? createdAt;
-  final List<Map<String, dynamic>> items;
+  final DateTime createdAt; // Ensure it's non-null
+  final List<CartItem> items; // Convert items properly
 
   OrderList({
     required this.cartId,
@@ -17,29 +18,51 @@ class OrderList {
     required this.isPaid,
     required this.paymentMode,
     required this.status,
-    this.createdAt,
+    required this.createdAt,
     required this.items,
   });
 
+  // ✅ Convert Firestore Map -> OrderList Object
   factory OrderList.fromMap(Map<String, dynamic> map) {
     return OrderList(
       cartId: map['cartId'] ?? '',
       customerName: map['customerName'] ?? 'Unknown',
       totalAmount: (map['totalAmount'] ?? 0).toDouble(),
       isPaid: map['isPaid'] ?? false,
-      paymentMode: map['paymentMode'] ?? 'Unknown',
+      paymentMode: map['paymentMode'] ?? 'Cash',
       status: map['status'] ?? 'Pending',
-      createdAt: _parseDate(map['createdAt']),
+      createdAt:
+          _parseDate(map['createdAt']) ??
+          DateTime.now(), // Use current time if missing
       items:
-          map['items'] != null && map['items'] is List
-              ? List<Map<String, dynamic>>.from(map['items'])
-              : [],
+          (map['items'] as List<dynamic>?)
+              ?.map((item) => CartItem.fromMap(item))
+              .toList() ??
+          [],
     );
   }
 
+  // ✅ Convert OrderList Object -> Firestore Map
+  Map<String, dynamic> toMap() {
+    return {
+      'cartId': cartId,
+      'customerName': customerName,
+      'totalAmount': totalAmount,
+      'isPaid': isPaid,
+      'paymentMode': paymentMode,
+      'status': status,
+      'createdAt': Timestamp.fromDate(
+        createdAt,
+      ), // Convert to Firestore Timestamp
+      'items': items.map((item) => item.toMap()).toList(),
+    };
+  }
+
+  // 🔹 Helper to parse Firestore Timestamp
   static DateTime? _parseDate(dynamic date) {
     if (date is Timestamp) {
       return date.toDate();
     }
+    return null;
   }
 }

@@ -50,10 +50,10 @@ class OrderDetailScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       final item = order.items[index];
                       return ListTile(
-                        title: Text(item['name'] ?? 'Unknown Item'),
-                        subtitle: Text("Quantity: ${item['quantity'] ?? 1}"),
+                        title: Text(item.name ?? 'Unknown Item'),
+                        subtitle: Text("Quantity: ${item.quantity ?? 1}"),
                         trailing: Text(
-                          "\$${(item['price'] ?? 0).toStringAsFixed(2)}",
+                          "\$${(item.price ?? 0).toStringAsFixed(2)}",
                         ),
                       );
                     },

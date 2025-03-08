@@ -9,9 +9,19 @@ class CartItem {
     required this.productId,
     required this.name,
     required this.price,
-    this.quantity = 1,
+    required this.quantity,
     required this.image,
   });
+
+  factory CartItem.fromMap(Map<String, dynamic> map) {
+    return CartItem(
+      productId: map['productId'] ?? '',
+      name: map['name'] ?? '',
+      price: (map['price'] ?? 0).toDouble(),
+      quantity: map['quantity'] ?? 0,
+      image: map['image'] ?? '',
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
@@ -20,16 +30,7 @@ class CartItem {
       'price': price,
       'quantity': quantity,
       'subtotal': price * quantity,
+      'image': image,
     };
-  }
-
-  factory CartItem.fromMap(Map<String, dynamic> map) {
-    return CartItem(
-      productId: map['productId'],
-      name: map['name'],
-      price: map['price'],
-      quantity: map['quantity'],
-      image: map['image'],
-    );
   }
 }
