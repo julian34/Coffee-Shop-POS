@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 
@@ -10,8 +11,10 @@ class OrderProvider extends ChangeNotifier {
 
   List<OrderList> get orders => _orders;
   List<OrderList> get filteredOrders => _filteredOrders;
+  String get selectedFilter => _statusFilter;
 
   OrderProvider() {
+    loadStatusFilter();
     fetchOrders();
   }
 
@@ -49,7 +52,7 @@ class OrderProvider extends ChangeNotifier {
               order.customerName.toLowerCase().contains(
                 _searchQuery.toLowerCase(),
               ) ||
-              order.idOrder.contains(_searchQuery);
+              order.cartId.contains(_searchQuery);
           final matchesStatus =
               _statusFilter == 'All' ||
               (_statusFilter == 'Pending' && !order.isPaid) ||
@@ -58,6 +61,19 @@ class OrderProvider extends ChangeNotifier {
           return matchesSearch && matchesStatus;
         }).toList();
 
+    notifyListeners();
+  }
+
+  // Save selected filter to SharedPreferences
+  Future<void> saveStatusFilter(String status) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('selectedFilter', status);
+  }
+
+  // Load saved filter from SharedPreferences
+  Future<void> loadStatusFilter() async {
+    final prefs = await SharedPreferences.getInstance();
+    _statusFilter = prefs.getString('selectedFilter') ?? 'Pending';
     notifyListeners();
   }
 }

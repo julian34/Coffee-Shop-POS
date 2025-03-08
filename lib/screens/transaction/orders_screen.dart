@@ -6,9 +6,7 @@ import 'package:pos_coffee_shop/screens/transaction/widgets/orders/bottom_nav_ba
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/orders_items.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/search_bar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/orders/category_tab.dart';
-
 import 'package:pos_coffee_shop/providers/orders_provider.dart';
-import 'package:pos_coffee_shop/models/order_model.dart';
 
 class OrdersScreen extends StatefulWidget {
   const OrdersScreen({super.key});
@@ -40,6 +38,7 @@ class _OrdersWidgetState extends State<OrdersScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final orderProvider = Provider.of<OrderProvider>(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: PreferredSize(
@@ -54,7 +53,7 @@ class _OrdersWidgetState extends State<OrdersScreen> {
           ),
           CategoryTabWidget(
             onFilterChanged: _onFilterChanged,
-            selectedFilter: 'Pending',
+            selectedFilter: orderProvider.selectedFilter,
           ),
           OrdersItemsWidget(),
         ],
