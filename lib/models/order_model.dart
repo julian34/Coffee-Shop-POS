@@ -8,6 +8,7 @@ class OrderList {
   final String paymentMode;
   final String status; // "Pending" or "Checkout"
   final DateTime? createdAt;
+  final List<Map<String, dynamic>> items;
 
   OrderList({
     required this.cartId,
@@ -17,6 +18,7 @@ class OrderList {
     required this.paymentMode,
     required this.status,
     this.createdAt,
+    required this.items,
   });
 
   factory OrderList.fromMap(Map<String, dynamic> map) {
@@ -28,6 +30,10 @@ class OrderList {
       paymentMode: map['paymentMode'] ?? 'Unknown',
       status: map['status'] ?? 'Pending',
       createdAt: _parseDate(map['createdAt']),
+      items:
+          map['items'] != null && map['items'] is List
+              ? List<Map<String, dynamic>>.from(map['items'])
+              : [],
     );
   }
 
