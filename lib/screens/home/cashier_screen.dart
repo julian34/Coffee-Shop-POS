@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:badges/badges.dart' as badges;
+import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -22,6 +23,11 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
   String searchQuery = "";
   String selectedCategory = "All";
   List<String> categories = ["All", "Coffee", "Non Coffee", "Snacks"];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +70,22 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
-              Navigator.pushNamed(context, AppRoutes.cart);
+              final cartProvider = Provider.of<CartProvider>(
+                context,
+                listen: false,
+              );
+              final order = OrderList(
+                cartId: "",
+                customerName: "Guest",
+                totalAmount: 0.0,
+                isPaid: false,
+                paymentMode: "Cash",
+                status: "Pending",
+                createdAt: DateTime.now(),
+                items: cartProvider.items.values.toList(),
+              );
+
+              Navigator.pushNamed(context, AppRoutes.cart, arguments: order);
             },
             shape: const CircleBorder(),
             backgroundColor: AppColors.color3,

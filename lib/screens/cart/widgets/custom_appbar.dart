@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:provider/provider.dart';
 
 class CartAppbar extends StatelessWidget {
-  const CartAppbar({super.key});
+  final VoidCallback onPressed;
+  final String titleScreen;
+  const CartAppbar({
+    Key? key,
+    required this.onPressed,
+    required this.titleScreen,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +27,13 @@ class CartAppbar extends StatelessWidget {
         padding: EdgeInsets.only(left: 30),
         child: IconButton(
           padding: EdgeInsets.symmetric(vertical: 10),
-          onPressed: () => Navigator.of(context).pop(),
+          onPressed: onPressed,
           icon: SvgCustomApp.getIcon('arrow-left'),
         ),
       ),
       centerTitle: true,
       title: Text(
-        "Cart",
+        titleScreen,
         style: TextStyle(
           fontSize: 30,
           color: AppColors.color5,

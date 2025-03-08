@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/core/routes.dart';
+import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:provider/provider.dart';
-import '../../providers/cart_provider.dart';
+import 'package:pos_coffee_shop/providers/cart_provider.dart';
 import 'package:pos_coffee_shop/screens/cart/widgets/body_cart_empty.dart';
 
 import 'widgets/custom_appbar.dart';
@@ -11,16 +13,35 @@ import 'widgets/order_summary.dart';
 import 'widgets/item_cart.dart';
 
 class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+  final OrderList? order; //new add | If null, it's a new cart
+  const CartScreen({super.key, this.order});
 
   @override
   _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
+  String paymentMode = 'Cash'; // new add | Default Payment Mode
+  bool paid = false;
+
   final TextEditingController _consumerNameController = TextEditingController(
     text: "Albert",
   );
+
+  @override
+  void initState() {
+    super.initState();
+    final cartProvider = Provider.of<CartProvider>(context, listen: false);
+    if (widget.order != null) {
+      cartProvider.items.clear();
+      for (var item in widget.order!.items) {
+        cartProvider.addToCart(item);
+      }
+      paid = widget.order!.isPaid;
+      paymentMode = widget.order!.paymentMode;
+    }
+  } // new add | Load existing order into cart
+
   @override
   Widget build(BuildContext context) {
     return Consumer<CartProvider>(
@@ -28,7 +49,15 @@ class _CartScreenState extends State<CartScreen> {
         return Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120),
-            child: CartAppbar(),
+            child: CartAppbar(
+              onPressed: () {
+                if (widget.order!.cartId != '') {
+                  cartProvider.items.clear();
+                }
+                Navigator.of(context).pop();
+              },
+              titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
+            ),
           ),
           body:
               cartProvider.items.isEmpty
@@ -42,7 +71,6 @@ class _CartScreenState extends State<CartScreen> {
                       Flexible(
                         child: Container(
                           height: 345,
-                          // padding: EdgeInsets.all(80),
                           margin: EdgeInsets.symmetric(horizontal: 20),
                           child: ItemCartWidget(),
                         ),
@@ -51,6 +79,27 @@ class _CartScreenState extends State<CartScreen> {
                     ],
                   ),
           bottomNavigationBar: BottomNavBar(
+            onPressed: () async {
+              if (cartProvider.items.isEmpty) {}
+              String cartId =
+                  widget.order!.cartId.isEmpty
+                      ? DateTime.now().millisecondsSinceEpoch.toString()
+                      : widget.order!.cartId;
+              await cartProvider.saveCart(
+                cartId,
+                _consumerNameController.text,
+                paid: false,
+                paymentMode: "",
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    "Order ${widget.order!.cartId == '' ? 'Created' : 'Updated'} Successfully!",
+                  ),
+                ),
+              );
+              Navigator.pushNamed(context, AppRoutes.order);
+            },
             cart: cartProvider,
             consumerNameController: _consumerNameController,
           ),

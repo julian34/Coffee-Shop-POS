@@ -5,9 +5,11 @@ import 'package:pos_coffee_shop/providers/cart_provider.dart';
 class BottomNavBar extends StatelessWidget {
   final CartProvider cart;
   final TextEditingController consumerNameController;
+  final VoidCallback onPressed;
 
   const BottomNavBar({
     super.key,
+    required this.onPressed,
     required this.cart,
     required this.consumerNameController,
   });
@@ -20,23 +22,21 @@ class BottomNavBar extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 40),
         child: ElevatedButton(
-          onPressed:
-              cart.items.isEmpty
-                  ? null
-                  : () async {
-                    String cartId =
-                        DateTime.now().millisecondsSinceEpoch.toString();
-                    await cart.saveCart(
-                      cartId,
-                      consumerNameController.text,
-                      paid: false,
-                      paymentMode: '',
-                    );
-                    Navigator.pop(context);
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text('Cart seved!')));
-                  },
+          onPressed: cart.items.isEmpty ? null : onPressed,
+          // : () async {
+          //   String cartId =
+          //       DateTime.now().millisecondsSinceEpoch.toString();
+          //   await cart.saveCart(
+          //     cartId,
+          //     consumerNameController.text,
+          //     paid: false,
+          //     paymentMode: '',
+          //   );
+          //   Navigator.pop(context);
+          //   ScaffoldMessenger.of(
+          //     context,
+          //   ).showSnackBar(SnackBar(content: Text('Cart seved!')));
+          // },
           style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
           child: Text(
             cart.items.isEmpty ? "Please add items" : "Prosess Order",

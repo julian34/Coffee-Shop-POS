@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
+import 'package:pos_coffee_shop/untils/format_utils.dart';
 import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/providers/orders_provider.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
@@ -31,11 +32,19 @@ class OrdersItemsWidget extends StatelessWidget {
                   final order = orders[index];
                   return GestureDetector(
                     onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.orderDetail,
-                        arguments: order,
-                      );
+                      if (order.isPaid) {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.orderDetail,
+                          arguments: order,
+                        );
+                      } else {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.cart,
+                          arguments: order,
+                        );
+                      }
                     },
                     child: Card(
                       elevation: 2,
@@ -53,7 +62,9 @@ class OrdersItemsWidget extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text("Customer: ${order.customerName}"),
-                            Text("Total Amount: Rp. ${order.totalAmount}"),
+                            Text(
+                              "Total Amount: ${formatCurrency(order.totalAmount)}",
+                            ),
                             Text("Payment Mode: ${order.paymentMode}"),
                           ],
                         ),
