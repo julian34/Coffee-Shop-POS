@@ -38,7 +38,7 @@ class OrdersItemsWidget extends StatelessWidget {
                     child: ListTile(
                       contentPadding: const EdgeInsets.all(12),
                       title: Text(
-                        "Order No: ${order.idOrder}",
+                        "Order No: ${order.cartId}",
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Column(

@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderList {
-  final String idOrder;
+  final String cartId;
   final String customerName;
   final double totalAmount;
   final bool isPaid;
@@ -10,7 +10,7 @@ class OrderList {
   final DateTime? createdAt;
 
   OrderList({
-    required this.idOrder,
+    required this.cartId,
     required this.customerName,
     required this.totalAmount,
     required this.isPaid,
@@ -21,7 +21,7 @@ class OrderList {
 
   factory OrderList.fromMap(Map<String, dynamic> map) {
     return OrderList(
-      idOrder: map['id'] ?? '',
+      cartId: map['cartId'] ?? '',
       customerName: map['customerName'] ?? 'Unknown',
       totalAmount: (map['totalAmount'] ?? 0).toDouble(),
       isPaid: map['isPaid'] ?? false,
