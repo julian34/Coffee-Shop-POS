@@ -58,6 +58,7 @@ class _CartScreenState extends State<CartScreen> {
                 Navigator.pushNamed(context, AppRoutes.cashierHome);
               },
               titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
+              cartId: widget.order!.cartId,
             ),
           ),
           body:

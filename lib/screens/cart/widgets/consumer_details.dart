@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:provider/provider.dart';
-// import 'package:pos_coffee_shop/screens/cart/widgets/box_consumer.dart';
-// import 'package:pos_coffee_shop/screens/cart/widgets/box_edit_consumer.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class ConsumerDetailsTab extends StatelessWidget {
@@ -15,7 +13,6 @@ class ConsumerDetailsTab extends StatelessWidget {
       builder: (context, provider, child) {
         return Padding(
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-
           child: TextField(
             controller: controller,
             decoration: InputDecoration(
@@ -26,6 +23,7 @@ class ConsumerDetailsTab extends StatelessWidget {
                 child: SvgCustomApp.getIcon('user'),
               ),
               hintText: "Customer Name",
+              hintStyle: TextStyle(color: AppColors.primary),
               prefixIconConstraints: BoxConstraints(
                 maxHeight: 50,
                 maxWidth: 50,
