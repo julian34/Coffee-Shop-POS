@@ -24,10 +24,6 @@ class _CartScreenState extends State<CartScreen> {
   String paymentMode = 'Cash'; // new add | Default Payment Mode
   bool paid = false;
 
-  final TextEditingController _consumerNameController = TextEditingController(
-    text: "Albert",
-  );
-
   @override
   void initState() {
     super.initState();
@@ -44,6 +40,11 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final TextEditingController _consumerNameController = TextEditingController(
+      text:
+          widget.order!.customerName.isEmpty ? '' : widget.order!.customerName,
+    );
+
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
         return Scaffold(
@@ -54,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
                 if (widget.order!.cartId != '') {
                   cartProvider.items.clear();
                 }
-                Navigator.of(context).pop();
+                Navigator.pushNamed(context, AppRoutes.cashierHome);
               },
               titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
             ),
@@ -66,7 +67,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ConsumerDetailsTab(),
+                      ConsumerDetailsTab(controller: _consumerNameController),
                       NoteTab(),
                       Flexible(
                         child: Container(

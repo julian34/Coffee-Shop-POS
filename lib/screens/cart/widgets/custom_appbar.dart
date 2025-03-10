@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
-import 'package:pos_coffee_shop/providers/cart_provider.dart';
-import 'package:provider/provider.dart';
 
 class CartAppbar extends StatelessWidget {
   final VoidCallback onPressed;
