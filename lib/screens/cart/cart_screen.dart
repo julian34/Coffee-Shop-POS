@@ -29,20 +29,23 @@ class _CartScreenState extends State<CartScreen> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
-      final cartItems =
-          cartProvider.items.values
-              .map((itemcart) => itemcart.toMap())
-              .toList();
-      if (widget.order!.items.length != cartItems.length) {
-        if (widget.order != null) {
+
+      if (widget.order != null) {
+        final cartItems =
+            cartProvider.items.values
+                .map((itemcart) => itemcart.toMap())
+                .toList();
+        if (widget.order!.items.length != cartItems.length) {
           cartProvider.items.clear();
           for (var item in widget.order!.items) {
-            print(item);
             cartProvider.addToCart(item);
+            cartProvider.updateQuantity(item.productId, item.quantity);
           }
         }
-        paid = widget.order!.isPaid;
-        paymentMode = widget.order!.paymentMode;
+        setState(() {
+          paid = widget.order!.isPaid;
+          paymentMode = widget.order!.paymentMode;
+        });
       }
     });
   }

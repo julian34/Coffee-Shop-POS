@@ -76,8 +76,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 listen: false,
               );
               final order = OrderList(
-                cartId:
-                    widget.order!.cartId.isEmpty ? "" : widget.order!.cartId,
+                cartId: widget.order!.cartId ?? "",
                 customerName:
                     widget.order!.customerName.isEmpty
                         ? "Guest"
@@ -87,7 +86,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 paymentMode: "Cash",
                 status: "Pending",
                 createdAt: DateTime.now(),
-                items: cartProvider.items.values.toList(),
+                items: List.from(cartProvider.items.values),
               );
 
               Navigator.pushNamed(context, AppRoutes.cart, arguments: order);
