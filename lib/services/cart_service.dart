@@ -6,7 +6,7 @@ class CartService {
 
   Future<void> saveCart(
     String cartId,
-    String consumerName,
+    String customerName,
     List<CartItem> items,
     double totalAmount,
     bool paid,
@@ -19,7 +19,7 @@ class CartService {
       }
       final cartData = {
         'cartId': cartId,
-        'consumerName': consumerName.isEmpty ? cartId : consumerName,
+        'customerName': customerName.isEmpty ? cartId : customerName,
         'items': items.map((item) => item.toMap()).toList(),
         'diskon': 0,
         'tax': 0,

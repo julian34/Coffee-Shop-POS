@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
@@ -133,7 +134,20 @@ class AuthProvider extends ChangeNotifier {
     } else if (role == "Manager") {
       Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
     } else {
-      Navigator.pushReplacementNamed(context, AppRoutes.cashierHome);
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.cashierHome,
+        arguments: OrderList(
+          cartId: '',
+          customerName: '',
+          totalAmount: 0,
+          isPaid: false,
+          paymentMode: 'Cash',
+          status: 'Pending',
+          createdAt: DateTime.timestamp(),
+          items: [],
+        ),
+      );
     }
   }
 }

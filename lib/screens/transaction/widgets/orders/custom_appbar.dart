@@ -3,6 +3,7 @@ import 'package:pos_coffee_shop/core/theme.dart';
 
 class OrderAppbar extends StatelessWidget {
   const OrderAppbar({super.key});
+  @override
   Widget build(BuildContext context) {
     return AppBar(
       backgroundColor: AppColors.color3,

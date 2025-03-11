@@ -49,7 +49,7 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController _consumerNameController = TextEditingController(
+    final TextEditingController consumerNameController = TextEditingController(
       text:
           widget.order!.customerName.isEmpty ? '' : widget.order!.customerName,
     );
@@ -91,7 +91,7 @@ class _CartScreenState extends State<CartScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ConsumerDetailsTab(controller: _consumerNameController),
+                      ConsumerDetailsTab(controller: consumerNameController),
                       NoteTab(),
                       Flexible(
                         child: Container(
@@ -111,7 +111,7 @@ class _CartScreenState extends State<CartScreen> {
                       : widget.order!.cartId;
               await cartProvider.saveCart(
                 cartId,
-                _consumerNameController.text,
+                consumerNameController.text,
                 paid: false,
                 paymentMode: "",
               );
@@ -125,7 +125,7 @@ class _CartScreenState extends State<CartScreen> {
               Navigator.pushNamed(context, AppRoutes.order);
             },
             cart: cartProvider,
-            consumerNameController: _consumerNameController,
+            consumerNameController: consumerNameController,
           ),
         );
       },
