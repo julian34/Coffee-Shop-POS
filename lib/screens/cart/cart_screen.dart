@@ -27,19 +27,24 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    final items =
-        cartProvider.items.values.map((item) => item.toMap()).toList();
-    if (widget.order!.items.length != items.length) {
-      if (widget.order != null) {
-        cartProvider.items.clear();
-        for (var item in widget.order!.items) {
-          cartProvider.addToCart(item);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final cartProvider = Provider.of<CartProvider>(context, listen: false);
+      final cartItems =
+          cartProvider.items.values
+              .map((itemcart) => itemcart.toMap())
+              .toList();
+      if (widget.order!.items.length != cartItems.length) {
+        if (widget.order != null) {
+          cartProvider.items.clear();
+          for (var item in widget.order!.items) {
+            print(item);
+            cartProvider.addToCart(item);
+          }
         }
+        paid = widget.order!.isPaid;
+        paymentMode = widget.order!.paymentMode;
       }
-      paid = widget.order!.isPaid;
-      paymentMode = widget.order!.paymentMode;
-    }
+    });
   }
 
   @override
@@ -100,7 +105,6 @@ class _CartScreenState extends State<CartScreen> {
                   ),
           bottomNavigationBar: BottomNavBar(
             onPressed: () async {
-              if (cartProvider.items.isEmpty) {}
               String cartId =
                   widget.order!.cartId.isEmpty
                       ? DateTime.now().millisecondsSinceEpoch.toString()
