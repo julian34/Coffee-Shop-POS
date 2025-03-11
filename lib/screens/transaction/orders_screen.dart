@@ -15,7 +15,7 @@ class OrdersScreen extends StatefulWidget {
 }
 
 class _OrdersWidgetState extends State<OrdersScreen> {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {

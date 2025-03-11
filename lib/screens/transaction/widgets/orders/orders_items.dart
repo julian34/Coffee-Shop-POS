@@ -6,7 +6,7 @@ import 'package:pos_coffee_shop/providers/orders_provider.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 
 class OrdersItemsWidget extends StatelessWidget {
-  const OrdersItemsWidget({Key? key}) : super(key: key);
+  const OrdersItemsWidget({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -5,6 +5,7 @@ class CategoryTabWidget extends StatelessWidget {
   final Function(String) onFilterChanged;
 
   const CategoryTabWidget({
+    super.key,
     required this.selectedFilter,
     required this.onFilterChanged,
   });
@@ -47,6 +48,7 @@ class FilterButton extends StatelessWidget {
   final VoidCallback onTap;
 
   const FilterButton({
+    super.key,
     required this.label,
     required this.isSelected,
     required this.onTap,
