@@ -28,15 +28,19 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-    if (widget.order != null) {
-      cartProvider.items.clear();
-      for (var item in widget.order!.items) {
-        cartProvider.addToCart(item);
+    final items =
+        cartProvider.items.values.map((item) => item.toMap()).toList();
+    if (widget.order!.items.length != items.length) {
+      if (widget.order != null) {
+        cartProvider.items.clear();
+        for (var item in widget.order!.items) {
+          cartProvider.addToCart(item);
+        }
       }
       paid = widget.order!.isPaid;
       paymentMode = widget.order!.paymentMode;
     }
-  } // new add | Load existing order into cart
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +59,24 @@ class _CartScreenState extends State<CartScreen> {
                 if (widget.order!.cartId != '') {
                   cartProvider.items.clear();
                 }
-                Navigator.pushNamed(context, AppRoutes.cashierHome);
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.cashierHome,
+                  arguments: OrderList(
+                    cartId: '',
+                    customerName: '',
+                    totalAmount: 0,
+                    isPaid: false,
+                    paymentMode: 'Cash',
+                    status: 'Peding',
+                    createdAt: DateTime.timestamp(),
+                    items: [],
+                  ),
+                );
               },
               titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
               cartId: widget.order!.cartId,
+              existing: widget.order,
             ),
           ),
           body:
