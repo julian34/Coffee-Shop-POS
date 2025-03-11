@@ -52,6 +52,12 @@ class AppRoutes {
       case managerHome:
         return MaterialPageRoute(builder: (_) => ManagerHomeScreen());
       case cashierHome:
+        final order = settings.arguments as OrderList;
+        if (order != null) {
+          return MaterialPageRoute(
+            builder: (_) => CashierHomeScreen(order: order),
+          );
+        }
         return MaterialPageRoute(builder: (_) => CashierHomeScreen());
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());

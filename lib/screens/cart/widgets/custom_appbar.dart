@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 
 class CartAppbar extends StatelessWidget {
   final VoidCallback onPressed;
   final String titleScreen;
   final String cartId;
+  final existing;
   const CartAppbar({
     Key? key,
     required this.onPressed,
     required this.titleScreen,
     required this.cartId,
+    this.existing,
   }) : super(key: key);
 
   @override
@@ -54,6 +57,7 @@ class CartAppbar extends StatelessWidget {
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: AppColors.color5,
+                  fontSize: 14,
                 ),
               ),
             ),
@@ -62,7 +66,19 @@ class CartAppbar extends StatelessWidget {
       actions: [
         Container(
           padding: EdgeInsets.only(right: 30),
-          child: SvgCustomApp.getIcon('info'),
+          child:
+              cartId.isNotEmpty
+                  ? IconButton(
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.cashierHome,
+                        arguments: existing,
+                      );
+                    },
+                    icon: SvgCustomApp.getIcon('add'),
+                  )
+                  : SvgCustomApp.getIcon('info'),
         ),
       ],
     );

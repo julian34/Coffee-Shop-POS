@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/models/order_model.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({super.key});
@@ -26,7 +27,20 @@ class BottomNavBar extends StatelessWidget {
                   children: [
                     IconButton(
                       onPressed: () {
-                        Navigator.pushNamed(context, AppRoutes.cashierHome);
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.cashierHome,
+                          arguments: OrderList(
+                            cartId: '',
+                            customerName: '',
+                            totalAmount: 0,
+                            isPaid: false,
+                            paymentMode: 'Cash',
+                            status: 'Pending',
+                            createdAt: DateTime.timestamp(),
+                            items: [],
+                          ),
+                        );
                       },
                       icon: SvgCustomApp.getIcon('home', c: AppColors.color5),
                     ),

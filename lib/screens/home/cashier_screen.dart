@@ -13,7 +13,8 @@ import 'widgets/cashier/bottom_nav_bar.dart';
 import '../../core/routes.dart';
 
 class CashierHomeScreen extends StatefulWidget {
-  const CashierHomeScreen({super.key});
+  final OrderList? order;
+  const CashierHomeScreen({super.key, this.order});
 
   @override
   _CashierHomeWidgetState createState() => _CashierHomeWidgetState();
@@ -75,8 +76,12 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 listen: false,
               );
               final order = OrderList(
-                cartId: "",
-                customerName: "Guest",
+                cartId:
+                    widget.order!.cartId.isEmpty ? "" : widget.order!.cartId,
+                customerName:
+                    widget.order!.customerName.isEmpty
+                        ? "Guest"
+                        : widget.order!.customerName,
                 totalAmount: 0.0,
                 isPaid: false,
                 paymentMode: "Cash",
