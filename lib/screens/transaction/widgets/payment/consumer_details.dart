@@ -43,7 +43,10 @@ class ConsumerDetailsTab extends StatelessWidget {
                     ),
                     Text(
                       customerName,
-                      style: TextStyle(color: AppColors.color5),
+                      style: TextStyle(
+                        color: AppColors.color5,
+                        fontWeight: FontWeight.w700,
+                      ),
                       textAlign: TextAlign.left,
                     ),
                   ],
