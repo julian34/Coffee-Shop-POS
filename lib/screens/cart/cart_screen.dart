@@ -51,7 +51,10 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
-  void _showConfirmationDialog(BuildContext context) {
+  void _showConfirmationDialog(
+    BuildContext context,
+    CartProvider cartProvider,
+  ) {
     showDialog(
       context: context,
       builder: (context) {
@@ -75,6 +78,7 @@ class _CartScreenState extends State<CartScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                cartProvider.items.clear();
                 Navigator.pop(context);
                 Navigator.pushNamed(context, AppRoutes.order);
               },
@@ -102,8 +106,7 @@ class _CartScreenState extends State<CartScreen> {
               onPressed: () async {
                 if (widget.order!.cartId != '') {
                   print(widget.order!.cartId);
-                  _showConfirmationDialog(context);
-                  cartProvider.items.clear();
+                  _showConfirmationDialog(context, cartProvider);
                 } else {
                   Navigator.pushNamed(
                     context,
@@ -166,6 +169,7 @@ class _CartScreenState extends State<CartScreen> {
               );
               Navigator.pushNamed(context, AppRoutes.order);
             },
+            order: widget.order!,
             cart: cartProvider,
             consumerNameController: consumerNameController,
           ),
