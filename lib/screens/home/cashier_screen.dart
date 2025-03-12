@@ -39,31 +39,38 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.only(bottom: 60), // Prevent FAB overlap
-        child: ListView(
-          children: [
-            SearchBarWidget(
-              onSearch: (query) {
-                setState(() {
-                  searchQuery = query;
-                });
-              },
-            ),
-            CategoryTabsWidget(
-              categories: categories,
-              selectedCategory: selectedCategory,
-              onCategorySelected: (category) {
-                setState(() {
-                  selectedCategory = category;
-                });
-              },
-            ),
-            ProductGridWidget(
-              selectedCategory: selectedCategory,
-              searchQuery: searchQuery,
-            ),
-          ],
+        child: Container(
+          child: Column(
+            children: [
+              SearchBarWidget(
+                onSearch: (query) {
+                  setState(() {
+                    searchQuery = query;
+                  });
+                },
+              ),
+              CategoryTabsWidget(
+                categories: categories,
+                selectedCategory: selectedCategory,
+                onCategorySelected: (category) {
+                  setState(() {
+                    selectedCategory = category;
+                  });
+                },
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: ProductGridWidget(
+                    selectedCategory: selectedCategory,
+                    searchQuery: searchQuery,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
+
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: SizedBox(
         height: 70,
@@ -71,12 +78,14 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
+              print('tes');
               final cartProvider = Provider.of<CartProvider>(
                 context,
                 listen: false,
               );
               final order = OrderList(
-                cartId: widget.order!.cartId ?? "",
+                cartId:
+                    widget.order!.cartId.isNotEmpty ? widget.order!.cartId : "",
                 customerName:
                     widget.order!.customerName.isEmpty
                         ? "Guest"
@@ -85,7 +94,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 isPaid: false,
                 paymentMode: "Cash",
                 status: "Pending",
-                createdAt: DateTime.now(),
+                createdAt: DateTime.timestamp(),
                 items: List.from(cartProvider.items.values),
               );
 

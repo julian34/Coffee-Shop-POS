@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
+import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
@@ -50,6 +51,41 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Icon(Icons.exit_to_app, color: AppColors.color6),
+              SizedBox(width: 10),
+              Text('Cancel'),
+            ],
+          ),
+          content: Text(
+            'Are you sure you want to cancel the cart update? Any unsaved changes will be lost.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, AppRoutes.order);
+              },
+              child: Text('Exit'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final TextEditingController consumerNameController = TextEditingController(
@@ -63,24 +99,27 @@ class _CartScreenState extends State<CartScreen> {
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(120),
             child: CartAppbar(
-              onPressed: () {
+              onPressed: () async {
                 if (widget.order!.cartId != '') {
+                  print(widget.order!.cartId);
+                  _showConfirmationDialog(context);
                   cartProvider.items.clear();
+                } else {
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.cashierHome,
+                    arguments: OrderList(
+                      cartId: '',
+                      customerName: '',
+                      totalAmount: 0,
+                      isPaid: false,
+                      paymentMode: 'Cash',
+                      status: 'Peding',
+                      createdAt: DateTime.timestamp(),
+                      items: [],
+                    ),
+                  );
                 }
-                Navigator.pushNamed(
-                  context,
-                  AppRoutes.cashierHome,
-                  arguments: OrderList(
-                    cartId: '',
-                    customerName: '',
-                    totalAmount: 0,
-                    isPaid: false,
-                    paymentMode: 'Cash',
-                    status: 'Peding',
-                    createdAt: DateTime.timestamp(),
-                    items: [],
-                  ),
-                );
               },
               titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
               cartId: widget.order!.cartId,

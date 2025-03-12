@@ -8,12 +8,12 @@ class CartAppbar extends StatelessWidget {
   final String cartId;
   final existing;
   const CartAppbar({
-    super.key,
+    Key? key,
     required this.onPressed,
     required this.titleScreen,
     required this.cartId,
     this.existing,
-  });
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class CartAppbar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(30),
               ),
               child: Text(
-                "No. $cartId",
+                "No. ${cartId}",
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   color: AppColors.color5,
