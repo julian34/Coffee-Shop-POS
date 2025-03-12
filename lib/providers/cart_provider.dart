@@ -95,4 +95,30 @@ class CartProvider extends ChangeNotifier {
       print("Error saving cart: $e");
     }
   }
+
+  Future<void> updateCart(
+    String cartId,
+    String consumerName, {
+    required bool paid,
+    required String paymentMode,
+  }) async {
+    if (_items.isEmpty) {
+      print("Cart is empty, not saving.");
+      return;
+    }
+    try {
+      await _cartService.saveCart(
+        cartId,
+        consumerName,
+        _items.values.toList(),
+        totalAmount,
+        paid,
+        paymentMode,
+      );
+      notifyListeners();
+      // Navigator.pop(context);
+    } catch (e) {
+      print("Error saving cart: $e");
+    }
+  }
 }
