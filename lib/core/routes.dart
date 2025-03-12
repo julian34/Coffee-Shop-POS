@@ -52,19 +52,14 @@ class AppRoutes {
       case managerHome:
         return MaterialPageRoute(builder: (_) => ManagerHomeScreen());
       case cashierHome:
-        final order = settings.arguments as OrderList;
-        // if (order != null) {
-        //   return MaterialPageRoute(
-        //     builder: (_) => CashierHomeScreen(order: order),
-        //   );
-        // }
+        final order = settings.arguments as OrderList?;
         return MaterialPageRoute(
           builder: (_) => CashierHomeScreen(order: order),
         );
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
       case cart:
-        final order = settings.arguments as OrderList;
+        final order = settings.arguments as OrderList?;
         return MaterialPageRoute(builder: (_) => CartScreen(order: order));
       case order:
         return MaterialPageRoute(builder: (_) => OrdersScreen());
