@@ -34,6 +34,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
                 cartId: widget.order.cartId,
                 cart: widget.cart,
                 consumerNameController: widget.consumerNameController.text,
+                order: widget.order,
               )
               : prosessOrder(
                 onPressed: widget.onPressed,
@@ -128,13 +129,12 @@ Future<void> _saveCart(
     print(cartData);
     _showLoadingDialog(context);
     //save cart
-    cart.saveCart(
+    await cart.saveCart(
       cartData['cartId'],
       cartData['consumerName'],
       paid: cartData['paid'],
       paymentMode: cartData['paymentMode'],
     );
-    await Future.delayed(Duration(seconds: 2));
     _showMassage(context, 'Cart saved successfully!', AppColors.color7);
     Navigator.pushReplacementNamed(context, AppRoutes.cashierHome);
   } catch (e) {
@@ -152,7 +152,8 @@ Future<void> _updateCart(
     print(cartData);
     _showLoadingDialog(context);
     //save cart
-    cart.updateCart(
+
+    await cart.updateCart(
       cartData['cartId'],
       cartData['consumerName'],
       paid: cartData['paid'],
@@ -163,6 +164,31 @@ Future<void> _updateCart(
     Navigator.pop(context);
     // Navigator.pushReplacementNamed(context, AppRoutes.order);
     _showConfirmationDialog(context, cart);
+  } catch (e) {
+    Navigator.pop(context);
+    _showMassage(context, 'Failed to update cart: $e', AppColors.color6);
+  }
+}
+
+Future<void> _checkOutCart(
+  context,
+  Map<String, dynamic> cartData,
+  CartProvider cart,
+  OrderList order,
+) async {
+  try {
+    print(cartData);
+    _showLoadingDialog(context);
+    //save cart
+    await cart.updateCart(
+      cartData['cartId'],
+      cartData['consumerName'],
+      paid: cartData['paid'],
+      paymentMode: cartData['paymentMode'],
+    );
+    _showMassage(context, 'Cart update successfully!', AppColors.color7);
+    Navigator.pop(context);
+    Navigator.pushNamed(context, AppRoutes.payment, arguments: order);
   } catch (e) {
     Navigator.pop(context);
     _showMassage(context, 'Failed to update cart: $e', AppColors.color6);
@@ -232,11 +258,14 @@ class prosessCheckout extends StatelessWidget {
   final String cartId;
   final CartProvider cart;
   final String consumerNameController;
+  final OrderList order;
+
   const prosessCheckout({
     super.key,
     required this.cartId,
     required this.cart,
     required this.consumerNameController,
+    required this.order,
   });
   @override
   Widget build(BuildContext context) {
@@ -246,7 +275,19 @@ class prosessCheckout extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         ElevatedButton.icon(
-          onPressed: () {},
+          onPressed: () {
+            final name =
+                consumerNameController.isEmpty && cartId.isEmpty
+                    ? cartId
+                    : consumerNameController;
+            var cartData = {
+              'cartId': cartId,
+              'consumerName': name,
+              'paid': false,
+              'paymentMode': "",
+            };
+            _checkOutCart(context, cartData, cart, order);
+          },
           style: ButtonStyle(
             backgroundColor: WidgetStatePropertyAll(AppColors.primary),
           ),

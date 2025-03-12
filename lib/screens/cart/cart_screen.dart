@@ -94,7 +94,9 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     final TextEditingController consumerNameController = TextEditingController(
       text:
-          widget.order!.customerName.isEmpty ? '' : widget.order!.customerName,
+          widget.order!.customerName.isEmpty
+              ? 'Guest'
+              : widget.order!.customerName,
     );
 
     return Consumer<CartProvider>(

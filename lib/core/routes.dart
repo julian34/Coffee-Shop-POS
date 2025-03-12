@@ -73,7 +73,7 @@ class AppRoutes {
       case payment:
         final order = settings.arguments as OrderList; // Extract argument
         return MaterialPageRoute(
-          builder: (_) => OrderDetailScreen(order: order),
+          builder: (_) => PaymentScreen(orderList: order),
         );
       default:
         return MaterialPageRoute(
