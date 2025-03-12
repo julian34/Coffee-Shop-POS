@@ -13,6 +13,7 @@ import '../screens/cart/cart_screen.dart';
 
 import 'package:pos_coffee_shop/screens/transaction/orders_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/order_detail_screen.dart';
+import 'package:pos_coffee_shop/screens/transaction/payment_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -24,6 +25,7 @@ class AppRoutes {
 
   static const String cart = '/cart';
   static const String order = '/order';
+  static const String payment = '/payment';
   static const String orderDetail = '/order-detail';
 
   static const String error = '/error';
@@ -68,7 +70,11 @@ class AppRoutes {
         return MaterialPageRoute(
           builder: (_) => OrderDetailScreen(order: order),
         );
-
+      case payment:
+        final order = settings.arguments as OrderList; // Extract argument
+        return MaterialPageRoute(
+          builder: (_) => OrderDetailScreen(order: order),
+        );
       default:
         return MaterialPageRoute(
           builder:
