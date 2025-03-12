@@ -13,38 +13,7 @@ class BottomNavBar extends StatelessWidget {
       color: AppColors.color3,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [
-          // IconButton(icon: Icon(Icons.home), onPressed: () {}),
-          // IconButton(icon: Icon(Icons.receipt), onPressed: () {}),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            mainAxisSize: MainAxisSize.max,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 10, right: 50),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: SvgCustomApp.getIcon('home', c: AppColors.color5),
-                    ),
-                  ],
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 70),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    SvgCustomApp.getIcon('receipt'),
-                    // Text("Orders List", style: AppFonts.navBarText),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
+        children: [],
       ),
     );
   }
