@@ -1,5 +1,5 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
@@ -92,6 +92,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       //   'paymentMethod': paymentMethod,
       //   'timestamp': FieldValue.serverTimestamp(),
       // };
+
       final payment = Payment(
         orderId: widget.orderList!.cartId,
         totalAmount: widget.orderList!.totalAmount,
@@ -102,7 +103,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
       );
 
       print(payment.toMap());
+
       // paymentProvider.makePayment(payment);
+
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.successpayment,
+        arguments: payment,
+      );
 
       ScaffoldMessenger.of(
         context,
