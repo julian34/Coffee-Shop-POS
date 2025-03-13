@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
+import 'package:pos_coffee_shop/models/payment_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../screens/auth/login_screen.dart';
 // import '../screens/auth/register_screen.dart';
@@ -14,6 +15,7 @@ import '../screens/cart/cart_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/orders_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/order_detail_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/payment_screen.dart';
+import 'package:pos_coffee_shop/screens/transaction/success_screen.dart';
 
 class AppRoutes {
   static const String splash = '/';
@@ -26,6 +28,7 @@ class AppRoutes {
   static const String cart = '/cart';
   static const String order = '/order';
   static const String payment = '/payment';
+  static const String successpayment = '/success-payment';
   static const String orderDetail = '/order-detail';
 
   static const String error = '/error';
@@ -74,6 +77,11 @@ class AppRoutes {
         final order = settings.arguments as OrderList; // Extract argument
         return MaterialPageRoute(
           builder: (_) => PaymentScreen(orderList: order),
+        );
+      case successpayment:
+        final payment = settings.arguments as Payment;
+        return MaterialPageRoute(
+          builder: (_) => SuccessScreen(payment: payment),
         );
       default:
         return MaterialPageRoute(
