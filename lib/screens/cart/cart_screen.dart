@@ -118,6 +118,7 @@ class _CartScreenState extends State<CartScreen> {
                       customerName: '',
                       totalAmount: 0,
                       isPaid: false,
+                      paid: false,
                       paymentMode: 'Cash',
                       status: 'Peding',
                       createdAt: DateTime.timestamp(),

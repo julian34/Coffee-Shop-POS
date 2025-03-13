@@ -32,7 +32,7 @@ class OrdersItemsWidget extends StatelessWidget {
                   final order = orders[index];
                   return GestureDetector(
                     onTap: () {
-                      if (order.isPaid) {
+                      if (order.paid) {
                         Navigator.pushNamed(
                           context,
                           AppRoutes.orderDetail,
@@ -74,14 +74,11 @@ class OrdersItemsWidget extends StatelessWidget {
                             vertical: 6,
                           ),
                           decoration: BoxDecoration(
-                            color:
-                                order.status == "Pending"
-                                    ? Colors.red
-                                    : Colors.green,
+                            color: order.paid ? Colors.green : Colors.red,
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(
-                            order.status,
+                            order.paid ? "Paid" : "Pending",
                             style: TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
