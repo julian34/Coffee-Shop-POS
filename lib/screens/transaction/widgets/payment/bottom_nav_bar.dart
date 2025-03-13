@@ -13,7 +13,20 @@ class BottomNavBar extends StatelessWidget {
       color: AppColors.color3,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
-        children: [],
+        children: [
+          ElevatedButton(
+            onPressed: () {},
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+            child: Text(
+              'Submit',
+              style: TextStyle(
+                fontSize: 20,
+                color: AppColors.color5,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

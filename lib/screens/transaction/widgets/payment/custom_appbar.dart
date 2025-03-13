@@ -54,7 +54,7 @@ class CustomAppbar extends StatelessWidget {
       actions: [
         Container(
           padding: EdgeInsets.only(right: 30),
-          child: SvgCustomApp.getIcon('print'),
+          child: SvgCustomApp.getIcon('info'),
         ),
       ],
     );
