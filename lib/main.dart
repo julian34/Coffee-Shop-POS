@@ -7,6 +7,7 @@ import 'firebase_options.dart';
 import 'core/routes.dart';
 import 'providers/auth_provider.dart';
 import 'providers/cart_provider.dart';
+import 'package:pos_coffee_shop/providers/payment_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => AuthProvider()),
         ChangeNotifierProvider(create: (_) => CartProvider()),
         ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()),
       ],
       child: MyApp(initialRoute: initialRoute),
     ),
@@ -40,7 +42,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Coffee POS',
           theme: ThemeData(
-            textTheme: GoogleFonts.latoTextTheme(),
+            textTheme: GoogleFonts.soraTextTheme(),
             primarySwatch: Colors.brown,
           ),
           initialRoute: initialRoute,
