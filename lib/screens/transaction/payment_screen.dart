@@ -1,11 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
+import 'package:pos_coffee_shop/models/payment_model.dart';
+import 'package:pos_coffee_shop/providers/payment_provider.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/payment/bottom_nav_bar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/payment/consumer_details.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/payment/custom_appbar.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/payment/list_products.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/payment/payment_detail.dart';
+import 'package:provider/provider.dart';
 
 class PaymentScreen extends StatefulWidget {
   final OrderList? orderList;
@@ -69,7 +73,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         ],
       ),
-      bottomNavigationBar: BottomNavBar(),
+      bottomNavigationBar: BottomNavBar(onPayPressed: _processPayment),
     );
+  }
+
+  Future<void> _processPayment() async {
+    try {
+      final paymentProvider = Provider.of<PaymentProvider>(
+        context,
+        listen: false,
+      );
+
+      // final paymentData = {
+      //   'orderId': widget.orderList!.cartId,
+      //   'totalAmount': widget.orderList!.totalAmount,
+      //   'receivedAmount': receivedAmount,
+      //   'changeAmount': receivedAmount - widget.orderList!.totalAmount,
+      //   'paymentMethod': paymentMethod,
+      //   'timestamp': FieldValue.serverTimestamp(),
+      // };
+      final payment = Payment(
+        orderId: widget.orderList!.cartId,
+        totalAmount: widget.orderList!.totalAmount,
+        receivedAmount: receivedAmount,
+        changeAmount: receivedAmount - (widget.orderList!.totalAmount ?? 0.0),
+        paymentMethod: paymentMethod,
+        createdAt: DateTime.now(),
+      );
+
+      print(payment.toMap());
+      // paymentProvider.makePayment(payment);
+
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Payment Successful!')));
+    } catch (e) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
+    }
   }
 }

@@ -4,7 +4,10 @@ import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 
 class BottomNavBar extends StatelessWidget {
-  const BottomNavBar({super.key});
+  final VoidCallback onPayPressed;
+
+  const BottomNavBar({super.key, required this.onPayPressed});
+
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -15,7 +18,7 @@ class BottomNavBar extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           ElevatedButton(
-            onPressed: () {},
+            onPressed: onPayPressed,
             style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
             child: Text(
               'Submit',
