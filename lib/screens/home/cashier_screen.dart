@@ -78,27 +78,32 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
         child: FittedBox(
           child: FloatingActionButton(
             onPressed: () {
-              print('tes');
               final cartProvider = Provider.of<CartProvider>(
                 context,
                 listen: false,
               );
-              final order = OrderList(
-                cartId:
-                    widget.order!.cartId.isNotEmpty ? widget.order!.cartId : "",
-                customerName:
-                    widget.order!.customerName.isEmpty
-                        ? "Guest"
-                        : widget.order!.customerName,
-                totalAmount: 0.0,
-                isPaid: false,
-                paymentMode: "Cash",
-                status: "Pending",
-                createdAt: DateTime.timestamp(),
-                items: List.from(cartProvider.items.values),
+              var dataOrder;
+              if (widget.order != null && widget.order!.items.isNotEmpty) {
+                dataOrder = widget.order!;
+              } else {
+                print(widget.order);
+                dataOrder = OrderList(
+                  cartId: widget.order?.cartId ?? "",
+                  customerName: widget.order?.customerName ?? "Guest",
+                  totalAmount: widget.order?.totalAmount?.toDouble() ?? 0,
+                  isPaid: widget.order?.isPaid ?? false,
+                  paid: widget.order?.paid ?? false,
+                  paymentMode: widget.order?.paymentMode ?? "Cash",
+                  status: widget.order?.paymentMode ?? "Pending",
+                  createdAt: widget.order?.createdAt ?? DateTime.now(),
+                  items: List.from(cartProvider.items.values),
+                );
+              }
+              Navigator.pushNamed(
+                context,
+                AppRoutes.cart,
+                arguments: dataOrder,
               );
-
-              Navigator.pushNamed(context, AppRoutes.cart, arguments: order);
             },
             shape: const CircleBorder(),
             backgroundColor: AppColors.color3,

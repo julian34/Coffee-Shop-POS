@@ -9,6 +9,7 @@ class OrderList {
   final String paymentMode;
   final String status; // "Pending" or "Checkout"
   final DateTime createdAt; // Ensure it's non-null
+  final bool paid;
   final List<CartItem> items; // Convert items properly
 
   OrderList({
@@ -16,6 +17,7 @@ class OrderList {
     required this.customerName,
     required this.totalAmount,
     required this.isPaid,
+    required this.paid,
     required this.paymentMode,
     required this.status,
     required this.createdAt,
@@ -29,6 +31,7 @@ class OrderList {
       customerName: map['customerName'] ?? 'Unknown',
       totalAmount: (map['totalAmount'] ?? 0).toDouble(),
       isPaid: map['isPaid'] ?? false,
+      paid: map['paid'] ?? false,
       paymentMode: map['paymentMode'] ?? 'Cash',
       status: map['status'] ?? 'Pending',
       createdAt:
@@ -49,6 +52,7 @@ class OrderList {
       'customerName': customerName,
       'totalAmount': totalAmount,
       'isPaid': isPaid,
+      'paid': paid,
       'paymentMode': paymentMode,
       'status': status,
       'createdAt': Timestamp.fromDate(

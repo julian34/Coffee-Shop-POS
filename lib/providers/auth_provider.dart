@@ -141,6 +141,7 @@ class AuthProvider extends ChangeNotifier {
           cartId: '',
           customerName: '',
           totalAmount: 0,
+          paid: false,
           isPaid: false,
           paymentMode: 'Cash',
           status: 'Pending',

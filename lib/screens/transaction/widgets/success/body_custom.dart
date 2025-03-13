@@ -5,6 +5,9 @@ class BodyCustom extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [Text('Congratulations!!!', style: TextStyle(fontSize: 20))],
+    );
   }
 }

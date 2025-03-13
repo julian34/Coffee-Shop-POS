@@ -101,11 +101,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         paymentMethod: paymentMethod,
         createdAt: DateTime.now(),
       );
-
       print(payment.toMap());
-
-      // paymentProvider.makePayment(payment);
-
+      paymentProvider.makePayment(payment);
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.successpayment,

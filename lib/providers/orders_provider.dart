@@ -55,9 +55,8 @@ class OrderProvider extends ChangeNotifier {
               order.cartId.contains(_searchQuery);
           final matchesStatus =
               _statusFilter == 'All' ||
-              (_statusFilter == 'Pending' && !order.isPaid) ||
-              (_statusFilter == 'Paid' && order.isPaid);
-
+              (_statusFilter == 'Pending' && !order.isPaid && !order.paid) ||
+              (_statusFilter == 'Paid' && order.paid);
           return matchesSearch && matchesStatus;
         }).toList();
 
