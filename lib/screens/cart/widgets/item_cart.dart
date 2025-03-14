@@ -19,6 +19,7 @@ class ItemCartWidget extends StatelessWidget {
           key: Key(item.productId),
           direction: DismissDirection.endToStart,
           background: Container(
+            // decoration: BoxDecoration(border: Border()),
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(horizontal: 20),
             color: AppColors.color6,
