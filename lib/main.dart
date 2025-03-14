@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:pos_coffee_shop/providers/orders_provider.dart';
 import 'package:provider/provider.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'core/routes.dart';
 import 'providers/auth_provider.dart';
+import 'providers/cart_provider.dart';
+import 'package:pos_coffee_shop/providers/payment_provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,7 +18,12 @@ void main() async {
 
   runApp(
     MultiProvider(
-      providers: [ChangeNotifierProvider(create: (_) => AuthProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => CartProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider()),
+        ChangeNotifierProvider(create: (_) => PaymentProvider()),
+      ],
       child: MyApp(initialRoute: initialRoute),
     ),
   );
@@ -34,7 +42,7 @@ class MyApp extends StatelessWidget {
           debugShowCheckedModeBanner: false,
           title: 'Coffee POS',
           theme: ThemeData(
-            textTheme: GoogleFonts.latoTextTheme(),
+            textTheme: GoogleFonts.soraTextTheme(),
             primarySwatch: Colors.brown,
           ),
           initialRoute: initialRoute,
