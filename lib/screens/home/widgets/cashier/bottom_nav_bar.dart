@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../../core/theme.dart';
+import 'package:pos_coffee_shop/core/routes.dart';
+import 'package:pos_coffee_shop/core/theme.dart';
 
 class BottomNavBar extends StatelessWidget {
+  const BottomNavBar({super.key});
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
@@ -22,8 +24,11 @@ class BottomNavBar extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgCustomApp.getIcon('home'),
-                    Text("Home", style: AppFonts.navBarText),
+                    IconButton(
+                      onPressed: () {},
+                      icon: SvgCustomApp.getIcon('home'),
+                    ),
+                    // Text("Home", style: AppFonts.navBarText),
                   ],
                 ),
               ),
@@ -32,8 +37,16 @@ class BottomNavBar extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    SvgCustomApp.getIcon('receipt', c: AppColors.color4),
-                    Text("Order List", style: AppFonts.navBarText),
+                    IconButton(
+                      onPressed: () {
+                        Navigator.pushNamed(context, AppRoutes.order);
+                      },
+                      icon: SvgCustomApp.getIcon(
+                        'receipt',
+                        c: AppColors.color4,
+                      ),
+                    ),
+                    // Text("Orders List", style: AppFonts.navBarText),
                   ],
                 ),
               ),

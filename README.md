@@ -15,6 +15,18 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+Features
+
+1. Order Management: Add, edit, and remove orders.
+2. Menu Management: Display items with images, prices, and descriptions.
+3. Payment Processing: Accept cash, credit, and digital payments.
+4. Receipts & Invoices: Generate receipts for customers.
+5. Sales Analytics: Track daily, weekly, and monthly sales.
+6. Inventory Management: Keep track of stock levels.
+7. User Authentication: Secure access for staff and admins.
+8. Table & Takeaway Orders: Differentiate between dine-in and takeaway.
+9. Printer & QR Code Integration: Print receipts and generate QR codes for mobile payments.
+
 lib/
 │── main.dart # Entry point of the app
 │
