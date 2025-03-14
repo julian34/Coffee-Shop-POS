@@ -132,9 +132,10 @@ class SuccessScreen extends StatelessWidget {
                           ),
                           onPressed: () {
                             cartProvider.items.clear();
-                            Navigator.pushReplacementNamed(
+                            Navigator.pushNamedAndRemoveUntil(
                               context,
                               AppRoutes.cashierHome,
+                              (route) => false,
                             );
                           },
                           label: Text(
