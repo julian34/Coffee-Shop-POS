@@ -9,6 +9,7 @@ import 'package:pos_coffee_shop/screens/transaction/widgets/success/custom_appba
 import 'package:pos_coffee_shop/untils/format_utils.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class SuccessScreen extends StatefulWidget {
   final Payment? payment;
@@ -49,7 +50,9 @@ class _SuccessScreenState extends State<SuccessScreen> {
                   return ListTile(
                     title: Text(device.name ?? "Unknown"),
                     subtitle: Text(device.macAdress),
-                    onTap: () => Navigator.pop(context, device),
+                    onTap: () {
+                      Navigator.pop(context, device);
+                    },
                   );
                 },
               ),
@@ -60,6 +63,13 @@ class _SuccessScreenState extends State<SuccessScreen> {
     if (selectedDevice != null) {
       _connectAndPrint(selectedDevice);
     }
+  }
+
+  Future<void> _saveSelectedDevice(BluetoothInfo device) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_name', device.name ?? "Unknown");
+    await prefs.setString('printer_mac', device.macAdress);
+    print("Saved Printer: ${device.name}");
   }
 
   //Scan for paired Bluetooth device
