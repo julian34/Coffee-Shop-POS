@@ -27,7 +27,22 @@ class _SuccessScreenState extends State<SuccessScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(Duration.zero, _showPrinterPopup);
+  }
+
+  Future<void> _loadSavedPrinter() async {
+    final prefs = await SharedPreferences.getInstance();
+    final printerName = prefs.getString('printer_name');
+    final printerMac = prefs.getString('printer_mac');
+
+    if (printerName != null && printerMac != null) {
+      final savedDevice = BluetoothInfo(
+        name: printerName,
+        macAdress: printerMac,
+      );
+      _connectAndPrint(savedDevice);
+    } else {
+      Future.delayed(Duration.zero, _showPrinterPopup);
+    }
   }
 
   Future<void> _showPrinterPopup() async {
@@ -65,13 +80,6 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
   }
 
-  Future<void> _saveSelectedDevice(BluetoothInfo device) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('printer_name', device.name ?? "Unknown");
-    await prefs.setString('printer_mac', device.macAdress);
-    print("Saved Printer: ${device.name}");
-  }
-
   //Scan for paired Bluetooth device
   Future<List<BluetoothInfo>> _scanBluetoothDevice() async {
     bool isAvailable = await PrintBluetoothThermal.bluetoothEnabled;
@@ -80,6 +88,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
     }
     _showSnackBar("Please enable Bluetooth.");
     return [];
+  }
+
+  Future<void> _saveSelectedDevice(BluetoothInfo device) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_name', device.name ?? "Unknown");
+    await prefs.setString('printer_mac', device.macAdress);
   }
 
   Future<void> _connectAndPrint(BluetoothInfo device) async {
@@ -91,6 +105,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
     if (isConnected) {
       print("Connected to ${device.name}");
       List<int> ticket = await _generateReceipt();
+      await _saveSelectedDevice(device);
       await PrintBluetoothThermal.writeBytes(ticket);
       _showSnackBar("Receipt printed successfully.");
     } else {
@@ -342,7 +357,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                             "print",
                             c: AppColors.color5,
                           ),
-                          onPressed: _showPrinterPopup,
+                          onPressed: _loadSavedPrinter,
                           label: Text(
                             "Invoice",
                             style: TextStyle(
