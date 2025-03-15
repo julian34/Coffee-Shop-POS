@@ -6,7 +6,7 @@ import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class BottomNavBar extends StatefulWidget {
   final CartProvider cart;
-  final TextEditingController consumerNameController;
+  final TextEditingController customerNameController;
   final VoidCallback onPressed;
   final OrderList order;
 
@@ -15,7 +15,7 @@ class BottomNavBar extends StatefulWidget {
     required this.onPressed,
     required this.order,
     required this.cart,
-    required this.consumerNameController,
+    required this.customerNameController,
   });
 
   @override
@@ -33,44 +33,14 @@ class _BottomNavBarState extends State<BottomNavBar> {
               ? prosessCheckout(
                 cartId: widget.order.cartId,
                 cart: widget.cart,
-                consumerNameController: widget.consumerNameController.text,
+                customerNameController: widget.customerNameController,
                 order: widget.order,
               )
               : prosessOrder(
                 onPressed: widget.onPressed,
                 cart: widget.cart,
-                consumerNameController: widget.consumerNameController.text,
+                customerNameController: widget.customerNameController,
               ),
-
-      // Container(
-      //   padding: EdgeInsets.symmetric(horizontal: 40),
-      //   child: ElevatedButton(
-      //     onPressed: cart.items.isEmpty ? null : onPressed,
-      //     // : () async {
-      //     //   String cartId =
-      //     //       DateTime.now().millisecondsSinceEpoch.toString();
-      //     //   await cart.saveCart(
-      //     //     cartId,
-      //     //     consumerNameController.text,
-      //     //     paid: false,
-      //     //     paymentMode: '',
-      //     //   );
-      //     //   Navigator.pop(context);
-      //     //   ScaffoldMessenger.of(
-      //     //     context,
-      //     //   ).showSnackBar(SnackBar(content: Text('Cart seved!')));
-      //     // },
-      //     style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-      //     child: Text(
-      //       cart.items.isEmpty ? "Please add items" : "Prosess Order",
-      //       style: TextStyle(
-      //         fontSize: 20,
-      //         color: AppColors.color4,
-      //         fontWeight: FontWeight.w700,
-      //       ),
-      //     ),
-      //   ),
-      // ),
     );
   }
 }
@@ -78,12 +48,12 @@ class _BottomNavBarState extends State<BottomNavBar> {
 class prosessOrder extends StatelessWidget {
   final VoidCallback onPressed;
   final CartProvider cart;
-  final String consumerNameController;
+  final TextEditingController customerNameController;
   const prosessOrder({
     super.key,
     required this.onPressed,
     required this.cart,
-    required this.consumerNameController,
+    required this.customerNameController,
   });
   @override
   Widget build(BuildContext context) {
@@ -99,7 +69,7 @@ class prosessOrder extends StatelessWidget {
 
                     var cartData = {
                       'cartId': cartId,
-                      'consumerName': consumerNameController,
+                      'customerName': customerNameController.text,
                       'paid': false,
                       'paymentMode': "",
                     };
@@ -131,7 +101,7 @@ Future<void> _saveCart(
     //save cart
     await cart.saveCart(
       cartData['cartId'],
-      cartData['consumerName'],
+      cartData['customerName'],
       paid: cartData['paid'],
       paymentMode: cartData['paymentMode'],
     );
@@ -155,11 +125,12 @@ Future<void> _updateCart(
 
     await cart.updateCart(
       cartData['cartId'],
-      cartData['consumerName'],
+      cartData['customerName'],
       paid: cartData['paid'],
       paymentMode: cartData['paymentMode'],
     );
     await Future.delayed(Duration(seconds: 2));
+    print(cartData['customerName']);
     _showMassage(context, 'Cart update successfully!', AppColors.color7);
     Navigator.pop(context);
     // Navigator.pushReplacementNamed(context, AppRoutes.order);
@@ -182,7 +153,7 @@ Future<void> _checkOutCart(
     //save cart
     await cart.updateCart(
       cartData['cartId'],
-      cartData['consumerName'],
+      cartData['customerName'],
       paid: cartData['paid'],
       paymentMode: cartData['paymentMode'],
     );
@@ -257,14 +228,14 @@ void _showLoadingDialog(BuildContext context) {
 class prosessCheckout extends StatelessWidget {
   final String cartId;
   final CartProvider cart;
-  final String consumerNameController;
+  final TextEditingController customerNameController;
   final OrderList order;
 
   const prosessCheckout({
     super.key,
     required this.cartId,
     required this.cart,
-    required this.consumerNameController,
+    required this.customerNameController,
     required this.order,
   });
   @override
@@ -277,12 +248,12 @@ class prosessCheckout extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             final name =
-                consumerNameController.isEmpty && cartId.isEmpty
+                customerNameController.text.isEmpty && cartId.isEmpty
                     ? cartId
-                    : consumerNameController;
+                    : customerNameController.text;
             var cartData = {
               'cartId': cartId,
-              'consumerName': name,
+              'customerName': name,
               'paid': false,
               'paymentMode': "",
             };
@@ -304,13 +275,13 @@ class prosessCheckout extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: () {
             final name =
-                consumerNameController.isEmpty && cartId.isEmpty
+                customerNameController.text.isEmpty && cartId.isEmpty
                     ? cartId
-                    : consumerNameController;
+                    : customerNameController.text;
 
             var cartData = {
               'cartId': cartId,
-              'consumerName': name,
+              'customerName': name,
               'paid': false,
               'paymentMode': "",
             };

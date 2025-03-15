@@ -4,8 +4,13 @@ import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 
 class ConsumerDetailsTab extends StatelessWidget {
-  final controller;
-  const ConsumerDetailsTab({super.key, this.controller});
+  final TextEditingController controller;
+  // final Function(String) onChanged;
+  const ConsumerDetailsTab({
+    super.key,
+    required this.controller,
+    // required this.onChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -15,6 +20,7 @@ class ConsumerDetailsTab extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
           child: TextField(
             controller: controller,
+            // onChanged: onChanged,
             decoration: InputDecoration(
               filled: true,
               fillColor: AppColors.color5,
