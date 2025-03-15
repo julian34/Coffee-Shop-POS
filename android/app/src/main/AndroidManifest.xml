@@ -7,7 +7,7 @@
         android:label="pos_coffee_shop"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-        <uses-feature android:name="android.hardware.bluetooth" />
+       
         <activity
             android:name=".MainActivity"
             android:exported="true"
