@@ -98,6 +98,11 @@ class _CartScreenState extends State<CartScreen> {
                 onPressed: () {
                   Navigator.pop(context);
                   cartProvider.items.clear();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.order,
+                    (route) => false,
+                  );
                   Navigator.pushNamed(context, AppRoutes.order);
                 },
                 child: const Text('Exit'),
