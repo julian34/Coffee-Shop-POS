@@ -1,17 +1,218 @@
+import 'package:esc_pos_utils_plus/esc_pos_utils_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
-import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
 import 'package:pos_coffee_shop/providers/payment_provider.dart';
 import 'package:pos_coffee_shop/screens/transaction/widgets/success/custom_appbar.dart';
 import 'package:pos_coffee_shop/untils/format_utils.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SuccessScreen extends StatelessWidget {
+class SuccessScreen extends StatefulWidget {
   final Payment? payment;
   const SuccessScreen({super.key, this.payment});
+
+  @override
+  State<SuccessScreen> createState() => _SuccessScreenState();
+}
+
+class _SuccessScreenState extends State<SuccessScreen> {
+  List<BluetoothInfo> _devices = [];
+  String optionprinttype = "58 mm";
+  bool _isPrinting = false;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  Future<void> _loadSavedPrinter() async {
+    final prefs = await SharedPreferences.getInstance();
+    final printerName = prefs.getString('printer_name');
+    final printerMac = prefs.getString('printer_mac');
+
+    if (printerName != null && printerMac != null) {
+      final savedDevice = BluetoothInfo(
+        name: printerName,
+        macAdress: printerMac,
+      );
+      _connectAndPrint(savedDevice);
+    } else {
+      Future.delayed(Duration.zero, _showPrinterPopup);
+    }
+  }
+
+  Future<void> _showPrinterPopup() async {
+    List<BluetoothInfo> devices = await _scanBluetoothDevice();
+    if (devices.isEmpty) {
+      _showSnackBar("No Bluetooth printers found.");
+      return;
+    }
+    BluetoothInfo? selectedDevice = await showDialog<BluetoothInfo>(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text("Select a Bluetooh Printer"),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.builder(
+                itemCount: devices.length,
+                itemBuilder: (context, index) {
+                  final device = devices[index];
+                  return ListTile(
+                    title: Text(device.name ?? "Unknown"),
+                    subtitle: Text(device.macAdress),
+                    onTap: () {
+                      Navigator.pop(context, device);
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+    );
+
+    if (selectedDevice != null) {
+      _connectAndPrint(selectedDevice);
+    }
+  }
+
+  //Scan for paired Bluetooth device
+  Future<List<BluetoothInfo>> _scanBluetoothDevice() async {
+    bool isAvailable = await PrintBluetoothThermal.bluetoothEnabled;
+    if (isAvailable) {
+      return await PrintBluetoothThermal.pairedBluetooths;
+    }
+    _showSnackBar("Please enable Bluetooth.");
+    return [];
+  }
+
+  Future<void> _saveSelectedDevice(BluetoothInfo device) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString('printer_name', device.name ?? "Unknown");
+    await prefs.setString('printer_mac', device.macAdress);
+  }
+
+  Future<void> _connectAndPrint(BluetoothInfo device) async {
+    setState(() => _isPrinting = true);
+    print(device.name);
+    await PrintBluetoothThermal.connect(macPrinterAddress: device.macAdress);
+    bool isConnected = await PrintBluetoothThermal.connectionStatus;
+
+    if (isConnected) {
+      print("Connected to ${device.name}");
+      List<int> ticket = await _generateReceipt();
+      await _saveSelectedDevice(device);
+      await PrintBluetoothThermal.writeBytes(ticket);
+      _showSnackBar("Receipt printed successfully.");
+    } else {
+      print("Failed to connect");
+    }
+    setState(() => _isPrinting = false);
+  }
+
+  Future<List<int>> _generateReceipt() async {
+    final provider = Provider.of<PaymentProvider>(context, listen: false);
+    final itemsOrder = await provider.fetchItemOrder(widget.payment!.orderId);
+    final items = itemsOrder ?? [];
+
+    print(itemsOrder);
+    List<int> bytes = [];
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(
+      optionprinttype == '58 mm' ? PaperSize.mm58 : PaperSize.mm80,
+      profile,
+    );
+    bytes += generator.reset();
+    bytes += generator.text(
+      '=== Raftel Cafe Jayapura ===',
+      styles: PosStyles(bold: true, align: PosAlign.center),
+    );
+
+    bytes += generator.text(
+      'Order : ${widget.payment!.orderId}',
+      styles: PosStyles(bold: true, align: PosAlign.left),
+    );
+
+    bytes += generator.text(
+      'Customer',
+      styles: PosStyles(bold: true, align: PosAlign.left),
+    );
+
+    bytes += generator.hr();
+    bytes += generator.row([
+      PosColumn(
+        text: 'Items',
+        width: 6,
+        styles: const PosStyles(align: PosAlign.center, underline: true),
+      ),
+      PosColumn(
+        text: 'Price',
+        width: 3,
+        styles: const PosStyles(align: PosAlign.center, underline: true),
+      ),
+      PosColumn(
+        text: 'Total',
+        width: 3,
+        styles: const PosStyles(align: PosAlign.center, underline: true),
+      ),
+    ]);
+
+    for (var item in items) {
+      String itemName = item['name'] ?? 'Unknown';
+      int quantity = item['quantity'] ?? 1;
+      double price = (item['price'] ?? 0).toDouble();
+      double subtotal = (item['price'] ?? 0).toDouble();
+
+      bytes += generator.row([
+        PosColumn(
+          text: '$itemName x $quantity',
+          width: 6,
+          styles: const PosStyles(align: PosAlign.center, underline: true),
+        ),
+        PosColumn(
+          text: '${formatCurrency(price)}',
+          width: 3,
+          styles: const PosStyles(align: PosAlign.center, underline: true),
+        ),
+        PosColumn(
+          text: '${formatCurrency(subtotal)}',
+          width: 3,
+          styles: const PosStyles(align: PosAlign.center, underline: true),
+        ),
+      ]);
+    }
+
+    bytes += generator.hr();
+    bytes += generator.row([
+      PosColumn(
+        text: 'Total',
+        width: 4,
+        styles: const PosStyles(align: PosAlign.left, underline: true),
+      ),
+      PosColumn(
+        text: '${formatCurrency(widget.payment!.totalAmount)}',
+        width: 8,
+        styles: const PosStyles(align: PosAlign.right, underline: true),
+      ),
+    ]);
+    bytes += generator.hr();
+    bytes += generator.text(
+      'Thank you for your visit!',
+      styles: PosStyles(align: PosAlign.center),
+    );
+    bytes += generator.feed(2);
+    return bytes;
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +224,7 @@ class SuccessScreen extends StatelessWidget {
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      paymentProvider.fetchCustomerName(payment!.orderId);
+      paymentProvider.fetchCustomerName(widget.payment!.orderId);
     });
 
     return Scaffold(
@@ -70,7 +271,7 @@ class SuccessScreen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        payment!.orderId,
+                        widget.payment!.orderId,
                         style: TextStyle(
                           fontSize: 16,
                           color: AppColors.color5,
@@ -103,7 +304,7 @@ class SuccessScreen extends StatelessWidget {
                             ],
                           ),
                           Text(
-                            'Total : ${formatCurrency(payment!.totalAmount)}',
+                            'Total : ${formatCurrency(widget.payment!.totalAmount)}',
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                         ],
@@ -156,7 +357,7 @@ class SuccessScreen extends StatelessWidget {
                             "print",
                             c: AppColors.color5,
                           ),
-                          onPressed: () {},
+                          onPressed: _loadSavedPrinter,
                           label: Text(
                             "Invoice",
                             style: TextStyle(

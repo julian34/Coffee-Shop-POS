@@ -69,4 +69,18 @@ class OrderList {
     }
     return null;
   }
+
+  factory OrderList.empty() {
+    return OrderList(
+      cartId: '',
+      customerName: 'Guest',
+      totalAmount: 0.0,
+      isPaid: false,
+      paid: false,
+      paymentMode: 'Cash',
+      status: 'Pending',
+      createdAt: DateTime.now(),
+      items: [],
+    );
+  }
 }

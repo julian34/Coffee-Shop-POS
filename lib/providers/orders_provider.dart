@@ -21,7 +21,10 @@ class OrderProvider extends ChangeNotifier {
   Future<void> fetchOrders() async {
     try {
       QuerySnapshot snapshot =
-          await FirebaseFirestore.instance.collection('orders').get();
+          await FirebaseFirestore.instance
+              .collection('orders')
+              .orderBy('timestamp', descending: true)
+              .get();
       _orders =
           snapshot.docs
               .map(

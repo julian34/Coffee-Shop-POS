@@ -90,7 +90,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 dataOrder = OrderList(
                   cartId: widget.order?.cartId ?? "",
                   customerName: widget.order?.customerName ?? "Guest",
-                  totalAmount: widget.order?.totalAmount?.toDouble() ?? 0,
+                  totalAmount: widget.order?.totalAmount.toDouble() ?? 0,
                   isPaid: widget.order?.isPaid ?? false,
                   paid: widget.order?.paid ?? false,
                   paymentMode: widget.order?.paymentMode ?? "Cash",

@@ -5,14 +5,21 @@ import 'package:pos_coffee_shop/services/cart_service.dart';
 class CartProvider extends ChangeNotifier {
   final CartService _cartService = CartService();
   final Map<String, CartItem> _items = {};
+  String _customerName = 'Guest';
 
   Map<String, CartItem> get items => _items;
+  String get customerName => _customerName;
 
   double get totalAmount {
     return _items.values.fold(
       0,
       (sum, item) => sum + (item.price * item.quantity),
     );
+  }
+
+  void updateCustomerName(String name) {
+    _customerName = name;
+    notifyListeners();
   }
 
   void addToCart(CartItem item) {
@@ -70,7 +77,7 @@ class CartProvider extends ChangeNotifier {
 
   Future<void> saveCart(
     String cartId,
-    String consumerName, {
+    String customerName, {
     required bool paid,
     required String paymentMode,
   }) async {
@@ -81,7 +88,7 @@ class CartProvider extends ChangeNotifier {
     try {
       await _cartService.saveCart(
         cartId,
-        consumerName,
+        customerName,
         _items.values.toList(),
         totalAmount,
         paid,
@@ -98,7 +105,7 @@ class CartProvider extends ChangeNotifier {
 
   Future<void> updateCart(
     String cartId,
-    String consumerName, {
+    String customerName, {
     required bool paid,
     required String paymentMode,
   }) async {
@@ -109,7 +116,7 @@ class CartProvider extends ChangeNotifier {
     try {
       await _cartService.saveCart(
         cartId,
-        consumerName,
+        customerName,
         _items.values.toList(),
         totalAmount,
         paid,

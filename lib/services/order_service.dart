@@ -7,6 +7,7 @@ class OrderService {
   Stream<List<OrderList>> getOrders() {
     return _db
         .collection('orders')
+        .orderBy('timestamp', descending: true)
         .snapshots()
         .map(
           (snapshot) =>
@@ -14,5 +15,18 @@ class OrderService {
                   .map((doc) => OrderList.fromMap(doc.data()))
                   .toList(),
         );
+  }
+
+  Future<List<Map<String, dynamic>>?> getItemsOrder(String orderId) async {
+    try {
+      final doc = await _db.collection('orders').doc(orderId).get();
+      if (doc.exists) {
+        print('service ${doc.data()?['items']}');
+        return List<Map<String, dynamic>>.from(doc.data()?['items'] ?? []);
+      }
+    } catch (e) {
+      print('Error fetching order: $e');
+    }
+    return null;
   }
 }

@@ -14,7 +14,7 @@ import 'widgets/order_summary.dart';
 import 'widgets/item_cart.dart';
 
 class CartScreen extends StatefulWidget {
-  final OrderList? order; //new add | If null, it's a new cart
+  final OrderList? order;
   const CartScreen({super.key, this.order});
 
   @override
@@ -22,20 +22,28 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
-  String paymentMode = 'Cash'; // new add | Default Payment Mode
+  late TextEditingController customerNameController;
+  String paymentMode = 'Cash';
   bool paid = false;
+  bool isControllerInitialized = false;
 
   @override
   void initState() {
     super.initState();
+    customerNameController = TextEditingController();
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final cartProvider = Provider.of<CartProvider>(context, listen: false);
 
       if (widget.order != null) {
+        customerNameController.text =
+            widget.order!.customerName.isNotEmpty
+                ? widget.order!.customerName
+                : 'Guest';
+
+        // Restore cart items if needed
         final cartItems =
-            cartProvider.items.values
-                .map((itemcart) => itemcart.toMap())
-                .toList();
+            cartProvider.items.values.map((item) => item.toMap()).toList();
         if (widget.order!.items.length != cartItems.length) {
           cartProvider.items.clear();
           for (var item in widget.order!.items) {
@@ -43,12 +51,24 @@ class _CartScreenState extends State<CartScreen> {
             cartProvider.updateQuantity(item.productId, item.quantity);
           }
         }
+
         setState(() {
           paid = widget.order!.isPaid;
           paymentMode = widget.order!.paymentMode;
+          customerNameController.text = widget.order!.customerName;
         });
       }
+
+      setState(() {
+        isControllerInitialized = true;
+      });
     });
+  }
+
+  @override
+  void dispose() {
+    customerNameController.dispose();
+    super.dispose();
   }
 
   void _showConfirmationDialog(
@@ -57,57 +77,59 @@ class _CartScreenState extends State<CartScreen> {
   ) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Row(
-            children: [
-              Icon(Icons.exit_to_app, color: AppColors.color6),
-              SizedBox(width: 10),
-              Text('Cancel'),
+      builder:
+          (context) => AlertDialog(
+            title: Row(
+              children: [
+                const Icon(Icons.exit_to_app, color: AppColors.color6),
+                const SizedBox(width: 10),
+                const Text('Cancel'),
+              ],
+            ),
+            content: const Text(
+              'Are you sure you want to cancel the cart update? Any unsaved changes will be lost.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  cartProvider.items.clear();
+                  Navigator.pushNamedAndRemoveUntil(
+                    context,
+                    AppRoutes.order,
+                    (route) => false,
+                  );
+                  Navigator.pushNamed(context, AppRoutes.order);
+                },
+                child: const Text('Exit'),
+              ),
             ],
           ),
-          content: Text(
-            'Are you sure you want to cancel the cart update? Any unsaved changes will be lost.',
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                cartProvider.items.clear();
-                Navigator.pop(context);
-                Navigator.pushNamed(context, AppRoutes.order);
-              },
-              child: Text('Exit'),
-            ),
-          ],
-        );
-      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final TextEditingController consumerNameController = TextEditingController(
-      text:
-          widget.order!.customerName.isEmpty
-              ? 'Guest'
-              : widget.order!.customerName,
-    );
-
     return Consumer<CartProvider>(
       builder: (context, cartProvider, child) {
+        if (!isControllerInitialized) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+
+        final isNewOrder = widget.order == null || widget.order!.cartId.isEmpty;
+
         return Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(120),
+            preferredSize: const Size.fromHeight(120),
             child: CartAppbar(
-              onPressed: () async {
-                if (widget.order!.cartId != '') {
-                  print(widget.order!.cartId);
+              onPressed: () {
+                if (!isNewOrder) {
                   _showConfirmationDialog(context, cartProvider);
                 } else {
                   Navigator.pushNamed(
@@ -120,32 +142,31 @@ class _CartScreenState extends State<CartScreen> {
                       isPaid: false,
                       paid: false,
                       paymentMode: 'Cash',
-                      status: 'Peding',
-                      createdAt: DateTime.timestamp(),
+                      status: 'Pending',
+                      createdAt: DateTime.now(),
                       items: [],
                     ),
                   );
                 }
               },
-              titleScreen: widget.order!.cartId == '' ? 'Cart' : 'Checkout',
-              cartId: widget.order!.cartId,
+              titleScreen: isNewOrder ? 'Cart' : 'Checkout',
+              cartId: widget.order?.cartId ?? '',
               existing: widget.order,
             ),
           ),
           body:
               cartProvider.items.isEmpty
-                  ? BodyCartEmpty()
+                  ? const BodyCartEmpty()
                   : Column(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      ConsumerDetailsTab(controller: consumerNameController),
-                      NoteTab(),
+                      ConsumerDetailsTab(controller: customerNameController),
+                      const NoteTab(),
                       Flexible(
                         child: Container(
                           height: 345,
-                          margin: EdgeInsets.symmetric(horizontal: 20),
-                          child: ItemCartWidget(),
+                          margin: const EdgeInsets.symmetric(horizontal: 20),
+                          child: const ItemCartWidget(),
                         ),
                       ),
                       OrderSummaryTab(totalAmount: cartProvider.totalAmount),
@@ -153,28 +174,30 @@ class _CartScreenState extends State<CartScreen> {
                   ),
           bottomNavigationBar: BottomNavBar(
             onPressed: () async {
-              String cartId =
-                  widget.order!.cartId.isEmpty
+              final cartId =
+                  isNewOrder
                       ? DateTime.now().millisecondsSinceEpoch.toString()
                       : widget.order!.cartId;
+
               await cartProvider.saveCart(
                 cartId,
-                consumerNameController.text,
+                customerNameController.text,
                 paid: false,
-                paymentMode: "",
+                paymentMode: paymentMode,
               );
+
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(
-                    "Order ${widget.order!.cartId == '' ? 'Created' : 'Updated'} Successfully!",
+                    "Order ${isNewOrder ? 'Created' : 'Updated'} Successfully!",
                   ),
                 ),
               );
               Navigator.pushNamed(context, AppRoutes.order);
             },
-            order: widget.order!,
+            order: widget.order ?? OrderList.empty(),
             cart: cartProvider,
-            consumerNameController: consumerNameController,
+            customerNameController: customerNameController,
           ),
         );
       },
