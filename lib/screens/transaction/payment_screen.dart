@@ -83,16 +83,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
         context,
         listen: false,
       );
-
-      // final paymentData = {
-      //   'orderId': widget.orderList!.cartId,
-      //   'totalAmount': widget.orderList!.totalAmount,
-      //   'receivedAmount': receivedAmount,
-      //   'changeAmount': receivedAmount - widget.orderList!.totalAmount,
-      //   'paymentMethod': paymentMethod,
-      //   'timestamp': FieldValue.serverTimestamp(),
-      // };
-
       final payment = Payment(
         orderId: widget.orderList!.cartId,
         totalAmount: widget.orderList!.totalAmount,
@@ -103,12 +93,12 @@ class _PaymentScreenState extends State<PaymentScreen> {
       );
       print(payment.toMap());
       paymentProvider.makePayment(payment);
-      Navigator.pushReplacementNamed(
+      Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.successpayment,
+        ModalRoute.withName(AppRoutes.cashierHome),
         arguments: payment,
       );
-
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Payment Successful!')));

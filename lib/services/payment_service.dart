@@ -1,6 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
 
 class PaymentService {

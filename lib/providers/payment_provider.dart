@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
-import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:pos_coffee_shop/services/order_service.dart';
 import 'package:pos_coffee_shop/services/payment_service.dart';
-import 'package:provider/provider.dart';
 
 class PaymentProvider with ChangeNotifier {
   final PaymentService _paymentService = PaymentService();
+  final OrderService _orderService = OrderService();
 
   String _customerName = '';
   String get customerName => _customerName;
@@ -19,10 +19,17 @@ class PaymentProvider with ChangeNotifier {
     try {
       _customerName =
           await _paymentService.getCustomerName(orderId) ?? 'unknown';
-
       notifyListeners();
     } catch (e) {
       print('Error fetching order: $e');
+    }
+  }
+
+  Future<List<Map<String, dynamic>>?> fetchItemOrder(String orderId) async {
+    try {
+      return await _orderService.getItemsOrder(orderId);
+    } catch (e) {
+      print("Error fetching items: $e");
     }
   }
 
