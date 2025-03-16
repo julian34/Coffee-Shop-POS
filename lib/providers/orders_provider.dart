@@ -19,10 +19,18 @@ class OrderProvider extends ChangeNotifier {
   }
 
   Future<void> fetchOrders() async {
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+    final endOfDay = startOfDay.add(const Duration(days: 1));
     try {
       QuerySnapshot snapshot =
           await FirebaseFirestore.instance
               .collection('orders')
+              .where(
+                'timestamp',
+                isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
+              )
+              .where('timestamp', isLessThan: Timestamp.fromDate(endOfDay))
               .orderBy('timestamp', descending: true)
               .get();
       _orders =
