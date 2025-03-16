@@ -1,4 +1,4 @@
-package com.example.pos_coffee_shop
+package id.sevatech.poscafe
 
 import io.flutter.embedding.android.FlutterActivity
 
