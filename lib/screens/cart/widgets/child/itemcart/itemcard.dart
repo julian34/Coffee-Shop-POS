@@ -37,10 +37,12 @@ class Itemcard extends StatelessWidget {
                         children: [
                           AutoSizeText(
                             item.name,
-                            style: TextStyle(color: AppColors.primary),
-                            maxFontSize: 14,
-                            maxLines: 2,
-                            minFontSize: 10,
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontSize: 16,
+                            ),
+                            maxLines: 1,
+                            // minFontSize: 10,
                             overflow: TextOverflow.ellipsis,
                           ),
                           Text(
