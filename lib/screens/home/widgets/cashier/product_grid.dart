@@ -125,10 +125,10 @@ class ProductGridWidget extends StatelessWidget {
                         ),
                       ],
                     ),
-                    // const Padding(
-                    //   padding: const EdgeInsets.only(left: 150, top: 10),
-                    //   child: SvgCustomApp.getIcon('heart'),
-                    // ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 140, top: 10),
+                      child: SvgCustomApp.getIcon('heart'),
+                    ),
                     Align(
                       alignment: Alignment.bottomRight,
                       child: Material(
@@ -158,10 +158,20 @@ class ProductGridWidget extends StatelessWidget {
                                 action: SnackBarAction(
                                   label: "Undo",
                                   onPressed: () {
-                                    Provider.of<CartProvider>(
+                                    final cart = Provider.of<CartProvider>(
                                       context,
                                       listen: false,
-                                    ).updateQuantity(product.id, 0);
+                                    );
+                                    var item =
+                                        cart.items.values.toList()[index];
+                                    cart.updateQuantity(
+                                      product.id,
+                                      item.quantity - 1,
+                                    );
+                                    // Provider.of<CartProvider>(
+                                    //   context,
+                                    //   listen: false,
+                                    // ).updateQuantity(product.id, 0);
                                     // cartProvider.updateQuantity(cartId, product.id, 0);
                                   },
                                 ),
