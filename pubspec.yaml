@@ -49,6 +49,8 @@ dependencies:
   print_bluetooth_thermal: ^1.1.6
   esc_pos_utils_plus: ^2.0.4
 
+  auto_size_text: ^3.0.0
+
   change_app_package_name: ^1.1.0
 
 dev_dependencies:
