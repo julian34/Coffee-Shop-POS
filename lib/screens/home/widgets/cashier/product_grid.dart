@@ -166,7 +166,7 @@ class ProductGridWidget extends StatelessWidget {
                                         cart.items.values.toList()[index];
                                     cart.updateQuantity(
                                       product.id,
-                                      item.quantity - 1,
+                                      (item.quantity - 1).toInt(),
                                     );
                                     // Provider.of<CartProvider>(
                                     //   context,
