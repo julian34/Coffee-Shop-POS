@@ -23,56 +23,93 @@ class CartProvider extends ChangeNotifier {
   }
 
   void addToCart(CartItem item) {
-    if (_items.containsKey(item.productId)) {
+    // Generate a unique key by combining productId and price label
+    final uniqueKey = '${item.productId}_${item.label}';
+    if (_items.containsKey(uniqueKey)) {
+      // If item already exists, update its quantity
+      print('update chackout');
       _items.update(
-        item.productId,
-        (existingItem) => CartItem(
-          productId: existingItem.productId,
-          name: existingItem.name,
-          price: existingItem.price,
-          quantity: existingItem.quantity + 1,
-          image: existingItem.image,
+        uniqueKey,
+        (existingItem) => existingItem.copyWith(
+          quantity: existingItem.quantity + item.quantity,
         ),
       );
-      // _items[item.productId]!.quantity += 1;
     } else {
-      _items.putIfAbsent(
-        item.productId,
-        () => CartItem(
-          productId: item.productId,
-          name: item.name,
-          price: item.price,
-          quantity: 1,
-          image: item.image,
-        ),
-      );
-      // _items[item.productId] = item;
+      print('update order');
+      // If item does not exist, add a new entry
+      _items[uniqueKey] = item.copyWith(quantity: item.quantity);
     }
+
     notifyListeners();
+
+    // Find an existing item with the same productId AND selectedPrice
+    // final existingKey = _items.keys.firstWhere(
+    //   (key) =>
+    //       _items[key]!.productId == item.productId &&
+    //       _items[key]!.selectedPrice == item.selectedPrice,
+    //   orElse: () => '',
+    // );
+    // if (existingKey.isNotEmpty) {
+    //   _items.update(
+    //     existingKey,
+    //     (existingItem) => CartItem(
+    //       productId: existingItem.productId,
+    //       name: existingItem.name,
+    //       price: existingItem.price,
+    //       selectedPrice: item.selectedPrice,
+    //       label: existingItem.label,
+    //       quantity: existingItem.quantity + 1,
+    //       image: existingItem.image,
+    //     ),
+    //   );
+    //   // _items[item.productId]!.quantity += 1;
+    // } else {
+    //   // _items.putIfAbsent(
+    //   //   item.uniqueKey,
+    //   //   () => CartItem(
+    //   //     productId: item.productId,
+    //   //     name: item.name,
+    //   //     price: item.price,
+    //   //     label: item.label,
+    //   //     selectedPrice: item.selectedPrice,
+    //   //     quantity: 1,
+    //   //     image: item.image,
+    //   //   ),
+    //   // );
+    //   // _items[item.uniqueKey] = item;
+    //   final uniqueKey =
+    //       '${item.productId}_${DateTime.now().millisecondsSinceEpoch}';
+    //   _items[uniqueKey] = item;
+    // }
+    // notifyListeners();
   }
 
-  void updateQuantity(String productId, int newQuantity) {
-    if (_items.containsKey(productId) && newQuantity > 0) {
+  void updateQuantity(String uniqueKey, int newQuantity) {
+    if (_items.containsKey(uniqueKey) && newQuantity > 0) {
       _items.update(
-        productId,
+        uniqueKey,
         (existingItem) => CartItem(
           productId: existingItem.productId,
           name: existingItem.name,
           price: existingItem.price,
+          label: existingItem.label,
+          selectedPrice: existingItem.selectedPrice,
           quantity: newQuantity,
           image: existingItem.image,
         ),
       );
       // _items[productId]!.quantity += 1;
     } else {
-      _items.remove(productId);
+      _items.remove(uniqueKey);
     }
     notifyListeners();
   }
 
-  void removeItem(String productId) {
-    _items.remove(productId);
-    notifyListeners();
+  void removeItem(String uniqueKey) {
+    if (_items.containsKey(uniqueKey)) {
+      _items.remove(uniqueKey);
+      notifyListeners();
+    }
   }
 
   Future<void> saveCart(
