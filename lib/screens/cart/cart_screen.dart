@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/models/cart_model.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:provider/provider.dart';
 import 'package:pos_coffee_shop/providers/cart_provider.dart';
@@ -40,18 +41,23 @@ class _CartScreenState extends State<CartScreen> {
             widget.order!.customerName.isNotEmpty
                 ? widget.order!.customerName
                 : 'Guest';
+      }
+      // Restore cart items if needed
+      // final cartItems =
+      //     cartProvider.items.values.map((item) => item.toMap()).toList();
+      // if (widget.order!.items.length != cartItems.length) {
+      //   // cartProvider.items.clear();
+      //   for (var item in widget.order!.items) {
+      //     cartProvider.addToCart(item);
+      //     cartProvider.updateQuantity(item.productId, item.quantity);
+      //   }
+      // }
 
-        // Restore cart items if needed
-        final cartItems =
-            cartProvider.items.values.map((item) => item.toMap()).toList();
-        if (widget.order!.items.length != cartItems.length) {
-          cartProvider.items.clear();
-          for (var item in widget.order!.items) {
-            cartProvider.addToCart(item);
-            cartProvider.updateQuantity(item.productId, item.quantity);
-          }
-        }
-
+      // if (widget.order != null) {
+      //   syncCartWithOrder(widget.order!, cartProvider);
+      // }
+      if (widget.order != null) {
+        syncCartWithOrder(widget.order!, cartProvider);
         setState(() {
           paid = widget.order!.isPaid;
           paymentMode = widget.order!.paymentMode;
@@ -203,4 +209,40 @@ class _CartScreenState extends State<CartScreen> {
       },
     );
   }
+}
+
+void syncCartWithOrder(OrderList orderList, CartProvider cartProvider) {
+  final cartItems =
+      cartProvider.items.values.map((item) => item.toMap()).toList();
+
+  bool needsSync =
+      orderList.items.length != cartItems.length ||
+      !_areItemsEqual(orderList.items, cartItems);
+
+  if (needsSync) {
+    // /cartProvider.clearCart
+    cartItems.clear();
+    for (var item in orderList.items) {
+      cartProvider.addToCart(item);
+      cartProvider.updateQuantity(item.productId, item.quantity);
+    }
+  }
+}
+
+bool _areItemsEqual(
+  List<CartItem> orderItems,
+  List<Map<String, dynamic>> cartItems,
+) {
+  if (orderItems.length != cartItems.length) return false;
+
+  for (var item in orderItems) {
+    final match = cartItems.firstWhere(
+      (cartItem) => cartItem['productId'] == item.productId,
+      orElse: () => {},
+    );
+    if (match.isEmpty || match['quantity'] != item.quantity) {
+      return false;
+    }
+  }
+  return true;
 }
