@@ -16,7 +16,8 @@ class ItemCartWidget extends StatelessWidget {
         var item = cart.items.values.toList()[index];
         // return Itemcard(item: item);
         return Dismissible(
-          key: Key(item.productId),
+          // key: Key(item.productId),
+          key: Key(item.uniqueKey),
           direction: DismissDirection.endToStart,
           background: Container(
             // decoration: BoxDecoration(border: Border()),
@@ -26,7 +27,7 @@ class ItemCartWidget extends StatelessWidget {
             child: Icon(Icons.delete, color: Colors.white),
           ),
           onDismissed: (direction) {
-            cart.removeItem(item.productId);
+            cart.removeItem(item.uniqueKey);
           },
           child: Itemcard(item: item),
         );
