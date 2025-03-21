@@ -140,8 +140,10 @@ class ProductGridWidget extends StatelessWidget {
                         child: IconButton(
                           onPressed: () {
                             if (product.hasMultiplePrices) {
+                              print(product.hasMultiplePrices);
                               _showPriceSelectionDialog(context, product);
                             } else {
+                              print(product);
                               _addToCart(
                                 context,
                                 product,
@@ -239,31 +241,22 @@ void _addToCart(
   ProductPrice selectedPrice,
 ) {
   final cartProvider = Provider.of<CartProvider>(context, listen: false);
+  final CartItem? existingItem = cartProvider.items.values
+      .cast<CartItem?>()
+      .firstWhere(
+        (item) =>
+            item!.productId == product.id && item.label == selectedPrice.label,
+        orElse: () => null,
+      );
 
-  final uniqueKey = '${product.id}-${selectedPrice.label}';
-
-  final existingItem = cartProvider.items.values.firstWhere(
-    (item) => item.productId == product.id && item.label == selectedPrice.label,
-    orElse:
-        () => CartItem(
-          productId: '',
-          name: '',
-          price: 0,
-          quantity: 0,
-          label: '',
-          image: '',
-          selectedPrice: ProductPrice(label: '', amount: 0),
-        ),
-  );
-  print("tes uplaod ${existingItem.label}");
+  // print("tes uplaod ${existingItem!.label}");
   if (existingItem != null) {
     print("existing ${existingItem.label}");
     cartProvider.updateQuantity(
-      existingItem.productId,
+      existingItem.uniqueKey,
       existingItem.quantity + 1,
     );
   } else {
-    print("new ${existingItem.label}");
     cartProvider.addToCart(
       CartItem(
         productId: product.id,

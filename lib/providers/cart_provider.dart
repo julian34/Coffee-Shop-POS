@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
+import 'package:pos_coffee_shop/models/products_model.dart';
 import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
@@ -24,16 +25,16 @@ class CartProvider extends ChangeNotifier {
 
   void addToCart(CartItem item) {
     // Generate a unique key by combining productId and price label
-    final uniqueKey = '${item.productId}_${item.label}';
+    final uniqueKey = '${item.productId}-${item.label}';
     if (_items.containsKey(uniqueKey)) {
       // If item already exists, update its quantity
       print('update chackout');
-      _items.update(
-        uniqueKey,
-        (existingItem) => existingItem.copyWith(
-          quantity: existingItem.quantity + item.quantity,
-        ),
-      );
+      // _items.update(
+      //   uniqueKey,
+      //   (existingItem) => existingItem.copyWith(
+      //     quantity: existingItem.quantity + item.quantity,
+      //   ),
+      // );
     } else {
       print('update order');
       // If item does not exist, add a new entry
@@ -85,7 +86,10 @@ class CartProvider extends ChangeNotifier {
   }
 
   void updateQuantity(String uniqueKey, int newQuantity) {
+    print("${uniqueKey} - ${newQuantity}");
+
     if (_items.containsKey(uniqueKey) && newQuantity > 0) {
+      print('update Quantity ${uniqueKey}');
       _items.update(
         uniqueKey,
         (existingItem) => CartItem(
@@ -98,8 +102,10 @@ class CartProvider extends ChangeNotifier {
           image: existingItem.image,
         ),
       );
-      // _items[productId]!.quantity += 1;
+      print('update ${_items.values.isNotEmpty}');
+      //   // _items[productId]!.quantity += 1;
     } else {
+      print('remove');
       _items.remove(uniqueKey);
     }
     notifyListeners();
@@ -107,6 +113,7 @@ class CartProvider extends ChangeNotifier {
 
   void removeItem(String uniqueKey) {
     if (_items.containsKey(uniqueKey)) {
+      print('remove ${uniqueKey}');
       _items.remove(uniqueKey);
       notifyListeners();
     }
