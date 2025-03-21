@@ -57,6 +57,7 @@ class OrdersItemsWidget extends StatelessWidget {
                         title: Text(
                           "Order No: ${order.cartId}",
                           style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -65,7 +66,7 @@ class OrdersItemsWidget extends StatelessWidget {
                             Text(
                               "Total Amount: ${formatCurrency(order.totalAmount)}",
                             ),
-                            Text("Payment Mode: ${order.paymentMode}"),
+                            Text("Payment Mode: ${order.paymentMode ?? 'N/A'}"),
                           ],
                         ),
                         trailing: Container(

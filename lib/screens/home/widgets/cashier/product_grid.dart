@@ -139,44 +139,55 @@ class ProductGridWidget extends StatelessWidget {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            Provider.of<CartProvider>(
-                              context,
-                              listen: false,
-                            ).addToCart(
-                              CartItem(
-                                productId: product.id,
-                                name: product.name,
-                                price: product.price,
-                                image: product.image,
-                              ),
-                            );
+                            if (product.hasMultiplePrices) {
+                              print(product.hasMultiplePrices);
+                              _showPriceSelectionDialog(context, product);
+                            } else {
+                              print(product);
+                              _addToCart(
+                                context,
+                                product,
+                                product.prices.first,
+                              );
+                            }
+                            // Provider.of<CartProvider>(
+                            //   context,
+                            //   listen: false,
+                            // ).addToCart(
+                            //   CartItem(
+                            //     productId: product.id,
+                            //     name: product.name,
+                            //     price: product.price,
+                            //     image: product.image,
+                            //   ),
+                            // );
 
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text("${product.name} added to cart!"),
-                                duration: Duration(seconds: 2),
-                                action: SnackBarAction(
-                                  label: "Undo",
-                                  onPressed: () {
-                                    final cart = Provider.of<CartProvider>(
-                                      context,
-                                      listen: false,
-                                    );
-                                    var item =
-                                        cart.items.values.toList()[index];
-                                    cart.updateQuantity(
-                                      product.id,
-                                      (item.quantity - 1).toInt(),
-                                    );
-                                    // Provider.of<CartProvider>(
-                                    //   context,
-                                    //   listen: false,
-                                    // ).updateQuantity(product.id, 0);
-                                    // cartProvider.updateQuantity(cartId, product.id, 0);
-                                  },
-                                ),
-                              ),
-                            );
+                            // ScaffoldMessenger.of(context).showSnackBar(
+                            //   SnackBar(
+                            //     content: Text("${product.name} added to cart!"),
+                            //     duration: Duration(seconds: 2),
+                            //     action: SnackBarAction(
+                            //       label: "Undo",
+                            //       onPressed: () {
+                            //         final cart = Provider.of<CartProvider>(
+                            //           context,
+                            //           listen: false,
+                            //         );
+                            //         // var item =
+                            //         //     cart.items.values.toList()[index];
+                            //         // cart.updateQuantity(
+                            //         //   product.id,
+                            //         //   (item.quantity - 1).toInt(),
+                            //         // );
+                            //         // Provider.of<CartProvider>(
+                            //         //   context,
+                            //         //   listen: false,
+                            //         // ).updateQuantity(product.id, 0);
+                            //         // cartProvider.updateQuantity(cartId, product.id, 0);
+                            //       },
+                            //     ),
+                            //   ),
+                            // );
                           },
                           icon: SvgCustomApp.getIcon(
                             'add',
@@ -222,83 +233,91 @@ class ProductGridWidget extends StatelessWidget {
       },
     );
   }
+}
 
-  Widget _buildProductCard(BuildContext context, Product product) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(15),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 5, spreadRadius: 2),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(15)),
-            child: Image.network(
-              product.image,
-              height: 100,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder:
-                  (context, error, stackTrace) =>
-                      Icon(Icons.broken_image, size: 100, color: Colors.grey),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  product.name,
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                ),
-                Text(
-                  product.category,
-                  style: TextStyle(color: Colors.grey, fontSize: 12),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  formatCurrency(product.price),
-                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14),
-                ),
-              ],
-            ),
-          ),
-          Spacer(),
-          IconButton(
-            icon: SvgCustomApp.getIcon("add"),
-            onPressed: () {
-              Provider.of<CartProvider>(context, listen: false).addToCart(
-                CartItem(
-                  productId: product.id,
-                  name: product.name,
-                  price: product.price,
-                  image: product.image,
-                ),
-              );
+void _addToCart(
+  BuildContext context,
+  Product product,
+  ProductPrice selectedPrice,
+) {
+  final cartProvider = Provider.of<CartProvider>(context, listen: false);
+  final CartItem? existingItem = cartProvider.items.values
+      .cast<CartItem?>()
+      .firstWhere(
+        (item) =>
+            item!.productId == product.id && item.label == selectedPrice.label,
+        orElse: () => null,
+      );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text("${product.name} added to cart!"),
-                  duration: Duration(seconds: 2),
-                  action: SnackBarAction(
-                    label: "Undo",
-                    onPressed: () {
-                      // cartProvider.updateQuantity(cartId, product.id, 0);
-                    },
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+  // print("tes uplaod ${existingItem!.label}");
+  if (existingItem != null) {
+    print("existing ${existingItem.label}");
+    cartProvider.updateQuantity(
+      existingItem.uniqueKey,
+      existingItem.quantity + 1,
+    );
+  } else {
+    cartProvider.addToCart(
+      CartItem(
+        productId: product.id,
+        name: '${product.name} (${selectedPrice.label})',
+        price: selectedPrice.amount,
+        selectedPrice: selectedPrice,
+        label: selectedPrice.label,
+        image: product.image,
+        quantity: 1, // Ensure to set quantity for new items
       ),
     );
   }
+
+  // Provider.of<CartProvider>(context, listen: false).addToCart(
+  //   CartItem(
+  //     productId: product.id,
+  //     name: '${product.name} (${selectedPrice.label})',
+  //     price: selectedPrice.amount,
+  //     selectedPrice: selectedPrice,
+  //     label: selectedPrice.label,
+  //     image: product.image,
+  //   ),
+  // );
+
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("${product.name} (${selectedPrice.label}) added to cart!"),
+      duration: const Duration(seconds: 2),
+    ),
+  );
+}
+
+void _showPriceSelectionDialog(BuildContext context, Product product) {
+  showModalBottomSheet(
+    context: context,
+    builder: (contex) {
+      return Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              "Select Price for ${product.name}",
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            ),
+            const SizedBox(height: 16),
+            ...product.prices.map((priceOption) {
+              print(priceOption.label);
+              return ListTile(
+                title: Text(
+                  '${priceOption.label} - ${formatCurrency(priceOption.amount)}',
+                ),
+                onTap: () {
+                  Navigator.pop(context);
+                  _addToCart(context, product, priceOption);
+                },
+              );
+            }).toList(),
+          ],
+        ),
+      );
+    },
+  );
 }

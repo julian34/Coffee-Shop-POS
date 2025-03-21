@@ -36,7 +36,7 @@ class Itemcard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           AutoSizeText(
-                            item.name,
+                            '${item.name}',
                             style: TextStyle(
                               color: AppColors.primary,
                               fontSize: 16,
@@ -59,7 +59,7 @@ class Itemcard extends StatelessWidget {
                 children: [
                   IconButton(
                     onPressed: () {
-                      cart.updateQuantity(item.productId, item.quantity - 1);
+                      cart.updateQuantity(item.uniqueKey, item.quantity - 1);
                     },
                     icon: Icon(Icons.remove, color: AppColors.color5),
                   ),
@@ -69,7 +69,7 @@ class Itemcard extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () {
-                      cart.updateQuantity(item.productId, item.quantity + 1);
+                      cart.updateQuantity(item.uniqueKey, item.quantity + 1);
                     },
                     icon: Icon(Icons.add, color: AppColors.color5),
                   ),
