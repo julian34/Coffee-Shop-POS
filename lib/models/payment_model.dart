@@ -19,10 +19,10 @@ class Payment {
 
   factory Payment.fromMap(Map<String, dynamic> map) {
     return Payment(
-      orderId: map['order'] ?? '',
-      totalAmount: (map['totalamount'] ?? 0.0).toDouble(),
-      receivedAmount: (map['receivedAmount'] ?? 0.0).toDouble(),
-      changeAmount: (map[''] ?? 0.0).toDouble(),
+      orderId: map['orderId'] ?? '',
+      totalAmount: (map['totalAmount'] as num?)?.toDouble() ?? 0.0,
+      receivedAmount: (map['receivedAmount'] as num?)?.toDouble() ?? 0.0,
+      changeAmount: (map['changeAmount'] as num?)?.toDouble() ?? 0.0,
       paymentMethod: map['paymentMethod'] ?? 'Cash',
       createdAt: _parseDate(map['createdAt']) ?? DateTime.now(),
     );
@@ -42,6 +42,12 @@ class Payment {
   static DateTime? _parseDate(dynamic date) {
     if (date is Timestamp) {
       return date.toDate();
+    }
+    if (date is DateTime) {
+      return date;
+    }
+    if (date is String) {
+      return DateTime.tryParse(date);
     }
     return null;
   }
