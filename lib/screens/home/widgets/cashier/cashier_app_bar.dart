@@ -99,7 +99,11 @@ class CashierAppBar extends StatelessWidget {
                 icon: SvgCustomApp.getIcon('menu-burger', h: 30),
                 color: AppColors.primary,
                 onSelected:
-                    (item) => AppBarSelectItem(context, item, AuthProvider()),
+                    (item) => AppBarSelectItem(
+                      context,
+                      item,
+                      context.read<AuthProvider>(),
+                    ),
                 itemBuilder:
                     (context) => [
                       PopupMenuItem<int>(
