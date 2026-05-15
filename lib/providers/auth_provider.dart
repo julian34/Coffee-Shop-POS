@@ -21,7 +21,10 @@ class AuthProvider extends ChangeNotifier {
       (User? firebaseUser) async {
         if (firebaseUser != null) {
           _user = await _authService.getUserData(firebaseUser.uid);
-          if (_user != null && !_user!.active) {
+          if (_user == null) {
+            _errorMessage = "User data not found.";
+            await _clearPrefs();
+          } else if (!_user!.active) {
             await _authService.signOut();
             _user = null;
             _errorMessage = "Your account is disabled.";
@@ -45,7 +48,11 @@ class AuthProvider extends ChangeNotifier {
     try {
       _errorMessage = null;
       _user = await _authService.signInWithEmail(email, password);
-      if (_user == null || !_user!.active) {
+      if (_user == null) {
+        return "User profile not found.";
+      }
+      if (!_user!.active) {
+        _user = null;
         return "Your account is disabled.";
       }
       if (_user != null) {
