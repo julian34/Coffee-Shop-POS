@@ -103,7 +103,6 @@ class _CartScreenState extends State<CartScreen> {
                     AppRoutes.order,
                     (route) => false,
                   );
-                  Navigator.pushNamed(context, AppRoutes.order);
                 },
                 child: const Text('Exit'),
               ),
@@ -123,6 +122,21 @@ class _CartScreenState extends State<CartScreen> {
         }
 
         final isNewOrder = widget.order == null || widget.order!.cartId.isEmpty;
+        final baseOrder = widget.order ?? OrderList.empty();
+        final currentOrder = OrderList(
+          cartId: baseOrder.cartId,
+          customerName:
+              customerNameController.text.isNotEmpty
+                  ? customerNameController.text
+                  : baseOrder.customerName,
+          totalAmount: cartProvider.totalAmount,
+          isPaid: baseOrder.isPaid,
+          paid: baseOrder.paid,
+          paymentMode: paymentMode,
+          status: baseOrder.status,
+          createdAt: baseOrder.createdAt,
+          items: cartProvider.items.values.toList(),
+        );
 
         return Scaffold(
           appBar: PreferredSize(
@@ -150,8 +164,8 @@ class _CartScreenState extends State<CartScreen> {
                 }
               },
               titleScreen: isNewOrder ? 'Cart' : 'Checkout',
-              cartId: widget.order?.cartId ?? '',
-              existing: widget.order,
+              cartId: currentOrder.cartId,
+              existing: currentOrder,
             ),
           ),
           body:
@@ -195,7 +209,7 @@ class _CartScreenState extends State<CartScreen> {
               );
               Navigator.pushNamed(context, AppRoutes.order);
             },
-            order: widget.order ?? OrderList.empty(),
+            order: currentOrder,
             cart: cartProvider,
             customerNameController: customerNameController,
           ),
