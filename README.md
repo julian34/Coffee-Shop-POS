@@ -93,3 +93,7 @@ lib/
 ├── images/ # Image assets
 ├── fonts/ # Custom fonts
 ├── icons/ # App icons
+
+## Documentation
+
+- [UML diagrams: use case, class, and sequence](docs/uml-diagrams.md)
