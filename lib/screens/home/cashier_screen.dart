@@ -59,13 +59,20 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 },
               ),
               Expanded(
-                child: SingleChildScrollView(
-                  child: ProductGridWidget(
-                    selectedCategory: selectedCategory,
-                    searchQuery: searchQuery,
-                  ),
+                child: ProductGridWidget(
+                  selectedCategory: selectedCategory,
+                  searchQuery: searchQuery,
                 ),
               ),
+
+              // Expanded(
+              //   child: SingleChildScrollView(
+              //     child: ProductGridWidget(
+              //       selectedCategory: selectedCategory,
+              //       searchQuery: searchQuery,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -105,7 +112,7 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
             },
             shape: const CircleBorder(),
             backgroundColor: AppColors.color3,
-            foregroundColor: AppColors.color4,
+            // foregroundColor: AppColors.color4,
             // child: SvgCustomApp.getIcon('money-bill-wave', c: AppColors.color5),
             child: Consumer<CartProvider>(
               builder: (context, cartProvider, child) {

@@ -9,7 +9,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:635270097970:android:0f9df5dc0139d2a97f602b",
         "android_client_info": {
-          "package_name": "com.example.pos_coffee_shop"
+          "package_name": "id.sevatech.poscafe"
         }
       },
       "oauth_client": [
