@@ -20,6 +20,9 @@ class AuthService {
   // Sign in with Email & Password (Check Approval & Active Status)
   Future<UserModel?> signInWithEmail(String email, String password) async {
     try {
+      if (email.trim().isEmpty || password.isEmpty) {
+        throw Exception("Email and password are required.");
+      }
       UserCredential result = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,

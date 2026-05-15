@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/core/routes.dart';
 import 'package:pos_coffee_shop/core/theme.dart';
+import 'package:pos_coffee_shop/models/order_model.dart';
 
 class CartAppbar extends StatelessWidget {
   final VoidCallback onPressed;
   final String titleScreen;
   final String cartId;
-  final existing;
+  final OrderList? existing;
   const CartAppbar({
     Key? key,
     required this.onPressed,
@@ -70,6 +71,10 @@ class CartAppbar extends StatelessWidget {
               cartId.isNotEmpty
                   ? IconButton(
                     onPressed: () {
+                      if (existing == null) {
+                        Navigator.pushNamed(context, AppRoutes.cashierHome);
+                        return;
+                      }
                       Navigator.pushNamed(
                         context,
                         AppRoutes.cashierHome,
