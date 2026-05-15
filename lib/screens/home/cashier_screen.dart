@@ -89,23 +89,21 @@ class _CashierHomeWidgetState extends State<CashierHomeScreen> {
                 context,
                 listen: false,
               );
-              var dataOrder;
-              if (widget.order != null && widget.order!.items.isNotEmpty) {
-                dataOrder = widget.order!;
-              } else {
-                print(widget.order);
-                dataOrder = OrderList(
-                  cartId: widget.order?.cartId ?? "",
-                  customerName: widget.order?.customerName ?? "Guest",
-                  totalAmount: widget.order?.totalAmount.toDouble() ?? 0,
-                  isPaid: widget.order?.isPaid ?? false,
-                  paid: widget.order?.paid ?? false,
-                  paymentMode: widget.order?.paymentMode ?? "Cash",
-                  status: widget.order?.paymentMode ?? "Pending",
-                  createdAt: widget.order?.createdAt ?? DateTime.now(),
-                  items: List.from(cartProvider.items.values),
-                );
-              }
+              final baseOrder = widget.order ?? OrderList.empty();
+              final dataOrder = OrderList(
+                cartId: baseOrder.cartId,
+                customerName:
+                    baseOrder.customerName.isNotEmpty
+                        ? baseOrder.customerName
+                        : "Guest",
+                totalAmount: cartProvider.totalAmount,
+                isPaid: baseOrder.isPaid,
+                paid: baseOrder.paid,
+                paymentMode: baseOrder.paymentMode,
+                status: baseOrder.status,
+                createdAt: baseOrder.createdAt,
+                items: List.from(cartProvider.items.values),
+              );
               Navigator.pushNamed(
                 context,
                 AppRoutes.cart,

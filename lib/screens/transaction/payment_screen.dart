@@ -92,7 +92,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         createdAt: DateTime.now(),
       );
       print(payment.toMap());
-      paymentProvider.makePayment(payment);
+      await paymentProvider.makePayment(payment);
+      if (!mounted) return;
       Navigator.pushNamedAndRemoveUntil(
         context,
         AppRoutes.successpayment,

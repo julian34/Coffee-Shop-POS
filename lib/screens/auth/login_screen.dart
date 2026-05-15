@@ -95,11 +95,21 @@ class LoginScreen extends StatelessWidget {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: () async {
+                              final email = emailController.text.trim();
+                              final password = passwordController.text;
+                              if (email.isEmpty || password.isEmpty) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                      'Email and password are required.',
+                                    ),
+                                  ),
+                                );
+                                return;
+                              }
                               String? error = await authProvider
-                                  .signInWithEmail(
-                                    emailController.text,
-                                    passwordController.text,
-                                  );
+                                  .signInWithEmail(email, password);
+                              if (!context.mounted) return;
                               if (error != null) {
                                 ScaffoldMessenger.of(
                                   context,

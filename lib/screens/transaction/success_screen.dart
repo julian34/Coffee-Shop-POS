@@ -23,10 +23,22 @@ class _SuccessScreenState extends State<SuccessScreen> {
   List<BluetoothInfo> _devices = [];
   String optionprinttype = "58 mm";
   bool _isPrinting = false;
+  bool _didFetchCustomerName = false;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (_didFetchCustomerName) return;
+      _didFetchCustomerName = true;
+      final payment = widget.payment;
+      if (payment == null) return;
+      final paymentProvider = Provider.of<PaymentProvider>(
+        context,
+        listen: false,
+      );
+      paymentProvider.fetchCustomerName(payment.orderId);
+    });
   }
 
   Future<void> _loadSavedPrinter() async {
@@ -216,16 +228,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final paymentProvider = Provider.of<PaymentProvider>(
-      context,
-      listen: false,
-    );
-
     final cartProvider = Provider.of<CartProvider>(context, listen: false);
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      paymentProvider.fetchCustomerName(widget.payment!.orderId);
-    });
 
     return Scaffold(
       backgroundColor: Colors.white,
