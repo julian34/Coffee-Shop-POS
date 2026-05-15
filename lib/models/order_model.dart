@@ -38,10 +38,12 @@ class OrderList {
           _parseDate(map['createdAt']) ??
           DateTime.now(), // Use current time if missing
       items:
-          (map['items'] as List<dynamic>?)
-              ?.map((item) => CartItem.fromMap(item))
-              .toList() ??
-          [],
+          (map['items'] is List)
+              ? (map['items'] as List<dynamic>)
+                  .whereType<Map<String, dynamic>>() // Ensure valid maps
+                  .map((item) => CartItem.fromMap(item))
+                  .toList()
+              : [],
     );
   }
 
@@ -63,10 +65,18 @@ class OrderList {
   }
 
   // 🔹 Helper to parse Firestore Timestamp
+  // static DateTime? _parseDate(dynamic date) {
+  //   if (date is Timestamp) {
+  //     return date.toDate();
+  //   }
+  //   return null;
+  // }
+
   static DateTime? _parseDate(dynamic date) {
-    if (date is Timestamp) {
-      return date.toDate();
-    }
+    if (date == null) return null;
+    if (date is Timestamp) return date.toDate();
+    if (date is DateTime) return date;
+    if (date is String) return DateTime.tryParse(date);
     return null;
   }
 
