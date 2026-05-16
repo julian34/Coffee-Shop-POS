@@ -1,12 +1,29 @@
+# =========================================================
+# GitHub / Documentation
+# =========================================================
+# Jika folder .github dan docs memang tidak mau dipush, aktifkan ini:
 .github/
 docs/manual-coding-guide.md
 
+# =========================================================
+# Firebase Admin SDK / Secret Keys
+# Jangan push file credential Firebase ke GitHub
+# =========================================================
+*firebase-adminsdk*.json
 pos-coffee-shop-ab302-firebase-adminsdk-fbsvc-dfa4c5c2d7.json
-pos-raftelcaffe-firebase-adminsdk-fbsvc-a9ee9b3083
+pos-raftelcaffe-firebase-adminsdk-fbsvc-a9ee9b3083*
+*.serviceAccount.json
+service-account*.json
 
-/tools/
-
+# =========================================================
+# Tools / Local Scripts
+# =========================================================
+tools/
+ /tools/
+ 
+# =========================================================
 # Miscellaneous
+# =========================================================
 *.class
 *.log
 *.pyc
@@ -15,39 +32,71 @@ pos-raftelcaffe-firebase-adminsdk-fbsvc-a9ee9b3083
 .atom/
 .build/
 .buildlog/
-.history
+.history/
 .svn/
 .swiftpm/
 migrate_working_dir/
 
-# IntelliJ related
+# =========================================================
+# IntelliJ / Android Studio
+# =========================================================
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
+# VS Code
+# Jika ingin menyimpan setting VS Code lokal, aktifkan:
+# .vscode/
 
-# Flutter/Dart/Pub related
+# =========================================================
+# Flutter / Dart / Pub
+# =========================================================
 **/doc/api/
 **/ios/Flutter/.last_build_id
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
+.packages
 .pub-cache/
 .pub/
-/build/
+build/
+.flutter-plugins-dependencies
 
-# Symbolication related
+
+
+
+# =========================================================
+# Flutter generated files
+# =========================================================
+GeneratedPluginRegistrant.java
+GeneratedPluginRegistrant.swift
+generated_plugin_registrant.dart
+
+# =========================================================
+# Android Build Output
+# =========================================================
+android/.gradle/
+android/build/
+android/app/build/
+android/app/debug/
+android/app/profile/
+android/app/release/
+
+# APK / AAB
+*.apk
+*.aab
+android/app/build/outputs/apk/debug/app-debug.apk
+# =========================================================
+# Symbolication / Obfuscation
+# =========================================================
 app.*.symbols
-
-# Obfuscation related
 app.*.map.json
 
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
+# =========================================================
+# Local Environment
+# =========================================================
+.env
+.env.*
+local.properties
+android/local.properties
