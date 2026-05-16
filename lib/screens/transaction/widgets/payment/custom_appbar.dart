@@ -41,7 +41,7 @@ class CustomAppbar extends StatelessWidget {
               borderRadius: BorderRadius.circular(30),
             ),
             child: Text(
-              "No. ${cartId}",
+              "No. $cartId",
               style: TextStyle(
                 fontWeight: FontWeight.w700,
                 color: AppColors.color5,

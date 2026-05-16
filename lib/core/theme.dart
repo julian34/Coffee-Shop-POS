@@ -44,7 +44,7 @@ class SvgCustomApp {
       'assets/icons/' + name + ".svg",
       width: w,
       height: h,
-      color: c,
+      colorFilter: ColorFilter.mode(c, BlendMode.srcIn),
     );
   }
 }

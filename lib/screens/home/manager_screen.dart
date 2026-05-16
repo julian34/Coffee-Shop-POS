@@ -161,48 +161,6 @@ class ManagerHomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return Container(
-      padding: EdgeInsets.all(16.0),
-      decoration: BoxDecoration(
-        color: Colors.black,
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Hansen Leo",
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    "Cashiers",
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
-                  ),
-                  Text(
-                    "Sastra Coffee Shop",
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
-                  ),
-                ],
-              ),
-              Icon(Icons.menu, color: Colors.white),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildSearchBar() {
     return Padding(padding: EdgeInsets.all(16.0));
   }
@@ -211,17 +169,8 @@ class ManagerHomeScreen extends StatelessWidget {
     return Row();
   }
 
-  Widget _buildCategoryButton(String title) {
-    return Padding(padding: EdgeInsets.symmetric(horizontal: 8.0));
-  }
-
   Widget _buildProductGrid() {
-    List<Map<String, String>> products = [];
     return Padding(padding: EdgeInsets.all(16.0));
-  }
-
-  Widget _buildProductCard(Map<String, String> product) {
-    return Card();
   }
 
   Widget _buildBottomNavBar() {

@@ -1,3 +1,11 @@
+# Buat proyek akhir software dengan pendekatan OO yang monolitik/microservices dengan ketentuan:
+
+1. Buat dokumen (Requirement, Use Case, Class diagram, E-R diagram)
+2. Modul/ fitur minimal 3 tidak termasuk login (ex, order, tambah produk, ubah produk, hapus produk, login tetap ada walau tidak dihitung
+3. Tuliskan implementasi kode lakukan pengujian unit (buat cfg, hitung kompleksitas, tentukan jalur, uji kan, buat tabel test case dan hasilnya)
+4. lakukan pengujian validasi (tentukan teknik pengujian, buat test case, jalankan, catat hasil tesnya.
+5. upload source code di GitHub, tuliskan di laporan
+
 # Coffee Shop POS
 
 Coffee Shop POS adalah aplikasi Point of Sale berbasis Flutter untuk membantu operasional kedai kopi. Aplikasi ini mendukung alur kasir, pengelolaan keranjang, transaksi pesanan, pembayaran, autentikasi pengguna, dan pemantauan transaksi dengan integrasi Firebase.
@@ -124,12 +132,12 @@ Pastikan layanan berikut aktif di Firebase Console:
 
 Contoh koleksi Firestore yang digunakan aplikasi:
 
-| Koleksi | Kegunaan |
-| --- | --- |
-| `users` | Data pengguna, role, status aktif, dan approval. |
+| Koleksi    | Kegunaan                                         |
+| ---------- | ------------------------------------------------ |
+| `users`    | Data pengguna, role, status aktif, dan approval. |
 | `products` | Daftar produk yang ditampilkan di halaman kasir. |
-| `orders` | Data pesanan dan status pembayaran. |
-| `payments` | Riwayat pembayaran transaksi. |
+| `orders`   | Data pesanan dan status pembayaran.              |
+| `payments` | Riwayat pembayaran transaksi.                    |
 
 ## Aset
 

@@ -67,7 +67,7 @@ class FilterButton extends StatelessWidget {
               isSelected
                   ? [
                     BoxShadow(
-                      color: Colors.brown.withOpacity(0.4),
+                      color: Colors.brown.withValues(alpha: 0.4),
                       blurRadius: 10,
                     ),
                   ]

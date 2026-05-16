@@ -3,7 +3,6 @@ import 'package:pos_coffee_shop/core/theme.dart';
 import 'package:pos_coffee_shop/untils/format_utils.dart';
 
 class PaymentDetail extends StatefulWidget {
-  @override
   final double totalAmount;
   final double change;
   final Function(double) onAmountChanged;
@@ -19,6 +18,7 @@ class PaymentDetail extends StatefulWidget {
     required this.selectedMethod,
   });
 
+  @override
   State<PaymentDetail> createState() => _PaymentDetailState();
 }
 

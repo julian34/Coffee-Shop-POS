@@ -314,7 +314,7 @@ void _showPriceSelectionDialog(BuildContext context, Product product) {
                   _addToCart(context, product, priceOption);
                 },
               );
-            }).toList(),
+            }),
           ],
         ),
       );

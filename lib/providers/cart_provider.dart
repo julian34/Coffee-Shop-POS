@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
-import 'package:pos_coffee_shop/models/products_model.dart';
 import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
@@ -86,10 +85,10 @@ class CartProvider extends ChangeNotifier {
   }
 
   void updateQuantity(String uniqueKey, int newQuantity) {
-    print("${uniqueKey} - ${newQuantity}");
+    print("$uniqueKey - $newQuantity");
 
     if (_items.containsKey(uniqueKey) && newQuantity > 0) {
-      print('update Quantity ${uniqueKey}');
+      print('update Quantity $uniqueKey');
       _items.update(
         uniqueKey,
         (existingItem) => CartItem(
@@ -113,7 +112,7 @@ class CartProvider extends ChangeNotifier {
 
   void removeItem(String uniqueKey) {
     if (_items.containsKey(uniqueKey)) {
-      print('remove ${uniqueKey}');
+      print('remove $uniqueKey');
       _items.remove(uniqueKey);
       notifyListeners();
     }

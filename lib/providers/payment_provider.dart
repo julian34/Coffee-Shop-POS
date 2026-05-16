@@ -30,6 +30,7 @@ class PaymentProvider with ChangeNotifier {
       return await _orderService.getItemsOrder(orderId);
     } catch (e) {
       print("Error fetching items: $e");
+      return null;
     }
   }
 

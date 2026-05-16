@@ -27,7 +27,7 @@ class CustomTextField extends StatelessWidget {
           padding: const EdgeInsets.all(10),
           child: SvgPicture.asset(
             "assets/icons/$icon",
-            color: AppColors.primary,
+            colorFilter: ColorFilter.mode(AppColors.primary, BlendMode.srcIn),
             height: 20,
             width: 20,
           ),

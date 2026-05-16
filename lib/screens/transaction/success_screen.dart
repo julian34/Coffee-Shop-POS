@@ -20,9 +20,7 @@ class SuccessScreen extends StatefulWidget {
 }
 
 class _SuccessScreenState extends State<SuccessScreen> {
-  List<BluetoothInfo> _devices = [];
   String optionprinttype = "58 mm";
-  bool _isPrinting = false;
   bool _didFetchCustomerName = false;
 
   @override
@@ -75,7 +73,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
                 itemBuilder: (context, index) {
                   final device = devices[index];
                   return ListTile(
-                    title: Text(device.name ?? "Unknown"),
+                    title: Text(device.name),
                     subtitle: Text(device.macAdress),
                     onTap: () {
                       Navigator.pop(context, device);
@@ -104,12 +102,11 @@ class _SuccessScreenState extends State<SuccessScreen> {
 
   Future<void> _saveSelectedDevice(BluetoothInfo device) async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.setString('printer_name', device.name ?? "Unknown");
+    await prefs.setString('printer_name', device.name);
     await prefs.setString('printer_mac', device.macAdress);
   }
 
   Future<void> _connectAndPrint(BluetoothInfo device) async {
-    setState(() => _isPrinting = true);
     print(device.name);
     await PrintBluetoothThermal.connect(macPrinterAddress: device.macAdress);
     bool isConnected = await PrintBluetoothThermal.connectionStatus;
@@ -121,9 +118,8 @@ class _SuccessScreenState extends State<SuccessScreen> {
       await PrintBluetoothThermal.writeBytes(ticket);
       _showSnackBar("Receipt printed successfully.");
     } else {
-      print("Failed to connect");
+      _showSnackBar("Failed to connect");
     }
-    setState(() => _isPrinting = false);
   }
 
   Future<List<int>> _generateReceipt() async {
@@ -186,12 +182,12 @@ class _SuccessScreenState extends State<SuccessScreen> {
           styles: const PosStyles(align: PosAlign.center, underline: true),
         ),
         PosColumn(
-          text: '${formatCurrency(price)}',
+          text: formatCurrency(price),
           width: 3,
           styles: const PosStyles(align: PosAlign.center, underline: true),
         ),
         PosColumn(
-          text: '${formatCurrency(subtotal)}',
+          text: formatCurrency(subtotal),
           width: 3,
           styles: const PosStyles(align: PosAlign.center, underline: true),
         ),
@@ -206,7 +202,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
         styles: const PosStyles(align: PosAlign.left, underline: true),
       ),
       PosColumn(
-        text: '${formatCurrency(widget.payment!.totalAmount)}',
+        text: formatCurrency(widget.payment!.totalAmount),
         width: 8,
         styles: const PosStyles(align: PosAlign.right, underline: true),
       ),

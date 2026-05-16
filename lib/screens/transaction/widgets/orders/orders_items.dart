@@ -66,7 +66,7 @@ class OrdersItemsWidget extends StatelessWidget {
                             Text(
                               "Total Amount: ${formatCurrency(order.totalAmount)}",
                             ),
-                            Text("Payment Mode: ${order.paymentMode ?? 'N/A'}"),
+                            Text("Payment Mode: ${order.paymentMode}"),
                           ],
                         ),
                         trailing: Container(

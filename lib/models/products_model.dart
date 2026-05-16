@@ -27,7 +27,7 @@ class Product {
   String get dynamicPriceLabel {
     if (prices.isEmpty) return "Price Unavailable";
     return prices
-        .map((p) => '${p.label} : \ ${formatCurrency(p.amount)}')
+        .map((p) => '${p.label} :  ${formatCurrency(p.amount)}')
         .join(' | ');
   }
 

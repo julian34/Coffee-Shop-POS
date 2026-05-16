@@ -24,7 +24,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   String paymentMethod = 'Cash';
   @override
   Widget build(BuildContext context) {
-    double totalAmount = widget.orderList!.totalAmount ?? 0.0;
+    double totalAmount = widget.orderList!.totalAmount;
     double change = receivedAmount - totalAmount;
 
     return Scaffold(
@@ -87,7 +87,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         orderId: widget.orderList!.cartId,
         totalAmount: widget.orderList!.totalAmount,
         receivedAmount: receivedAmount,
-        changeAmount: receivedAmount - (widget.orderList!.totalAmount ?? 0.0),
+        changeAmount: receivedAmount - widget.orderList!.totalAmount,
         paymentMethod: paymentMethod,
         createdAt: DateTime.now(),
       );
