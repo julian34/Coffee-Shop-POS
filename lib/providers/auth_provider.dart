@@ -2,43 +2,50 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import '../core/routes.dart';
 import '../models/user_model.dart';
 import '../services/auth_service.dart';
-import '../core/routes.dart';
 
 class AuthProvider extends ChangeNotifier {
   final AuthService _authService = AuthService();
+
   UserModel? _user;
   String? _errorMessage;
 
   UserModel? get user => _user;
-  bool get isAuthenticated => _user != null && _user!.active;
   String? get errorMessage => _errorMessage;
+
+  bool get isAuthenticated => _user != null && _user!.active;
 
   AuthProvider() {
     _loadUserFromPrefs();
+
     _authService.authInstance.authStateChanges().listen(
       (User? firebaseUser) async {
         if (firebaseUser != null) {
           _user = await _authService.getUserData(firebaseUser.uid);
+
           if (_user == null) {
-            _errorMessage = "User data not found.";
+            _errorMessage = 'User data not found.';
             await _clearPrefs();
           } else if (!_user!.active) {
             await _authService.signOut();
             _user = null;
-            _errorMessage = "Your account is disabled.";
+            _errorMessage = 'Your account is disabled.';
+            await _clearPrefs();
           } else {
-            _saveUserToPrefs(_user!);
+            await _saveUserToPrefs(_user!);
           }
         } else {
           _user = null;
-          _clearPrefs();
+          await _clearPrefs();
         }
+
         notifyListeners();
       },
       onError: (error) {
-        _errorMessage = "Auth state error: ${error.toString()}";
+        _errorMessage = 'Auth state error: ${error.toString()}';
         notifyListeners();
       },
     );
@@ -47,23 +54,23 @@ class AuthProvider extends ChangeNotifier {
   Future<String?> signInWithEmail(String email, String password) async {
     try {
       _errorMessage = null;
+
       _user = await _authService.signInWithEmail(email, password);
+
       if (_user == null) {
-        return "User profile not found.";
+        return 'User profile not found.';
       }
+
       if (!_user!.active) {
+        await _clearPrefs();
         _user = null;
-        return "Your account is disabled.";
+        return 'Your account is disabled.';
       }
-      if (_user != null) {
-        await saveUserRole(_user!.role); // Save role for session persistence
-      }
-      _saveUserToPrefs(_user!);
+
+      await _saveUserToPrefs(_user!);
       notifyListeners();
-      // print(
-      //   "1. User signed in: ${_user?.name}, Role: ${_user?.role}",
-      // ); // Debugging
-      return null; // Success
+
+      return null;
     } on Exception catch (e) {
       _errorMessage = e.toString();
       notifyListeners();
@@ -84,9 +91,9 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setString('role', role);
   }
 
-  // ✅ Save user session
   Future<void> _saveUserToPrefs(UserModel user) async {
     final prefs = await SharedPreferences.getInstance();
+
     await prefs.setString('uid', user.uid);
     await prefs.setString('name', user.name);
     await prefs.setString('email', user.email);
@@ -95,7 +102,6 @@ class AuthProvider extends ChangeNotifier {
     await prefs.setBool('active', user.active);
   }
 
-  // ✅ Load user session
   Future<void> _loadUserFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -130,15 +136,14 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // ✅ Clear session on logout
   Future<void> _clearPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
 
-  // Enable/Disable User
   Future<void> updateUserStatus(String uid, bool activeStatus) async {
     await _authService.updateUserStatus(uid, activeStatus);
+
     if (_user != null && _user!.uid == uid) {
       _user = UserModel(
         uid: _user!.uid,
@@ -148,16 +153,17 @@ class AuthProvider extends ChangeNotifier {
         approved: _user!.approved,
         active: activeStatus,
       );
+
       notifyListeners();
     }
   }
 
   void navigateBasedOnRole(BuildContext context, String role) {
-    print("navbaseonrole: ${_user?.name}, Role: ${_user?.role}"); // Debugging
     if (_user == null) return;
-    if (_user!.role == "Owner") {
+
+    if (role == 'Owner') {
       Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
-    } else if (role == "Manager") {
+    } else if (role == 'Manager') {
       Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
     } else {
       Navigator.pushReplacementNamed(
@@ -171,8 +177,8 @@ class AuthProvider extends ChangeNotifier {
           isPaid: false,
           paymentMode: 'Cash',
           status: 'Pending',
-          createdAt: DateTime.timestamp(),
-          items: [],
+          createdAt: DateTime.now(),
+          items: const [],
         ),
       );
     }

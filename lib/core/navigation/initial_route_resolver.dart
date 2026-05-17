@@ -25,6 +25,7 @@ class InitialRouteResolver {
       case UserRole.cashier:
         return AppRoutes.cashierHome;
       case UserRole.unknown:
+        await SessionManager.clearSession();
         return AppRoutes.login;
     }
   }

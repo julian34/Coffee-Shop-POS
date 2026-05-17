@@ -61,6 +61,7 @@ class _SuccessScreenState extends State<SuccessScreen> {
       _showSnackBar("No Bluetooth printers found.");
       return;
     }
+    if (!mounted) return;
     BluetoothInfo? selectedDevice = await showDialog<BluetoothInfo>(
       context: context,
       builder:

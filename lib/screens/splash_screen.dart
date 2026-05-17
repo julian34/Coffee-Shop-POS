@@ -1,49 +1,59 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/auth_provider.dart';
+
 import '../core/routes.dart';
+import '../providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  _SplashScreenState createState() => _SplashScreenState();
+  State<SplashScreen> createState() => _SplashScreenState();
 }
 
 class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
 
   @override
   void initState() {
     super.initState();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(seconds: 2),
     );
+
     _fadeAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeIn));
+
     _controller.forward();
     _navigate();
   }
 
-  void _navigate() async {
-    await Future.delayed(const Duration(seconds: 5));
+  Future<void> _navigate() async {
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    if (authProvider.isAuthenticated) {
-      if (authProvider.user!.role == "Owner") {
-        Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
-      } else if (authProvider.user!.role == "Manager") {
-        Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
-      } else {
-        Navigator.pushReplacementNamed(context, AppRoutes.cashierHome);
-      }
-    } else {
+    if (!authProvider.isAuthenticated || authProvider.user == null) {
       Navigator.pushReplacementNamed(context, AppRoutes.login);
+      return;
+    }
+
+    final role = authProvider.user!.role;
+
+    if (role == 'Owner') {
+      Navigator.pushReplacementNamed(context, AppRoutes.ownerHome);
+    } else if (role == 'Manager') {
+      Navigator.pushReplacementNamed(context, AppRoutes.managerHome);
+    } else {
+      Navigator.pushReplacementNamed(context, AppRoutes.cashierHome);
     }
   }
 
@@ -59,10 +69,7 @@ class _SplashScreenState extends State<SplashScreen>
       body: Stack(
         fit: StackFit.expand,
         children: [
-          Image.asset(
-            'assets/images/coffee_bg3.png', // Add your image in assets folder
-            fit: BoxFit.cover,
-          ),
+          Image.asset('assets/images/coffee_bg3.png', fit: BoxFit.cover),
           Center(
             child: FadeTransition(
               opacity: _fadeAnimation,

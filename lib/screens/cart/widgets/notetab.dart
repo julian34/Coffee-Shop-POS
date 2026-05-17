@@ -10,7 +10,7 @@ class NoteTab extends StatefulWidget {
 
 class _NoteTabWidgetState extends State<NoteTab> {
   @override
-  Widget build(BuildContext) {
+  Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 20),
       child: Column(

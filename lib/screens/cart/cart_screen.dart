@@ -206,14 +206,16 @@ class _CartScreenState extends State<CartScreen> {
                 paymentMode: paymentMode,
               );
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    "Order ${isNewOrder ? 'Created' : 'Updated'} Successfully!",
+              if (mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      "Order ${isNewOrder ? 'Created' : 'Updated'} Successfully!",
+                    ),
                   ),
-                ),
-              );
-              Navigator.pushNamed(context, AppRoutes.order);
+                );
+                Navigator.pushNamed(context, AppRoutes.order);
+              }
             },
             order: currentOrder,
             cart: cartProvider,

@@ -21,7 +21,9 @@ class _OrdersWidgetState extends State<OrdersScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () {
-      Provider.of<OrderProvider>(context, listen: false).fetchOrders();
+      if (mounted) {
+        Provider.of<OrderProvider>(context, listen: false).fetchOrders();
+      }
     });
   }
 

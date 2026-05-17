@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:pos_coffee_shop/main.dart';
 
 import 'package:pos_coffee_shop/app/app.dart'; // bukan main.dart
 

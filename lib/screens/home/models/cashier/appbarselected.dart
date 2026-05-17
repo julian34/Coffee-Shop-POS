@@ -18,9 +18,11 @@ void AppBarSelectItem(
       await authProvider.signOut();
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove('role');
-      Navigator.of(
-        context,
-      ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+      if (context.mounted) {
+        Navigator.of(
+          context,
+        ).pushNamedAndRemoveUntil(AppRoutes.login, (route) => false);
+      }
       break;
     default:
       print("Incalid Selection");
