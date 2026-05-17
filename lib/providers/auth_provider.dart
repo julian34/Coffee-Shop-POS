@@ -98,17 +98,36 @@ class AuthProvider extends ChangeNotifier {
   // ✅ Load user session
   Future<void> _loadUserFromPrefs() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('uid')) {
-      _user = UserModel(
-        uid: prefs.getString('uid')!,
-        name: prefs.getString('name')!,
-        email: prefs.getString('email')!,
-        role: prefs.getString('role')!,
-        approved: prefs.getBool('approved')!,
-        active: prefs.getBool('active')!,
-      );
+
+    final uid = prefs.getString('uid');
+    final name = prefs.getString('name');
+    final email = prefs.getString('email');
+    final role = prefs.getString('role');
+    final approved = prefs.getBool('approved');
+    final active = prefs.getBool('active');
+
+    if (uid == null ||
+        name == null ||
+        email == null ||
+        role == null ||
+        approved == null ||
+        active == null) {
+      await _clearPrefs();
+      _user = null;
       notifyListeners();
+      return;
     }
+
+    _user = UserModel(
+      uid: uid,
+      name: name,
+      email: email,
+      role: role,
+      approved: approved,
+      active: active,
+    );
+
+    notifyListeners();
   }
 
   // ✅ Clear session on logout
