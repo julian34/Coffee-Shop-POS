@@ -46,25 +46,94 @@ Coffee Shop POS adalah aplikasi Point of Sale berbasis Flutter untuk membantu op
 
 ```text
 lib/
-├── core/                 # Konstanta, tema, dan konfigurasi route
-├── models/               # Model data aplikasi
-├── providers/            # State management menggunakan Provider
-├── screens/              # Halaman aplikasi
-│   ├── auth/             # Login
-│   ├── cart/             # Keranjang dan ringkasan order
-│   ├── home/             # Dashboard Owner, Manager, dan Cashier
-│   ├── setting/          # Profil pengguna
-│   └── transaction/      # Order, pembayaran, dan sukses transaksi
-├── services/             # Integrasi Firebase dan logika bisnis
-├── untils/               # Helper formatting
-├── widgets/              # Widget reusable
-├── firebase_options.dart # Konfigurasi Firebase hasil FlutterFire CLI
-└── main.dart             # Entry point aplikasi
+├── app/                        # Inisialisasi aplikasi, theme, routes, dan providers
+│   ├── app.dart
+│   ├── app_initializer.dart
+│   ├── app_providers.dart
+│   ├── app_theme.dart
+│   ├── routes.dart
+│   └── theme.dart
+├── core/                       # Konstanta, enum, helper, navigasi, session, dan route
+│   ├── constants/
+│   ├── enums/
+│   │   └── user_role.dart
+│   ├── navigation/
+│   │   └── initial_route_resolver.dart
+│   ├── session/
+│   │   └── session_manager.dart
+│   ├── app_constans.dart
+│   └── routes.dart
+├── data/                       # Sumber data dan repository
+│   ├── datasources/
+│   ├── repositories/
+│   │   └── auth_repository.dart
+│   └── services/
+├── domain/                     # Model domain dan use cases
+│   ├── models/
+│   └── usecases/
+├── models/                     # Model data aplikasi
+│   ├── cart_model.dart
+│   ├── order_model.dart
+│   ├── payment_model.dart
+│   ├── products_model.dart
+│   └── user_model.dart
+├── presentation/               # Layer presentasi (arsitektur bersih)
+│   ├── providers/
+│   │   └── auth_provider.dart
+│   └── screens/
+│       ├── auth/
+│       ├── cart/
+│       ├── cashier/
+│       ├── manager/
+│       ├── order/
+│       ├── owner/
+│       ├── payment/
+│       └── profile/
+├── providers/                  # State management menggunakan Provider
+│   ├── auth_provider.dart
+│   ├── cart_provider.dart
+│   ├── orders_provider.dart
+│   └── payment_provider.dart
+├── screens/                    # Halaman aplikasi
+│   ├── auth/
+│   │   └── login_screen.dart
+│   ├── cart/
+│   │   ├── cart_screen.dart
+│   │   └── widgets/
+│   ├── home/
+│   │   ├── cashier_screen.dart
+│   │   ├── manager_screen.dart
+│   │   ├── owner_screen.dart
+│   │   ├── models/
+│   │   └── widgets/
+│   ├── setting/
+│   │   └── profile_screen.dart
+│   ├── transaction/
+│   │   ├── orders_screen.dart
+│   │   ├── order_detail_screen.dart
+│   │   ├── payment_screen.dart
+│   │   ├── success_screen.dart
+│   │   └── widgets/
+│   ├── error_screen.dart
+│   └── splash_screen.dart
+├── services/                   # Integrasi Firebase dan logika bisnis
+│   ├── auth_service.dart
+│   ├── cart_service.dart
+│   ├── order_service.dart
+│   ├── payment_service.dart
+│   └── product_service.dart
+├── untils/                     # Helper formatting
+│   └── format_utils.dart
+├── widgets/                    # Widget reusable
+│   └── build_textfield.dart
+├── firebase_options.dart       # Konfigurasi Firebase hasil FlutterFire CLI
+└── main.dart                   # Entry point aplikasi
 
 assets/
-├── icons/                # Ikon SVG dan GIF animasi
-├── images/               # Gambar UI umum
-└── products/             # Gambar produk
+├── icons/                      # Ikon SVG dan GIF animasi
+│   └── animated/
+├── images/                     # Gambar UI umum
+└── products/                   # Gambar produk
 ```
 
 ## Prasyarat
