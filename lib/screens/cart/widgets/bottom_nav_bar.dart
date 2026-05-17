@@ -57,31 +57,36 @@ class prosessOrder extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Row(
       children: [
-        ElevatedButton(
-          onPressed:
-              cart.items.isEmpty
-                  ? null
-                  : () async {
-                    String cartId =
-                        DateTime.now().microsecondsSinceEpoch.toString();
+        Expanded(
+          child: ElevatedButton(
+            onPressed:
+                cart.items.isEmpty
+                    ? null
+                    : () async {
+                      String cartId =
+                          DateTime.now().microsecondsSinceEpoch.toString();
 
-                    var cartData = {
-                      'cartId': cartId,
-                      'customerName': customerNameController.text,
-                      'paid': false,
-                      'paymentMode': "",
-                    };
-                    _saveCart(context, cartData, cart);
-                  },
-          style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
-          child: Text(
-            'Prosess Order',
-            style: TextStyle(
-              fontSize: 20,
-              color: AppColors.color4,
-              fontWeight: FontWeight.w700,
+                      var cartData = {
+                        'cartId': cartId,
+                        'customerName': customerNameController.text,
+                        'paid': false,
+                        'paymentMode': "",
+                      };
+                      _saveCart(context, cartData, cart);
+                    },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.primary,
+              minimumSize: const Size.fromHeight(50),
+            ),
+            child: Text(
+              'Prosess Order',
+              style: TextStyle(
+                fontSize: 20,
+                color: AppColors.color4,
+                fontWeight: FontWeight.w700,
+              ),
             ),
           ),
         ),

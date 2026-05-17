@@ -103,7 +103,7 @@ class _CartScreenState extends State<CartScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  cartProvider.items.clear();
+                  cartProvider.clearCart();
                   Navigator.pushNamedAndRemoveUntil(
                     context,
                     AppRoutes.order,
@@ -182,9 +182,8 @@ class _CartScreenState extends State<CartScreen> {
                     children: [
                       ConsumerDetailsTab(controller: customerNameController),
                       const NoteTab(),
-                      Flexible(
+                      Expanded(
                         child: Container(
-                          height: 345,
                           margin: const EdgeInsets.symmetric(horizontal: 20),
                           child: const ItemCartWidget(),
                         ),
@@ -237,10 +236,9 @@ void syncCartWithOrder(OrderList orderList, CartProvider cartProvider) {
 
   if (needsSync) {
     // /cartProvider.clearCart
-    cartItems.clear();
+    cartProvider.clearCart();
     for (var item in orderList.items) {
       cartProvider.addToCart(item);
-      cartProvider.updateQuantity(item.productId, item.quantity);
     }
   }
 }
