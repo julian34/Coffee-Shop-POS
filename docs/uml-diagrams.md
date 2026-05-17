@@ -362,3 +362,73 @@ sequenceDiagram
     PaymentScreen->>SuccessScreen: Navigasi dengan data Payment
     SuccessScreen-->>Cashier: Tampilkan bukti pembayaran berhasil
 ```
+
+## 4. Entity Relationship Diagram (ERD)
+
+Diagram ini menggambarkan struktur data yang digunakan pada koleksi Firestore dan relasi antar entitas dalam aplikasi Coffee Shop POS.
+
+```mermaid
+erDiagram
+    USER {
+        string uid PK
+        string name
+        string email
+        string role
+        boolean approved
+        boolean active
+    }
+
+    PRODUCT {
+        string id PK
+        string name
+        string category
+        double price
+        string image
+    }
+
+    PRODUCT_PRICE {
+        string label
+        double amount
+    }
+
+    ORDER {
+        string cartId PK
+        string customerName
+        double totalAmount
+        boolean isPaid
+        boolean paid
+        string paymentMode
+        string status
+        datetime createdAt
+    }
+
+    CART_ITEM {
+        string productId FK
+        string name
+        double price
+        string label
+        int quantity
+        string image
+    }
+
+    SELECTED_PRICE {
+        string label
+        double amount
+    }
+
+    PAYMENT {
+        string orderId FK
+        double totalAmount
+        double receivedAmount
+        double changeAmount
+        string paymentMethod
+        datetime createdAt
+    }
+
+    PRODUCT ||--|{ PRODUCT_PRICE : "memiliki harga"
+    ORDER ||--|{ CART_ITEM : "memuat item"
+    CART_ITEM ||--|| SELECTED_PRICE : "menggunakan harga"
+    CART_ITEM }o--|| PRODUCT : "mereferensi produk"
+    ORDER ||--o| PAYMENT : "dibayar dengan"
+    USER ||--o{ ORDER : "memproses pesanan"
+```
