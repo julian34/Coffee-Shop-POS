@@ -1,11 +1,24 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
 import 'package:pos_coffee_shop/services/order_service.dart';
 import 'package:pos_coffee_shop/services/payment_service.dart';
 
 class PaymentProvider with ChangeNotifier {
-  final PaymentService _paymentService = PaymentService();
-  final OrderService _orderService = OrderService();
+  final PaymentService _paymentService;
+  final OrderService _orderService;
+
+  PaymentProvider()
+    : _paymentService = PaymentService(),
+      _orderService = OrderService();
+
+  /// Named constructor untuk unit testing — menerima service yang telah di-mock.
+  @visibleForTesting
+  PaymentProvider.forTest({
+    required PaymentService paymentService,
+    required OrderService orderService,
+  }) : _paymentService = paymentService,
+       _orderService = orderService;
 
   String _customerName = '';
   String get customerName => _customerName;

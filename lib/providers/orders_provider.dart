@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
@@ -16,6 +17,17 @@ class OrderProvider extends ChangeNotifier {
   OrderProvider() {
     loadStatusFilter();
     fetchOrders();
+  }
+
+  /// Named constructor untuk unit testing — melewati Firebase dan SharedPreferences.
+  @visibleForTesting
+  OrderProvider.forTest() : _statusFilter = 'Pending';
+
+  /// Menyuntikkan data orders untuk keperluan unit testing.
+  @visibleForTesting
+  void setOrdersForTest(List<OrderList> orders) {
+    _orders = orders;
+    applyFilters();
   }
 
   Future<void> fetchOrders() async {

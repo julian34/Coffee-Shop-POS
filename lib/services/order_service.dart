@@ -2,7 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:pos_coffee_shop/models/order_model.dart';
 
 class OrderService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  final FirebaseFirestore _db;
+
+  OrderService([FirebaseFirestore? db])
+    : _db = db ?? FirebaseFirestore.instance;
 
   Stream<List<OrderList>> getOrders() {
     return _db

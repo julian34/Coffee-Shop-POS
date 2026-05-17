@@ -1,11 +1,19 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pos_coffee_shop/models/cart_model.dart';
 import 'package:pos_coffee_shop/services/cart_service.dart';
 
 class CartProvider extends ChangeNotifier {
-  final CartService _cartService = CartService();
+  final CartService _cartService;
   final Map<String, CartItem> _items = {};
   String _customerName = 'Guest';
+
+  CartProvider() : _cartService = CartService();
+
+  /// Named constructor untuk unit testing — menerima CartService yang telah di-inject.
+  @visibleForTesting
+  CartProvider.forTest({required CartService cartService})
+    : _cartService = cartService;
 
   Map<String, CartItem> get items => _items;
   String get customerName => _customerName;
