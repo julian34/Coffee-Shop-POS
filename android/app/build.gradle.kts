@@ -22,8 +22,8 @@ android {
     namespace = "id.sevatech.poscafe"
     //compileSdk = flutter.compileSdkVersion
     //ndkVersion = flutter.ndkVersion
-    compileSdk = 35
-    ndkVersion = "27.0.12077973"
+    compileSdk = 36
+    ndkVersion = "28.2.13676358"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
@@ -76,9 +76,4 @@ android {
 
 flutter {
     source = "../.."
-}
-
-dependencies {
-    testImplementation("junit:junit:4.13.2")
-    testImplementation("org.mockito:mockito-core:5.3.1")
 }

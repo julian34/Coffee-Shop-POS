@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
+
 import 'package:pos_coffee_shop/models/order_model.dart';
 import 'package:pos_coffee_shop/models/payment_model.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import '../screens/auth/login_screen.dart';
-// import '../screens/auth/register_screen.dart';
-import '../screens/home/cashier_screen.dart';
-import '../screens/home/manager_screen.dart';
-import '../screens/home/owner_screen.dart';
-import '../screens/splash_screen.dart';
-import '../screens/error_screen.dart';
-import '../screens/setting/profile_screen.dart';
-import '../screens/cart/cart_screen.dart';
 
+import 'package:pos_coffee_shop/screens/auth/login_screen.dart';
+import 'package:pos_coffee_shop/screens/home/cashier_screen.dart';
+import 'package:pos_coffee_shop/screens/home/manager_screen.dart';
+import 'package:pos_coffee_shop/screens/home/owner_screen.dart';
+import 'package:pos_coffee_shop/screens/splash_screen.dart';
+import 'package:pos_coffee_shop/screens/error_screen.dart';
+import 'package:pos_coffee_shop/screens/setting/profile_screen.dart';
+import 'package:pos_coffee_shop/screens/cart/cart_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/orders_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/order_detail_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/payment_screen.dart';
 import 'package:pos_coffee_shop/screens/transaction/success_screen.dart';
 
 class AppRoutes {
+  const AppRoutes._();
+
   static const String splash = '/';
   static const String login = '/login';
-  // static const String register = '/register';
+
   static const String ownerHome = '/owner-home';
   static const String managerHome = '/manager-home';
   static const String cashierHome = '/cashier-home';
@@ -34,60 +35,77 @@ class AppRoutes {
   static const String error = '/error';
   static const String profile = '/profile';
 
-  // Determine the initial route based on saved role
-  static Future<String> getInitialRoute() async {
-    final prefs = await SharedPreferences.getInstance();
-    String? savedRole = prefs.getString('role');
-    if (savedRole == "Owner") return ownerHome;
-    if (savedRole == "Manager") return managerHome;
-    if (savedRole == "Cashier") return cashierHome;
-    return login;
-  }
-
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
         return MaterialPageRoute(builder: (_) => SplashScreen());
+
       case login:
         return MaterialPageRoute(builder: (_) => LoginScreen());
-      // case register:
-      //   return MaterialPageRoute(builder: (_) => RegisterScreen());
+
       case ownerHome:
         return MaterialPageRoute(builder: (_) => OwnerHomeScreen());
+
       case managerHome:
         return MaterialPageRoute(builder: (_) => ManagerHomeScreen());
+
       case cashierHome:
-        final order = settings.arguments as OrderList?;
+        final OrderList? order = settings.arguments as OrderList?;
         return MaterialPageRoute(
           builder: (_) => CashierHomeScreen(order: order),
         );
+
       case profile:
         return MaterialPageRoute(builder: (_) => ProfileScreen());
+
       case cart:
-        final order = settings.arguments as OrderList?;
+        final OrderList? order = settings.arguments as OrderList?;
         return MaterialPageRoute(builder: (_) => CartScreen(order: order));
+
       case order:
         return MaterialPageRoute(builder: (_) => OrdersScreen());
+
       case orderDetail:
-        final order = settings.arguments as OrderList; // Extract argument
+        final Object? args = settings.arguments;
+
+        if (args is! OrderList) {
+          return _errorRoute(
+            'Argument untuk halaman Order Detail tidak valid.',
+          );
+        }
+
         return MaterialPageRoute(
-          builder: (_) => OrderDetailScreen(order: order),
+          builder: (_) => OrderDetailScreen(order: args),
         );
+
       case payment:
-        final order = settings.arguments as OrderList; // Extract argument
+        final Object? args = settings.arguments;
+
+        if (args is! OrderList) {
+          return _errorRoute('Argument untuk halaman Payment tidak valid.');
+        }
+
         return MaterialPageRoute(
-          builder: (_) => PaymentScreen(orderList: order),
+          builder: (_) => PaymentScreen(orderList: args),
         );
+
       case successpayment:
-        final payment = settings.arguments as Payment;
-        return MaterialPageRoute(
-          builder: (_) => SuccessScreen(payment: payment),
-        );
+        final Object? args = settings.arguments;
+
+        if (args is! Payment) {
+          return _errorRoute(
+            'Argument untuk halaman Success Payment tidak valid.',
+          );
+        }
+
+        return MaterialPageRoute(builder: (_) => SuccessScreen(payment: args));
+
       default:
-        return MaterialPageRoute(
-          builder:
-              (_) => ErrorScreen(message: 'Page Not Found: ${settings.name}'),
-        );
+        return _errorRoute('Page Not Found: ${settings.name}');
     }
+  }
+
+  static Route<dynamic> _errorRoute(String message) {
+    return MaterialPageRoute(builder: (_) => ErrorScreen(message: message));
   }
 }

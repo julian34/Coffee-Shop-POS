@@ -1,54 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:pos_coffee_shop/providers/orders_provider.dart';
-import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
-import 'core/routes.dart';
-import 'providers/auth_provider.dart';
-import 'providers/cart_provider.dart';
-import 'package:pos_coffee_shop/providers/payment_provider.dart';
 
-void main() async {
+import 'package:pos_coffee_shop/app/app.dart';
+import 'package:pos_coffee_shop/app/app_initializer.dart';
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-  // Get initial route dynamically
-  String initialRoute = await AppRoutes.getInitialRoute();
+  await AppInitializer.initialize();
 
-  runApp(
-    MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => CartProvider()),
-        ChangeNotifierProvider(create: (_) => OrderProvider()),
-        ChangeNotifierProvider(create: (_) => PaymentProvider()),
-      ],
-      child: MyApp(initialRoute: initialRoute),
-    ),
-  );
-}
-
-class MyApp extends StatelessWidget {
-  final String initialRoute;
-
-  const MyApp({super.key, required this.initialRoute});
-
-  @override
-  Widget build(BuildContext context) {
-    return Consumer<AuthProvider>(
-      builder: (context, authProvider, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Coffee POS',
-          theme: ThemeData(
-            textTheme: GoogleFonts.soraTextTheme(),
-            primarySwatch: Colors.brown,
-          ),
-          initialRoute: initialRoute,
-          onGenerateRoute: AppRoutes.generateRoute,
-        );
-      },
-    );
-  }
+  runApp(const CoffeeShopPOSApp());
 }

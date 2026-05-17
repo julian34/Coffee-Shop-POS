@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../providers/auth_provider.dart';
-import '../providers/cart_provider.dart';
-import '../providers/orders_provider.dart';
-import '../providers/payment_provider.dart';
+import 'package:pos_coffee_shop/providers/auth_provider.dart';
+import 'package:pos_coffee_shop/providers/cart_provider.dart';
+import 'package:pos_coffee_shop/providers/orders_provider.dart';
+import 'package:pos_coffee_shop/providers/payment_provider.dart';
 
 class AppProviders extends StatelessWidget {
   final Widget child;
