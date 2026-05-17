@@ -4,7 +4,7 @@
 # Jika folder .github dan docs memang tidak mau dipush, aktifkan ini:
 .github/
 docs/manual-coding-guide.md
-
+docs/promt.md
 # =========================================================
 # Firebase Admin SDK / Secret Keys
 # Jangan push file credential Firebase ke GitHub
