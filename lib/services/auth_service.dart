@@ -1,105 +1,187 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../models/user_model.dart';
 
 class AuthService {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+  static const String _usersCollection = 'users';
+
+  final FirebaseAuth _auth;
+  final FirebaseFirestore _db;
+
+  AuthService({FirebaseAuth? firebaseAuth, FirebaseFirestore? firestore})
+    : _auth = firebaseAuth ?? FirebaseAuth.instance,
+      _db = firestore ?? FirebaseFirestore.instance;
 
   FirebaseAuth get authInstance => _auth;
 
-  // Fetch user data from Firestore
   Future<UserModel?> getUserData(String uid) async {
-    DocumentSnapshot doc = await _db.collection("users").doc(uid).get();
-    if (doc.exists) {
-      return UserModel.fromFirestore(doc);
-    }
-    return null;
-  }
+    final String cleanUid = uid.trim();
 
-  // Sign in with Email & Password (Check Approval & Active Status)
-  Future<UserModel?> signInWithEmail(String email, String password) async {
+    if (cleanUid.isEmpty) {
+      throw Exception('User ID cannot be empty.');
+    }
+
     try {
-      if (email.trim().isEmpty || password.isEmpty) {
-        throw Exception("Email and password are required.");
-      }
-      UserCredential result = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      User? firebaseUser = result.user;
+      final DocumentSnapshot<Map<String, dynamic>> doc =
+          await _db.collection(_usersCollection).doc(cleanUid).get();
 
-      if (firebaseUser != null) {
-        UserModel? user = await getUserData(firebaseUser.uid);
-
-        if (user != null) {
-          if (!user.approved) {
-            await _auth.signOut();
-            throw Exception("Access denied. Awaiting Manager/Owner approval.");
-          } else if (!user.active) {
-            await _auth.signOut();
-            throw Exception("Your account has been disabled. Contact support.");
-          }
-          return user;
-        }
+      if (!doc.exists) {
+        return null;
       }
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message ?? "Authentication failed");
+
+      return UserModel.fromFirestore(doc);
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? 'Failed to fetch user data.');
+    } catch (e) {
+      throw Exception('Failed to fetch user data.');
     }
-    return null;
   }
 
-  // Sign in with Google
+  Future<UserModel?> signInWithEmail(String email, String password) async {
+    final String cleanEmail = email.trim();
+    final String cleanPassword = password.trim();
+
+    if (cleanEmail.isEmpty || cleanPassword.isEmpty) {
+      throw Exception('Email and password are required.');
+    }
+
+    try {
+      final UserCredential credential = await _auth.signInWithEmailAndPassword(
+        email: cleanEmail,
+        password: cleanPassword,
+      );
+
+      final User? firebaseUser = credential.user;
+
+      if (firebaseUser == null) {
+        return null;
+      }
+
+      final UserModel? user = await getUserData(firebaseUser.uid);
+
+      if (user == null) {
+        await signOut();
+        return null;
+      }
+
+      await _validateUserAccess(user);
+
+      return user;
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? 'Authentication failed.');
+    } catch (e) {
+      throw Exception(_formatExceptionMessage(e));
+    }
+  }
+
   Future<UserModel?> signInWithGoogle() async {
     try {
-      GoogleAuthProvider googleProvider = GoogleAuthProvider();
-      UserCredential result = await _auth.signInWithPopup(googleProvider);
-      User? firebaseUser = result.user;
+      final GoogleAuthProvider googleProvider = GoogleAuthProvider();
 
-      if (firebaseUser != null) {
-        UserModel? user = await getUserData(firebaseUser.uid);
-
-        if (user != null) {
-          if (!user.approved) {
-            await _auth.signOut();
-            throw Exception("Access denied. Awaiting Manager/Owner approval.");
-          } else if (!user.active) {
-            await _auth.signOut();
-            throw Exception("Your account has been disabled. Contact support.");
-          }
-          return user;
-        }
-      }
-    } on FirebaseAuthException catch (e) {
-      throw Exception(e.message ?? "Google sign-in failed");
-    }
-    return null;
-  }
-
-  // Register User with Default "Disabled" Status
-  Future<void> registerUser(UserModel user, String password) async {
-    try {
-      UserCredential result = await _auth.createUserWithEmailAndPassword(
-        email: user.email,
-        password: password,
+      final UserCredential credential = await _auth.signInWithPopup(
+        googleProvider,
       );
-      User? firebaseUser = result.user;
 
-      if (firebaseUser != null) {
-        await _db.collection("users").doc(firebaseUser.uid).set(user.toMap());
+      final User? firebaseUser = credential.user;
+
+      if (firebaseUser == null) {
+        return null;
       }
+
+      final UserModel? user = await getUserData(firebaseUser.uid);
+
+      if (user == null) {
+        await signOut();
+        return null;
+      }
+
+      await _validateUserAccess(user);
+
+      return user;
     } on FirebaseAuthException catch (e) {
-      throw Exception(e.message ?? "Registration failed");
+      throw Exception(e.message ?? 'Google sign-in failed.');
+    } catch (e) {
+      throw Exception(_formatExceptionMessage(e));
     }
   }
 
-  // Disable/Enable User
-  Future<void> updateUserStatus(String uid, bool activeStatus) async {
-    await _db.collection("users").doc(uid).update({'active': activeStatus});
+  Future<void> registerUser(UserModel user, String password) async {
+    final String cleanEmail = user.email.trim();
+    final String cleanPassword = password.trim();
+
+    if (cleanEmail.isEmpty || cleanPassword.isEmpty) {
+      throw Exception('Email and password are required.');
+    }
+
+    try {
+      final UserCredential credential = await _auth
+          .createUserWithEmailAndPassword(
+            email: cleanEmail,
+            password: cleanPassword,
+          );
+
+      final User? firebaseUser = credential.user;
+
+      if (firebaseUser == null) {
+        throw Exception('Registration failed. User credential not found.');
+      }
+
+      await _db
+          .collection(_usersCollection)
+          .doc(firebaseUser.uid)
+          .set(user.toMap());
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? 'Registration failed.');
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? 'Failed to save user data.');
+    } catch (e) {
+      throw Exception(_formatExceptionMessage(e));
+    }
   }
 
-  // Sign Out
+  Future<void> updateUserStatus(String uid, bool activeStatus) async {
+    final String cleanUid = uid.trim();
+
+    if (cleanUid.isEmpty) {
+      throw Exception('User ID cannot be empty.');
+    }
+
+    try {
+      await _db.collection(_usersCollection).doc(cleanUid).update({
+        'active': activeStatus,
+      });
+    } on FirebaseException catch (e) {
+      throw Exception(e.message ?? 'Failed to update user status.');
+    } catch (e) {
+      throw Exception('Failed to update user status.');
+    }
+  }
+
   Future<void> signOut() async {
-    await _auth.signOut();
+    try {
+      await _auth.signOut();
+    } on FirebaseAuthException catch (e) {
+      throw Exception(e.message ?? 'Failed to sign out.');
+    } catch (e) {
+      throw Exception('Failed to sign out.');
+    }
+  }
+
+  Future<void> _validateUserAccess(UserModel user) async {
+    if (!user.approved) {
+      await signOut();
+      throw Exception('Access denied. Awaiting Manager/Owner approval.');
+    }
+
+    if (!user.active) {
+      await signOut();
+      throw Exception('Your account has been disabled. Contact support.');
+    }
+  }
+
+  String _formatExceptionMessage(Object error) {
+    final String message = error.toString();
+    return message.replaceFirst('Exception: ', '');
   }
 }
