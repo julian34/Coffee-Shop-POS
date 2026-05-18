@@ -198,6 +198,9 @@ class _CartScreenState extends State<CartScreen> {
                       ? DateTime.now().millisecondsSinceEpoch.toString()
                       : widget.order!.cartId;
 
+              final messenger = ScaffoldMessenger.of(context);
+              final navigator = Navigator.of(context);
+
               await cartProvider.saveCart(
                 cartId,
                 customerNameController.text,
@@ -206,14 +209,14 @@ class _CartScreenState extends State<CartScreen> {
               );
 
               if (mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
+                messenger.showSnackBar(
                   SnackBar(
                     content: Text(
                       "Order ${isNewOrder ? 'Created' : 'Updated'} Successfully!",
                     ),
                   ),
                 );
-                Navigator.pushNamed(context, AppRoutes.order);
+                navigator.pushNamed(AppRoutes.order);
               }
             },
             order: currentOrder,
